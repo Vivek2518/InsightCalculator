@@ -284,6 +284,47 @@ export const calculatorConfigs: Record<string, CalculatorConfig> = {
     compute: ({ principal, emi, tenure }) => md(solveAnnualRate(principal, emi, tenure)),
   },
 
+  sip: {
+    slug: "sip",
+    formula:
+      "Future Value = P * (((1 + r)^n - 1) / r) * (1 + r) where r is periodic rate",
+    fields: [
+      { key: "monthly", label: "Monthly SIP (₹)", type: "number" },
+      { key: "rate", label: "Expected Annual Return (%)", type: "percentage" },
+      { key: "tenure", label: "Tenure (years)", type: "number" },
+    ],
+    example: {
+      inputs: { monthly: 5000, rate: 12, tenure: 10 },
+      output: md(
+        (function () {
+          const r = 0.12 / 12;
+          const n = 10 * 12;
+          return 5000 * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+        })()
+      ),
+      explanation:
+        "A monthly SIP of ₹5,000 at 12% annual return for 10 years grows through compounding.",
+    },
+    faqs: [
+      {
+        question: "What is SIP?",
+        answer:
+          "Systematic Investment Plan (SIP) lets you invest fixed amounts regularly into mutual funds.",
+      },
+      {
+        question: "Why use a SIP calculator?",
+        answer:
+          "It helps you estimate future value based on regular investments and expected return.",
+      },
+    ],
+    compute: ({ monthly, rate, tenure }) => {
+      const r = rate / 100 / 12;
+      const n = tenure * 12;
+      const futureValue = monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+      return md(futureValue);
+    },
+  },
+
   "lumpsum-investment": {
     slug: "lumpsum-investment",
     formula: "Future Value = P * (1 + r)^n",
@@ -545,6 +586,34 @@ export const calculatorConfigs: Record<string, CalculatorConfig> = {
 
       return md(tax);
     },
+  },
+
+  "gst": {
+    slug: "gst",
+    formula: "GST Amount = Amount * (GST Rate / 100)",
+    fields: [
+      { key: "amount", label: "Base Amount (₹)", type: "number" },
+      { key: "rate", label: "GST Rate (%)", type: "percentage" },
+    ],
+    example: {
+      inputs: { amount: 1000, rate: 18 },
+      output: md(1000 * (18 / 100)),
+      explanation:
+        "For a base amount of ₹1,000 with 18% GST, the tax amount is ₹180.",
+    },
+    faqs: [
+      {
+        question: "What is GST?",
+        answer:
+          "GST is a value-added tax applied on the supply of goods and services.",
+      },
+      {
+        question: "How do I calculate total amount?",
+        answer:
+          "Add the GST amount to the base amount to get the total invoice value.",
+      },
+    ],
+    compute: ({ amount, rate }) => md(amount * (rate / 100)),
   },
 
   hra: {
