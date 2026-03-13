@@ -1,10 +1,15 @@
 import { CalculatorSearch } from "@/components/CalculatorSearch";
+import { CategorySection } from "@/components/CategorySection";
 import { calculators } from "@/data/calculators";
 import { CalculatorCard } from "@/components/CalculatorCard";
 
 export const metadata = {
   title: "Calculators — GanitaHub",
   description: "Browse all available calculators for finance, taxation, investment, and more.",
+  keywords: "calculators, financial calculators, online tools, business calculators, investment calculators, tax calculators, loan calculators, free calculators",
+  alternates: {
+    canonical: "https://ganitahub.vercel.app/calculators",
+  },
 };
 
 export default function CalculatorsPage() {
@@ -18,6 +23,9 @@ export default function CalculatorsPage() {
       </header>
       <div className="mt-8">
         <CalculatorSearch />
+      </div>
+      <div className="mt-10">
+        <CategorySection />
       </div>
       <section className="mt-10">
         <h2 className="text-2xl font-semibold">Explore everything</h2>

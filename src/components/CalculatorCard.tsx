@@ -5,6 +5,7 @@ import { Calculator } from "@/data/calculators";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calculator as CalculatorIcon } from "lucide-react";
+import { FavoriteToggle } from "@/components/FavoriteToggle";
 
 type CalculatorCardProps = {
   calculator: Calculator;
@@ -24,10 +25,11 @@ export function CalculatorCard({ calculator }: CalculatorCardProps) {
           {calculator.description}
         </CardDescription>
       </CardHeader>
-      <CardFooter className="mt-2">
+      <CardFooter className="mt-2 flex items-center">
         <Button asChild size="sm" className="ml-auto" variant="secondary">
           <Link href={`/calculators/${calculator.slug}`}>Open</Link>
         </Button>
+        <FavoriteToggle slug={calculator.slug} className="ml-2" />
       </CardFooter>
     </Card>
   );

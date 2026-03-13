@@ -15,7 +15,7 @@ export function HeroSection() {
             Free powerful tools to help you make better financial and business decisions.
           </p>
         </div>
-        <CalculatorSearch />
+        <CalculatorSearch className="mx-auto" />
       </div>
     </section>
   );

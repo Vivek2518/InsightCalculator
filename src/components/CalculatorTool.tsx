@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCalculatorConfig } from "@/lib/calculatorConfigs";
 import { Calculator } from "@/data/calculators";
+import { useRecent } from "@/lib/recent";
 
 type CalculatorToolProps = {
   calculator: Calculator;
@@ -13,6 +14,8 @@ type CalculatorToolProps = {
 
 export function CalculatorTool({ calculator }: CalculatorToolProps) {
   const config = getCalculatorConfig(calculator.slug);
+  const { addRecent } = useRecent();
+
   const [values, setValues] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
     config?.fields.forEach((field) => {
@@ -20,6 +23,10 @@ export function CalculatorTool({ calculator }: CalculatorToolProps) {
     });
     return initial;
   });
+
+  useEffect(() => {
+    addRecent(calculator.slug);
+  }, [addRecent, calculator.slug]);
 
   const parsedValues = useMemo(() => {
     const parsed: Record<string, number> = {};
