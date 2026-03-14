@@ -8,13 +8,19 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 10;
 
     if (!query) {
-      return NextResponse.json({ error: "Missing query" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: "Missing query" },
+        { status: 400 }
+      );
     }
 
     const results = await searchCalculators(query, limit);
-    return NextResponse.json(results);
+    return NextResponse.json({ success: true, data: results });
   } catch (error) {
     console.error("Error searching calculators:", error);
-    return NextResponse.json({ error: "Failed to search calculators" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to search calculators" },
+      { status: 500 }
+    );
   }
 }

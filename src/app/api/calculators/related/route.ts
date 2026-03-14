@@ -8,13 +8,19 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
 
     if (!slug || !category) {
-      return NextResponse.json({ error: "Missing slug or category" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: "Missing slug or category" },
+        { status: 400 }
+      );
     }
 
     const related = await getRelatedCalculators(slug, category, 4);
-    return NextResponse.json(related);
+    return NextResponse.json({ success: true, data: related });
   } catch (error) {
     console.error("Error fetching related calculators:", error);
-    return NextResponse.json({ error: "Failed to fetch related calculators" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch related calculators" },
+      { status: 500 }
+    );
   }
 }

@@ -49,6 +49,52 @@ export interface CalculatorConfig {
   faqs: CalculatorFAQ[];
 }
 
+/**
+ * Validate a calculator configuration object
+ */
+function validateCalculatorConfig(config: any): config is CalculatorConfig {
+  if (!config || typeof config !== 'object') return false;
+
+  // Required string fields
+  const requiredStrings = ['slug', 'name', 'description', 'category', 'formula', 'computationType'];
+  for (const field of requiredStrings) {
+    if (typeof config[field] !== 'string' || !config[field].trim()) return false;
+  }
+
+  // Required arrays
+  const requiredArrays = ['fields', 'outputs', 'faqs'];
+  for (const field of requiredArrays) {
+    if (!Array.isArray(config[field]) || config[field].length === 0) return false;
+  }
+
+  // Validate fields array
+  for (const field of config.fields) {
+    if (!field.key || !field.label || !['number', 'percentage', 'text', 'select'].includes(field.type)) {
+      return false;
+    }
+  }
+
+  // Validate outputs array
+  for (const output of config.outputs) {
+    if (!output.key || !output.label || !['currency', 'percentage', 'number'].includes(output.format)) {
+      return false;
+    }
+  }
+
+  // Validate example
+  if (!config.example || typeof config.example !== 'object' ||
+      !config.example.inputs || !config.example.outputs || !config.example.explanation) {
+    return false;
+  }
+
+  // Validate faqs
+  for (const faq of config.faqs) {
+    if (!faq.question || !faq.answer) return false;
+  }
+
+  return true;
+}
+
 // In-memory cache for calculator configurations
 let calculatorCache: Record<string, CalculatorConfig> | null = null;
 
@@ -69,8 +115,17 @@ async function loadAllCalculators(): Promise<Record<string, CalculatorConfig>> {
     if (file.endsWith('.json')) {
       const slug = file.replace('.json', '');
       const filePath = join(dirPath, file);
-      const content = await fs.readFile(filePath, 'utf-8');
-      cache[slug] = JSON.parse(content) as CalculatorConfig;
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        const parsed = JSON.parse(content);
+        if (validateCalculatorConfig(parsed)) {
+          cache[slug] = parsed;
+        } else {
+          console.error(`Invalid calculator config for ${slug}: validation failed`);
+        }
+      } catch (error) {
+        console.error(`Error loading calculator ${slug}:`, error);
+      }
     }
   }
 
