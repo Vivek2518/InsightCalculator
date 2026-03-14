@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getRelatedCalculators } from "@/lib/getRelatedCalculators";
 
 type RelatedCalculatorsProps = {
   slug: string;
@@ -23,8 +22,13 @@ export function RelatedCalculators({ slug, category }: RelatedCalculatorsProps) 
   useEffect(() => {
     async function fetchRelated() {
       try {
-        const results = await getRelatedCalculators(slug, category, 4);
-        setRelated(results);
+        const response = await fetch(`/api/calculators/related?slug=${encodeURIComponent(slug)}&category=${encodeURIComponent(category)}`);
+        if (response.ok) {
+          const results = await response.json();
+          setRelated(results);
+        } else {
+          console.error("Error fetching related calculators");
+        }
       } catch (error) {
         console.error("Error fetching related calculators:", error);
       } finally {

@@ -1,7 +1,10 @@
 /**
  * Calculator Loader
- * Dynamically loads calculator configurations from JSON files
+ * Dynamically loads calculator configurations from JSON files in src/calculators
  */
+
+import { promises as fs } from "fs";
+import { join } from "path";
 
 export interface CalculatorField {
   key: string;
@@ -46,44 +49,43 @@ export interface CalculatorConfig {
   faqs: CalculatorFAQ[];
 }
 
+// In-memory cache for calculator configurations
+let calculatorCache: Record<string, CalculatorConfig> | null = null;
+
+/**
+ * Load all calculator configurations from src/calculators
+ * Caches them in memory for subsequent calls
+ */
+async function loadAllCalculators(): Promise<Record<string, CalculatorConfig>> {
+  if (calculatorCache) {
+    return calculatorCache;
+  }
+
+  const dirPath = join(process.cwd(), "src", "calculators");
+  const files = await fs.readdir(dirPath);
+  const cache: Record<string, CalculatorConfig> = {};
+
+  for (const file of files) {
+    if (file.endsWith('.json')) {
+      const slug = file.replace('.json', '');
+      const filePath = join(dirPath, file);
+      const content = await fs.readFile(filePath, 'utf-8');
+      cache[slug] = JSON.parse(content) as CalculatorConfig;
+    }
+  }
+
+  calculatorCache = cache;
+  return cache;
+}
+
 /**
  * Load a calculator configuration by slug
- * Fetches from the public/calculators folder
+ * Loads from src/calculators folder using filesystem
  */
 export async function loadCalculator(slug: string): Promise<CalculatorConfig | null> {
   try {
-    // Prefer reading from disk when running on the server (build/runtime).
-    // This avoids relying on runtime network fetches and avoids needing
-    // a correct base URL in environments like Vercel.
-    if (typeof window === "undefined") {
-      try {
-        const { readFile } = await import("fs/promises");
-        const { join } = await import("path");
-        const filePath = join(process.cwd(), "public", "calculators", `${slug}.json`);
-        const fileContents = await readFile(filePath, "utf-8");
-        return JSON.parse(fileContents) as CalculatorConfig;
-      } catch (fsError) {
-        // Fallback to fetching from the public folder if reading from disk fails
-        // (e.g., edge runtime or restricted environments).
-        console.warn(
-          `Failed to read calculator config from disk for ${slug}, falling back to fetch.`,
-          fsError
-        );
-      }
-    }
-
-    // In browser/runtime environments (or as a fallback), fetch the JSON from the public folder.
-    const response = await fetch(`/calculators/${slug}.json`, {
-      cache: "force-cache", // Cache indefinitely since these are static files
-    });
-
-    if (!response.ok) {
-      console.warn(`Calculator not found: ${slug}`);
-      return null;
-    }
-
-    const config: CalculatorConfig = await response.json();
-    return config;
+    const allCalculators = await loadAllCalculators();
+    return allCalculators[slug] || null;
   } catch (error) {
     console.error(`Error loading calculator config for ${slug}:`, error);
     return null;
@@ -95,46 +97,8 @@ export async function loadCalculator(slug: string): Promise<CalculatorConfig | n
  * Can be used in generateStaticParams
  */
 export async function getAllCalculatorSlugs(): Promise<string[]> {
-  // This would typically be generated at build time by scanning the public/calculators folder
-  // For now, return a list of all known calculator slugs
-  // In production, you might fetch from a manifest file
-  return [
-    "home-loan-emi",
-    "personal-loan-emi",
-    "car-loan-emi",
-    "education-loan-emi",
-    "loan-eligibility",
-    "loan-interest-rate",
-    "sip",
-    "lumpsum-investment",
-    "mutual-fund-return",
-    "cagr",
-    "swp",
-    "step-up-sip",
-    "income-tax",
-    "gst",
-    "hra",
-    "capital-gains",
-    "tds",
-    "fd",
-    "rd",
-    "compound-interest",
-    "inflation",
-    "ppf",
-    "nps",
-    "gratuity",
-    "epf",
-    "youtube-money",
-    "instagram-engagement",
-    "youtube-thumbnail-ctr",
-    "influencer-earnings",
-    "affiliate-commission",
-    "freelance-hourly-rate",
-    "startup-runway",
-    "saas-revenue",
-    "break-even",
-    "income-split",
-  ];
+  const allCalculators = await loadAllCalculators();
+  return Object.keys(allCalculators);
 }
 
 /**
@@ -142,17 +106,8 @@ export async function getAllCalculatorSlugs(): Promise<string[]> {
  * Use sparingly - typically only for server-side operations at build time
  */
 export async function getAllCalculators(): Promise<CalculatorConfig[]> {
-  const slugs = await getAllCalculatorSlugs();
-  const calculators: CalculatorConfig[] = [];
-
-  for (const slug of slugs) {
-    const calc = await loadCalculator(slug);
-    if (calc) {
-      calculators.push(calc);
-    }
-  }
-
-  return calculators;
+  const allCalculators = await loadAllCalculators();
+  return Object.values(allCalculators);
 }
 
 /**

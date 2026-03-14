@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchCalculators } from "@/lib/getRelatedCalculators";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
@@ -27,8 +26,13 @@ export function CalculatorSearch({ className }: { className?: string }) {
     setIsSearching(true);
     const timer = setTimeout(async () => {
       try {
-        const searchResults = await searchCalculators(query, 10);
-        setResults(searchResults);
+        const response = await fetch(`/api/calculators/search?query=${encodeURIComponent(query)}&limit=10`);
+        if (response.ok) {
+          const searchResults = await response.json();
+          setResults(searchResults);
+        } else {
+          setResults([]);
+        }
       } catch (error) {
         console.error("Search error:", error);
         setResults([]);

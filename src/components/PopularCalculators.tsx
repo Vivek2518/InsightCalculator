@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { CalculatorCard } from "@/components/CalculatorCard";
-import { getPopularCalculators } from "@/lib/getRelatedCalculators";
 
 interface Calculator {
   slug: string;
@@ -16,10 +15,15 @@ export function PopularCalculators() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetch() {
+    async function fetchPopular() {
       try {
-        const results = await getPopularCalculators(6);
-        setPopular(results);
+        const response = await fetch('/api/calculators/popular');
+        if (response.ok) {
+          const results = await response.json();
+          setPopular(results);
+        } else {
+          console.error("Error fetching popular calculators");
+        }
       } catch (error) {
         console.error("Error fetching popular calculators:", error);
       } finally {
@@ -27,7 +31,7 @@ export function PopularCalculators() {
       }
     }
 
-    fetch();
+    fetchPopular();
   }, []);
 
   if (isLoading || popular.length === 0) return null;
