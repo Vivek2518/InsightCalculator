@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { evaluateCalculator } from "@/lib/formulaEngine";
-import { CalculatorConfig } from "@/lib/loadCalculator";
+import type { CalculatorConfig } from "@/lib/loadCalculator";
 import { useRecent } from "@/lib/recent";
 
 interface CalculatorEngineProps {

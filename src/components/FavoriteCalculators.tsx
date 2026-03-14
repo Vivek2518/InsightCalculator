@@ -1,13 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { CalculatorCard } from "@/components/CalculatorCard";
 import { useFavorites } from "@/lib/favorites-context";
 import { getCalculatorBySlug } from "@/data/calculators";
 
 export function FavoriteCalculators() {
   const { favorites } = useFavorites();
+  const [mounted, setMounted] = useState(false);
 
-  if (favorites.length === 0) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || favorites.length === 0) {
     return null;
   }
 

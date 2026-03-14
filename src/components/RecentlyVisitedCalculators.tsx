@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { getCalculatorBySlug } from "@/data/calculators";
 import { CalculatorCard } from "@/components/CalculatorCard";
 import { useRecent } from "@/lib/recent";
@@ -8,8 +9,13 @@ import { X } from "lucide-react";
 
 export function RecentlyVisitedCalculators() {
   const { recent, clearRecent } = useRecent();
+  const [mounted, setMounted] = useState(false);
 
-  if (recent.length === 0) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || recent.length === 0) return null;
 
   const calculators = recent
     .map((slug) => getCalculatorBySlug(slug))

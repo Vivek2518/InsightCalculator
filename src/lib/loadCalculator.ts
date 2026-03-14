@@ -51,13 +51,28 @@ export interface CalculatorConfig {
  */
 export async function loadCalculator(slug: string): Promise<CalculatorConfig | null> {
   try {
-    // For server-side rendering and static generation, construct absolute URL
-    const baseUrl = 
-      process.env.VERCEL_URL 
-        ? `https://${process.env.VERCEL_URL}`
-        : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    
-    const response = await fetch(`${baseUrl}/calculators/${slug}.json`, {
+    // Prefer reading from disk when running on the server (build/runtime).
+    // This avoids relying on runtime network fetches and avoids needing
+    // a correct base URL in environments like Vercel.
+    if (typeof window === "undefined") {
+      try {
+        const { readFile } = await import("fs/promises");
+        const { join } = await import("path");
+        const filePath = join(process.cwd(), "public", "calculators", `${slug}.json`);
+        const fileContents = await readFile(filePath, "utf-8");
+        return JSON.parse(fileContents) as CalculatorConfig;
+      } catch (fsError) {
+        // Fallback to fetching from the public folder if reading from disk fails
+        // (e.g., edge runtime or restricted environments).
+        console.warn(
+          `Failed to read calculator config from disk for ${slug}, falling back to fetch.`,
+          fsError
+        );
+      }
+    }
+
+    // In browser/runtime environments (or as a fallback), fetch the JSON from the public folder.
+    const response = await fetch(`/calculators/${slug}.json`, {
       cache: "force-cache", // Cache indefinitely since these are static files
     });
 
