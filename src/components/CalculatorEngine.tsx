@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { evaluateCalculator } from "@/lib/formulaEngine";
 import type { CalculatorConfig } from "@/lib/loadCalculator";
 import { useRecent } from "@/lib/recent";
@@ -38,13 +39,35 @@ export function CalculatorEngine({ config, addToRecent }: CalculatorEngineProps)
 
   // Parse string values to numbers
   const parsedValues = useMemo(() => {
-    const parsed: Record<string, number> = {};
+    const fieldMap: Record<string, typeof config.fields[number]> = {};
+    config.fields.forEach((field) => {
+      fieldMap[field.key] = field;
+    });
+
+    const parsed: Record<string, any> = {};
     for (const key in values) {
-      const value = Number(values[key]);
-      parsed[key] = Number.isFinite(value) ? value : 0;
+      const rawValue = values[key];
+      const field = fieldMap[key];
+
+      if (!field) {
+        parsed[key] = rawValue;
+        continue;
+      }
+
+      if (field.type === "number" || field.type === "percentage") {
+        const num = Number(rawValue);
+        parsed[key] = Number.isFinite(num) ? num : 0;
+      } else if (field.type === "select") {
+        const num = Number(rawValue);
+        parsed[key] = Number.isFinite(num) ? num : rawValue;
+      } else {
+        // text/date and any other non-numeric types should remain strings
+        parsed[key] = rawValue;
+      }
     }
+
     return parsed;
-  }, [values]);
+  }, [values, config.fields]);
 
   // Check if all required fields are filled
   const isComplete = useMemo(() => {
@@ -93,6 +116,8 @@ export function CalculatorEngine({ config, addToRecent }: CalculatorEngineProps)
         }).format(value);
       case "percentage":
         return `${value.toFixed(2)}%`;
+      case "text":
+        return String(value);
       case "number":
       default:
         return Number.isInteger(value)
@@ -119,18 +144,29 @@ export function CalculatorEngine({ config, addToRecent }: CalculatorEngineProps)
                   {field.label}
                 </label>
                 {field.type === "select" && field.options ? (
-                  <select
+                  <Select
+                    value={values[field.key]}
+                    onValueChange={(value) => handleInputChange(field.key, value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select an option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {field.options.map((opt) => (
+                        <SelectItem key={opt.value} value={String(opt.value)}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : field.type === "text" || field.type === "date" ? (
+                  <Input
+                    type={field.type === "date" ? "date" : "text"}
+                    placeholder={field.placeholder || field.label}
                     value={values[field.key]}
                     onChange={(e) => handleInputChange(field.key, e.target.value)}
-                    className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
-                  >
-                    <option value="">Select an option</option>
-                    {field.options.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
+                    className="w-full"
+                  />
                 ) : (
                   <Input
                     type="number"

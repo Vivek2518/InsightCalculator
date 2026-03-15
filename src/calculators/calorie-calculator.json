@@ -1,0 +1,84 @@
+{
+  "slug": "calorie-calculator",
+  "name": "Calorie Calculator",
+  "description": "Estimate your daily calorie needs based on age, weight, height, gender, and activity level.",
+  "category": "Business",
+  "popular": false,
+  "fields": [
+    {
+      "key": "age",
+      "label": "Age (years)",
+      "type": "number",
+      "placeholder": "30"
+    },
+    {
+      "key": "weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "placeholder": "70"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "170"
+    },
+    {
+      "key": "gender",
+      "label": "Gender",
+      "type": "select",
+      "options": [
+        { "value": "male", "label": "Male" },
+        { "value": "female", "label": "Female" }
+      ]
+    },
+    {
+      "key": "activity",
+      "label": "Activity Level",
+      "type": "select",
+      "options": [
+        { "value": 1.2, "label": "Sedentary" },
+        { "value": 1.375, "label": "Lightly Active" },
+        { "value": 1.55, "label": "Moderately Active" },
+        { "value": 1.725, "label": "Very Active" },
+        { "value": 1.9, "label": "Extra Active" }
+      ]
+    }
+  ],
+  "formula": "BMR = For male: 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age), For female: 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age), Daily Calories = BMR * activity",
+  "formulaDescription": "Uses Harris-Benedict equation for BMR then multiplies by activity factor.",
+  "computationType": "calorie",
+  "computeParams": {
+    "ageKey": "age",
+    "weightKey": "weight",
+    "heightKey": "height",
+    "genderKey": "gender",
+    "activityKey": "activity"
+  },
+  "outputs": [
+    {
+      "key": "dailyCalories",
+      "label": "Daily Calorie Needs",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "age": 30,
+      "weight": 70,
+      "height": 170,
+      "gender": "male",
+      "activity": 1.55
+    },
+    "outputs": {
+      "dailyCalories": 2500
+    },
+    "explanation": "Estimated daily calories for a 30-year-old male, 70kg, 170cm, moderately active."
+  },
+  "faqs": [
+    {
+      "question": "What is BMR?",
+      "answer": "BMR is Basal Metabolic Rate, the calories needed at rest."
+    }
+  ]
+}

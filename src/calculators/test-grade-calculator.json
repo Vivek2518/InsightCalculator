@@ -1,0 +1,57 @@
+{
+  "slug": "test-grade-calculator",
+  "name": "Test Grade Calculator",
+  "description": "Calculate your test score percentage and grade based on total questions and wrong answers.",
+  "category": "Business",
+  "popular": false,
+  "fields": [
+    {
+      "key": "totalQuestions",
+      "label": "Total Questions",
+      "type": "number",
+      "placeholder": "100"
+    },
+    {
+      "key": "wrongAnswers",
+      "label": "Wrong Answers",
+      "type": "number",
+      "placeholder": "10"
+    }
+  ],
+  "formula": "Score = ((totalQuestions - wrongAnswers) / totalQuestions) * 100",
+  "formulaDescription": "Percentage score is calculated by subtracting wrong answers from total and dividing by total, then multiplying by 100.",
+  "computationType": "percentage",
+  "computeParams": {
+    "totalKey": "totalQuestions",
+    "wrongKey": "wrongAnswers"
+  },
+  "outputs": [
+    {
+      "key": "percentage",
+      "label": "Score Percentage (%)",
+      "format": "percentage"
+    },
+    {
+      "key": "grade",
+      "label": "Grade",
+      "format": "text"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "totalQuestions": 100,
+      "wrongAnswers": 10
+    },
+    "outputs": {
+      "percentage": 90,
+      "grade": "A"
+    },
+    "explanation": "With 10 wrong out of 100, the score is 90% which is an A grade."
+  },
+  "faqs": [
+    {
+      "question": "How is the grade determined?",
+      "answer": "Grades are typically A (90-100%), B (80-89%), C (70-79%), D (60-69%), F (below 60%)."
+    }
+  ]
+}

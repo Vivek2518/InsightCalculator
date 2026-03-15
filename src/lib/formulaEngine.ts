@@ -325,29 +325,95 @@ export function evaluateCalculator(input: CalculatorInput): any {
       return round(cagrValue);
     }
 
-    case "simple": {
-      // Generic simple multiplier calculation.
-      // This is used for calculators that multiply input values together.
-      let result = 1;
-      Object.values(values).forEach((v) => (result *= v));
-      const baseResult = round(result);
+    case "percentage": {
+      const total = values.totalQuestions || 0;
+      const wrong = values.wrongAnswers || 0;
+      const correct = total - wrong;
+      const percentage = total > 0 ? (correct / total) * 100 : 0;
+      let grade = "F";
+      if (percentage >= 90) grade = "A";
+      else if (percentage >= 80) grade = "B";
+      else if (percentage >= 70) grade = "C";
+      else if (percentage >= 60) grade = "D";
+      return { percentage: round(percentage, 2), grade };
+    }
 
-      // Allow calculators to opt into derived outputs (e.g. monthly -> annual) via computeParams.
-      if (input.computeParams?.baseKey && input.computeParams?.multipliers) {
-        const output: Record<string, any> = {
-          [input.computeParams.baseKey]: baseResult,
-        };
+    case "average": {
+      const numbers = input.computeParams?.numbers || [];
+      let sum = 0;
+      let count = 0;
+      numbers.forEach((numKey: string) => {
+        const num = values[numKey] || 0;
+        sum += num;
+        count++;
+      });
+      const average = count > 0 ? sum / count : 0;
+      return { average: round(average, 2) };
+    }
 
-        for (const [key, multiplier] of Object.entries(
-          input.computeParams.multipliers
-        )) {
-          output[key] = round(baseResult * multiplier);
-        }
+    case "overtime": {
+      const wage = values.hourlyWage || 0;
+      const regular = values.regularHours || 0;
+      const overtime = values.overtimeHours || 0;
+      const rate = values.overtimeRate || 1;
+      const totalPay = regular * wage + overtime * wage * rate;
+      return { totalPay: round(totalPay, 2) };
+    }
 
-        return output;
+    case "margin": {
+      const cost = values.cost || 0;
+      const price = values.sellingPrice || 0;
+      const profit = price - cost;
+      const marginPercent = price > 0 ? (profit / price) * 100 : 0;
+      return { marginPercent: round(marginPercent, 2), profit: round(profit, 2) };
+    }
+
+    case "calorie": {
+      const age = values.age || 0;
+      const weight = values.weight || 0;
+      const height = values.height || 0;
+      const gender = input.computeParams?.genderKey ? values[input.computeParams.genderKey] : 'male';
+      let bmr = 0;
+      if (gender === 'male') {
+        bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+      } else {
+        bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
       }
+      const activity = values.activity || 1.2;
+      const dailyCalories = bmr * activity;
+      return { dailyCalories: round(dailyCalories) };
+    }
 
-      return baseResult;
+    case "dice": {
+      const numDice = values.numDice || 1;
+      const sides = values.sides || 6;
+      const rolls = [];
+      let total = 0;
+      for (let i = 0; i < numDice; i++) {
+        const roll = Math.floor(Math.random() * sides) + 1;
+        rolls.push(roll);
+        total += roll;
+      }
+      return { rolls: rolls.join(', '), total };
+    }
+
+    case "age": {
+      const birthdateStr = input.computeParams?.dateKey ? values[input.computeParams.dateKey] : '';
+      if (!birthdateStr) return { years: 0, months: 0, days: 0 };
+      const birthdate = new Date(birthdateStr);
+      const today = new Date();
+      let years = today.getFullYear() - birthdate.getFullYear();
+      let months = today.getMonth() - birthdate.getMonth();
+      let days = today.getDate() - birthdate.getDate();
+      if (days < 0) {
+        months--;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+      return { years, months, days };
     }
 
     case "tds": {

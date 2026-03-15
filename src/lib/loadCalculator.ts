@@ -9,7 +9,7 @@ import { join } from "path";
 export interface CalculatorField {
   key: string;
   label: string;
-  type: "number" | "percentage" | "text" | "select";
+  type: "number" | "percentage" | "text" | "date" | "select";
   placeholder?: string;
   options?: Array<{ value: any; label: string }>;
 }
@@ -17,11 +17,11 @@ export interface CalculatorField {
 export interface CalculatorOutput {
   key: string;
   label: string;
-  format: "currency" | "percentage" | "number";
+  format: "currency" | "percentage" | "number" | "text";
 }
 
 export interface CalculatorExample {
-  inputs: Record<string, number>;
+  inputs: Record<string, any>;
   outputs: Record<string, any>;
   explanation: string;
 }
@@ -69,14 +69,18 @@ function validateCalculatorConfig(config: any): config is CalculatorConfig {
 
   // Validate fields array
   for (const field of config.fields) {
-    if (!field.key || !field.label || !['number', 'percentage', 'text', 'select'].includes(field.type)) {
+    if (
+      !field.key ||
+      !field.label ||
+      !["number", "percentage", "text", "date", "select"].includes(field.type)
+    ) {
       return false;
     }
   }
 
   // Validate outputs array
   for (const output of config.outputs) {
-    if (!output.key || !output.label || !['currency', 'percentage', 'number'].includes(output.format)) {
+    if (!output.key || !output.label || !['currency', 'percentage', 'number', 'text'].includes(output.format)) {
       return false;
     }
   }

@@ -1,0 +1,67 @@
+{
+  "slug": "overtime-pay-calculator",
+  "name": "Overtime Pay Calculator",
+  "description": "Calculate total pay including overtime based on hourly wage and hours worked.",
+  "category": "Finance",
+  "popular": false,
+  "fields": [
+    {
+      "key": "hourlyWage",
+      "label": "Hourly Wage ($)",
+      "type": "number",
+      "placeholder": "20"
+    },
+    {
+      "key": "regularHours",
+      "label": "Regular Hours",
+      "type": "number",
+      "placeholder": "40"
+    },
+    {
+      "key": "overtimeHours",
+      "label": "Overtime Hours",
+      "type": "number",
+      "placeholder": "10"
+    },
+    {
+      "key": "overtimeRate",
+      "label": "Overtime Rate (e.g., 1.5 for time and a half)",
+      "type": "number",
+      "placeholder": "1.5"
+    }
+  ],
+  "formula": "Total Pay = (regularHours * hourlyWage) + (overtimeHours * hourlyWage * overtimeRate)",
+  "formulaDescription": "Regular pay plus overtime pay at the specified rate.",
+  "computationType": "overtime",
+  "computeParams": {
+    "wageKey": "hourlyWage",
+    "regularKey": "regularHours",
+    "overtimeKey": "overtimeHours",
+    "rateKey": "overtimeRate"
+  },
+  "outputs": [
+    {
+      "key": "totalPay",
+      "label": "Total Pay ($)",
+      "format": "currency"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "hourlyWage": 20,
+      "regularHours": 40,
+      "overtimeHours": 10,
+      "overtimeRate": 1.5
+    },
+    "outputs": {
+      "totalPay": 1000
+    },
+    "explanation": "Regular pay: $800, Overtime: $300, Total: $1000."
+  },
+  "faqs": [
+    {
+      "question": "What is overtime pay?",
+      "answer": "Overtime pay is additional compensation for hours worked beyond regular hours."
+    }
+  ]
+}

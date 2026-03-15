@@ -1,0 +1,57 @@
+{
+  "slug": "margin-calculator",
+  "name": "Margin Calculator",
+  "description": "Calculate profit margin percentage and profit amount from cost and selling price.",
+  "category": "Business",
+  "popular": false,
+  "fields": [
+    {
+      "key": "cost",
+      "label": "Cost Price ($)",
+      "type": "number",
+      "placeholder": "100"
+    },
+    {
+      "key": "sellingPrice",
+      "label": "Selling Price ($)",
+      "type": "number",
+      "placeholder": "150"
+    }
+  ],
+  "formula": "Margin % = ((sellingPrice - cost) / sellingPrice) * 100, Profit = sellingPrice - cost",
+  "formulaDescription": "Margin is the percentage profit on the selling price.",
+  "computationType": "margin",
+  "computeParams": {
+    "costKey": "cost",
+    "priceKey": "sellingPrice"
+  },
+  "outputs": [
+    {
+      "key": "marginPercent",
+      "label": "Margin (%)",
+      "format": "percentage"
+    },
+    {
+      "key": "profit",
+      "label": "Profit ($)",
+      "format": "currency"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "cost": 100,
+      "sellingPrice": 150
+    },
+    "outputs": {
+      "marginPercent": 33.33,
+      "profit": 50
+    },
+    "explanation": "Profit of $50 on $150 selling price gives 33.33% margin."
+  },
+  "faqs": [
+    {
+      "question": "What is profit margin?",
+      "answer": "Profit margin is the percentage of profit relative to the selling price."
+    }
+  ]
+}

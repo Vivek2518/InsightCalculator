@@ -1,0 +1,71 @@
+{
+  "slug": "average-calculator",
+  "name": "Average Calculator",
+  "description": "Calculate the average of a list of numbers.",
+  "category": "Business",
+  "popular": false,
+  "fields": [
+    {
+      "key": "num1",
+      "label": "Number 1",
+      "type": "number",
+      "placeholder": "10"
+    },
+    {
+      "key": "num2",
+      "label": "Number 2",
+      "type": "number",
+      "placeholder": "20"
+    },
+    {
+      "key": "num3",
+      "label": "Number 3",
+      "type": "number",
+      "placeholder": "30"
+    },
+    {
+      "key": "num4",
+      "label": "Number 4",
+      "type": "number",
+      "placeholder": "40"
+    },
+    {
+      "key": "num5",
+      "label": "Number 5",
+      "type": "number",
+      "placeholder": "50"
+    }
+  ],
+  "formula": "Average = (num1 + num2 + num3 + num4 + num5) / 5",
+  "formulaDescription": "Average is the sum of numbers divided by the count.",
+  "computationType": "average",
+  "computeParams": {
+    "numbers": ["num1", "num2", "num3", "num4", "num5"]
+  },
+  "outputs": [
+    {
+      "key": "average",
+      "label": "Average",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "num1": 10,
+      "num2": 20,
+      "num3": 30,
+      "num4": 40,
+      "num5": 50
+    },
+    "outputs": {
+      "average": 30
+    },
+    "explanation": "The average of 10, 20, 30, 40, 50 is 30."
+  },
+  "faqs": [
+    {
+      "question": "What is the average?",
+      "answer": "Average is the mean value of a set of numbers."
+    }
+  ]
+}

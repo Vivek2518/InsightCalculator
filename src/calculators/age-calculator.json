@@ -1,0 +1,55 @@
+{
+  "slug": "age-calculator",
+  "name": "Age Calculator",
+  "description": "Calculate your exact age in years, months, and days from your birthdate.",
+  "category": "Business",
+  "popular": false,
+  "fields": [
+    {
+      "key": "birthdate",
+      "label": "Birthdate",
+      "type": "date",
+      "placeholder": "1990-01-01"
+    }
+  ],
+  "formula": "Age = current date - birthdate",
+  "formulaDescription": "Calculates the difference between current date and birthdate.",
+  "computationType": "age",
+  "computeParams": {
+    "dateKey": "birthdate"
+  },
+  "outputs": [
+    {
+      "key": "years",
+      "label": "Years",
+      "format": "number"
+    },
+    {
+      "key": "months",
+      "label": "Months",
+      "format": "number"
+    },
+    {
+      "key": "days",
+      "label": "Days",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "birthdate": "1990-01-01"
+    },
+    "outputs": {
+      "years": 34,
+      "months": 2,
+      "days": 14
+    },
+    "explanation": "As of March 15, 2026, someone born on 1990-01-01 is 34 years, 2 months, 14 days old."
+    },
+  "faqs": [
+    {
+      "question": "How accurate is this?",
+      "answer": "Calculates based on current date and provided birthdate."
+    }
+  ]
+}
