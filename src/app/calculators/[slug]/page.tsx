@@ -17,6 +17,18 @@ import {
 
 const CANONICAL_DOMAIN = "https://www.insightcalculator.com";
 
+function buildMetaDescription(config: CalculatorConfig): string {
+  const base = config.description.trim();
+  const cta = "Try it now for instant results!";
+  const maxLen = 155;
+
+  const full = `${base} ${cta}`.trim();
+  if (full.length <= maxLen) return full;
+
+  const truncated = full.slice(0, maxLen).replace(/\s+$/, "");
+  return `${truncated}…`;
+}
+
 export async function generateStaticParams() {
   const popular = await getPopularCalculators(10);
   return popular.map((calculator) => ({
@@ -50,23 +62,25 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
     "savings calculator",
   ].join(", ");
 
+  const description = buildMetaDescription(config);
+
   return {
     title: `${config.name} — InsightCalculator`,
-    description: config.description,
+    description,
     keywords,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
       title: `${config.name} — InsightCalculator`,
-      description: config.description,
+      description,
       type: "website",
       url: canonicalUrl,
     },
     twitter: {
       card: "summary_large_image",
       title: `${config.name} — InsightCalculator`,
-      description: config.description,
+      description,
     },
   };
 }

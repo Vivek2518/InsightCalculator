@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /calculators/
+Allow: /assets/
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /admin/
+
+Sitemap: https://www.insightcalculator.com/sitemap.xml
