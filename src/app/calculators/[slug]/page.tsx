@@ -4,6 +4,7 @@ import { CalculatorLayout } from "@/components/CalculatorLayout";
 import { CalculatorEngine } from "@/components/CalculatorEngine";
 import { FavoriteToggle } from "@/components/FavoriteToggle";
 import { RelatedCalculators } from "@/components/RelatedCalculators";
+import { CalculatorIntro } from "@/components/CalculatorIntro";
 import { loadCalculator } from "@/lib/loadCalculator";
 import { getPopularCalculators } from "@/lib/getRelatedCalculators";
 import type { CalculatorConfig } from "@/lib/loadCalculator";
@@ -65,21 +66,21 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
   const description = buildMetaDescription(config);
 
   return {
-    title: `${config.name} — InsightCalculator`,
+    title: `${config.name} – Free Online Calculator | Insight Calculator`,
     description,
     keywords,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
-      title: `${config.name} — InsightCalculator`,
+      title: `${config.name} – Free Online Calculator | Insight Calculator`,
       description,
       type: "website",
       url: canonicalUrl,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${config.name} — InsightCalculator`,
+      title: `${config.name} – Free Online Calculator | Insight Calculator`,
       description,
     },
   };
@@ -136,8 +137,29 @@ export default async function CalculatorPage({ params }: PageProps) {
   // FAQ structured data
   const faqStructuredData = formatFaqForSchema(faqs);
 
+  // SoftwareApplication structured data
+  const softwareAppData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": config.name,
+    "description": config.description,
+    "applicationCategory": "Calculator",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(softwareAppData),
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -156,6 +178,7 @@ export default async function CalculatorPage({ params }: PageProps) {
         actions={<FavoriteToggle slug={slug} />}
         aside={<RelatedCalculators slug={slug} category={config.category} />}
       >
+        <CalculatorIntro config={config} />
         <CalculatorEngine config={config} />
       </CalculatorLayout>
     </>
