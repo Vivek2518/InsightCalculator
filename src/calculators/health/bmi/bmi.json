@@ -1,0 +1,56 @@
+{
+  "slug": "bmi",
+  "name": "BMI Calculator",
+  "description": "Calculate your Body Mass Index (BMI) to see whether your weight is in a healthy range.",
+  "category": "Health",
+  "popular": false,
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "placeholder": "70"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "170"
+    }
+  ],
+  "formula": "BMI = weight / (height/100)^2",
+  "formulaDescription": "BMI is calculated using your height and weight to estimate body fat.",
+  "computationType": "bmi",
+  "computeParams": {
+    "classification": "adult"
+  },
+  "outputs": [
+    {
+      "key": "bmi",
+      "label": "BMI",
+      "format": "number"
+    },
+    {
+      "key": "category",
+      "label": "BMI Category",
+      "format": "text"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 70,
+      "height": 170
+    },
+    "outputs": {
+      "bmi": 24.22,
+      "category": "Normal weight"
+    },
+    "explanation": "A 70kg, 170cm person has a BMI of 24.22, which is in the normal range."
+  },
+  "faqs": [
+    {
+      "question": "What is BMI?",
+      "answer": "BMI is Body Mass Index, the ratio of weight to height squared."
+    }
+  ]
+}

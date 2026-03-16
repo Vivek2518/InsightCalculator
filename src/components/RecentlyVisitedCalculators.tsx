@@ -1,27 +1,65 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getCalculatorBySlug } from "@/data/calculators";
 import { CalculatorCard } from "@/components/CalculatorCard";
 import { useRecent } from "@/lib/recent";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
+type CalculatorSummary = {
+  slug: string;
+  name: string;
+  description: string;
+  category: string;
+};
+
 export function RecentlyVisitedCalculators() {
   const { recent, clearRecent } = useRecent();
   const [mounted, setMounted] = useState(false);
+  const [calculators, setCalculators] = useState<CalculatorSummary[]>([]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted || recent.length === 0) return null;
+  useEffect(() => {
+    if (!mounted || recent.length === 0) {
+      setCalculators([]);
+      return;
+    }
 
-  const calculators = recent
-    .map((slug) => getCalculatorBySlug(slug))
-    .filter((calculator): calculator is NonNullable<typeof calculator> => Boolean(calculator));
+    let canceled = false;
 
-  if (calculators.length === 0) return null;
+    async function loadRecent() {
+      const results = await Promise.all(
+        recent.map(async (slug) => {
+          try {
+            const response = await fetch(`/api/calculators/${slug}`);
+            if (!response.ok) return null;
+
+            const payload = await response.json();
+            if (!payload.success || !payload.data) return null;
+
+            const { slug: s, name, description, category } = payload.data;
+            return { slug: s, name, description, category };
+          } catch {
+            return null;
+          }
+        })
+      );
+
+      if (canceled) return;
+      setCalculators(results.filter((item): item is CalculatorSummary => Boolean(item)));
+    }
+
+    loadRecent();
+
+    return () => {
+      canceled = true;
+    };
+  }, [mounted, recent]);
+
+  if (!mounted || calculators.length === 0) return null;
 
   return (
     <section className="space-y-4">

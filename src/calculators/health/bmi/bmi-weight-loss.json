@@ -1,0 +1,66 @@
+{
+  "slug": "bmi-weight-loss",
+  "name": "BMI Weight Loss Calculator",
+  "description": "Find the weight you need to reach a target BMI.",
+  "category": "Health",
+  "popular": false,
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Current Weight (kg)",
+      "type": "number",
+      "placeholder": "80"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "175"
+    },
+    {
+      "key": "targetBMI",
+      "label": "Target BMI",
+      "type": "number",
+      "placeholder": "24.9"
+    }
+  ],
+  "formula": "Target Weight = targetBMI × (height/100)^2",
+  "formulaDescription": "Calculate how much weight to lose to reach a target BMI.",
+  "computationType": "bmiWeightLoss",
+  "outputs": [
+    {
+      "key": "bmi",
+      "label": "Current BMI",
+      "format": "number"
+    },
+    {
+      "key": "targetWeight",
+      "label": "Target Weight (kg)",
+      "format": "number"
+    },
+    {
+      "key": "weightToLose",
+      "label": "Weight to Lose (kg)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 80,
+      "height": 175,
+      "targetBMI": 24.9
+    },
+    "outputs": {
+      "bmi": 26.12,
+      "targetWeight": 76.22,
+      "weightToLose": 3.78
+    },
+    "explanation": "To reach a BMI of 24.9 at 175cm, you would need to weigh around 76.2kg."
+  },
+  "faqs": [
+    {
+      "question": "Can I set my own target BMI?",
+      "answer": "Yes, you can enter any target BMI to see the weight needed to reach it."
+    }
+  ]
+}

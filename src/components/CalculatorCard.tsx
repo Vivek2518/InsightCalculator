@@ -16,8 +16,15 @@ import { Button } from "@/components/ui/button";
 import { Calculator as CalculatorIcon } from "lucide-react";
 import { FavoriteToggle } from "@/components/FavoriteToggle";
 
+export type CalculatorCardSummary = {
+  slug: string;
+  name: string;
+  description: string;
+  path?: string;
+};
+
 type CalculatorCardProps = {
-  calculator: Calculator | CalculatorConfig;
+  calculator: Calculator | CalculatorConfig | CalculatorCardSummary;
 };
 
 export function CalculatorCard({ calculator }: CalculatorCardProps) {

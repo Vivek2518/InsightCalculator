@@ -108,9 +108,12 @@ function validateCalculatorConfig(config: any): config is CalculatorConfig {
 // In-memory cache for calculator configurations
 let calculatorCache: Record<string, CalculatorConfig> | null = null;
 
+// In development we avoid long-lived cache so newly added JSON files show up without restarting.
+const isProduction = process.env.NODE_ENV === "production";
+
 /**
  * Load all calculator configurations from src/calculators
- * Caches them in memory for subsequent calls
+ * Caches them in memory for subsequent calls (production only).
  */
 async function walkDir(dir: string): Promise<string[]> {
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -130,7 +133,7 @@ async function walkDir(dir: string): Promise<string[]> {
 }
 
 async function loadAllCalculators(): Promise<Record<string, CalculatorConfig>> {
-  if (calculatorCache) {
+  if (calculatorCache && isProduction) {
     return calculatorCache;
   }
 

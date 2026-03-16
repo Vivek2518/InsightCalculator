@@ -1,0 +1,56 @@
+{
+  "slug": "bmi-kids",
+  "name": "BMI Calculator for Kids",
+  "description": "Get a simple BMI estimate for kids; use growth charts for clinical interpretation.",
+  "category": "Health",
+  "popular": false,
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "placeholder": "30"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "130"
+    }
+  ],
+  "formula": "BMI = weight / (height/100)^2",
+  "formulaDescription": "BMI is the same calculation for kids, but interpretation depends on age and gender percentiles.",
+  "computationType": "bmi",
+  "computeParams": {
+    "classification": "kids"
+  },
+  "outputs": [
+    {
+      "key": "bmi",
+      "label": "BMI",
+      "format": "number"
+    },
+    {
+      "key": "category",
+      "label": "Interpretation",
+      "format": "text"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 30,
+      "height": 130
+    },
+    "outputs": {
+      "bmi": 17.75,
+      "category": "Use pediatric growth charts for full evaluation"
+    },
+    "explanation": "BMI in kids is a useful estimate, but clinical interpretation is based on growth percentiles."
+  },
+  "faqs": [
+    {
+      "question": "Is BMI the same for kids and adults?",
+      "answer": "The formula is the same, but clinical interpretation uses growth charts for children."
+    }
+  ]
+}

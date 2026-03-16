@@ -7,6 +7,7 @@ import { RelatedCalculators } from "@/components/RelatedCalculators";
 import { CalculatorIntro } from "@/components/CalculatorIntro";
 import { CalculatorCategorySection } from "@/components/CalculatorCategorySection";
 import { loadCalculator, getAllCalculators, getCalculatorsByCategory } from "@/lib/loadCalculator";
+import { getRelatedCalculators } from "@/lib/getRelatedCalculators";
 import type { CalculatorConfig } from "@/lib/loadCalculator";
 import {
   generateIntro,
@@ -272,6 +273,8 @@ export default async function CalculatorPage({ params }: PageProps) {
     redirect(expectedPath);
   }
 
+  const relatedCalculators = await getRelatedCalculators(slug, config.category, 4);
+
   const canonicalUrl = `${CANONICAL_DOMAIN}${config.path}`;
 
   const intro = generateIntro(config);
@@ -346,7 +349,7 @@ export default async function CalculatorPage({ params }: PageProps) {
         title={config.name}
         description={config.description}
         actions={<FavoriteToggle slug={slug} />}
-        aside={<RelatedCalculators slug={slug} category={config.category} />}
+        aside={<RelatedCalculators related={relatedCalculators} />}
       >
         <CalculatorIntro config={config} />
         <CalculatorEngine config={config} />

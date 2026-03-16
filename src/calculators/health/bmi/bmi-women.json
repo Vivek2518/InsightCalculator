@@ -1,0 +1,56 @@
+{
+  "slug": "bmi-women",
+  "name": "BMI Calculator for Women",
+  "description": "Get a BMI estimate for women and see where your weight falls in standard ranges.",
+  "category": "Health",
+  "popular": false,
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "placeholder": "60"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "165"
+    }
+  ],
+  "formula": "BMI = weight / (height/100)^2",
+  "formulaDescription": "BMI is a simple measure based on height and weight to estimate body fat.",
+  "computationType": "bmi",
+  "computeParams": {
+    "classification": "women"
+  },
+  "outputs": [
+    {
+      "key": "bmi",
+      "label": "BMI",
+      "format": "number"
+    },
+    {
+      "key": "category",
+      "label": "BMI Category",
+      "format": "text"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 60,
+      "height": 165
+    },
+    "outputs": {
+      "bmi": 22.04,
+      "category": "Normal weight"
+    },
+    "explanation": "A 165cm, 60kg woman has a BMI of 22.04, which is in the normal range."
+  },
+  "faqs": [
+    {
+      "question": "Is BMI a perfect measure?",
+      "answer": "BMI is a quick screening tool but does not account for muscle mass or body composition."
+    }
+  ]
+}

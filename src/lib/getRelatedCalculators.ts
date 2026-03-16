@@ -1,4 +1,4 @@
-import { loadCalculator, getAllCalculatorSlugs } from "@/lib/loadCalculator";
+import { getAllCalculators } from "@/lib/loadCalculator";
 
 /**
  * Get related calculators based on category, tags, and similarity
@@ -22,26 +22,12 @@ export async function getRelatedCalculators(
   }>
 > {
   try {
-    const allSlugs = await getAllCalculatorSlugs();
-    
-    // Filter out current calculator
-    const otherSlugs = allSlugs.filter(slug => slug !== currentSlug);
+    // Load all calculators once; this is cached in production
+    const allConfigs = await getAllCalculators();
 
-    // Load all calculator configs to analyze relationships
-    const calculatorConfigs = await Promise.all(
-      otherSlugs.map(async (slug) => {
-        const config = await loadCalculator(slug);
-        return config;
-      })
-    );
+    const otherConfigs = allConfigs.filter((config) => config.slug !== currentSlug);
 
-    // Filter null results
-    const validConfigs = calculatorConfigs.filter(
-      (config): config is NonNullable<typeof config> => config !== null && config !== undefined
-    );
-
-    // Score each calculator based on relevance
-    const scored = validConfigs.map((config) => {
+    const scored = otherConfigs.map((config) => {
       let score = 0;
 
       // Same category - highest priority (score: 10)
@@ -62,7 +48,6 @@ export async function getRelatedCalculators(
       return { ...config, score };
     });
 
-    // Sort by relevance score and limit results
     const related = scored
       .sort((a, b) => b.score - a.score)
       .slice(0, limit)
@@ -114,20 +99,10 @@ export async function getCalculatorsByCategory(
   }>
 > {
   try {
-    const allSlugs = await getAllCalculatorSlugs();
+    const allConfigs = await getAllCalculators();
+    const filteredConfigs = allConfigs.filter((config) => config.category === category);
 
-    const configs = await Promise.all(
-      allSlugs.map(async (slug) => {
-        const config = await loadCalculator(slug);
-        return config;
-      })
-    );
-
-    const validConfigs = configs.filter(
-      (config): config is NonNullable<typeof config> => config !== null && config !== undefined && config.category === category
-    );
-
-    return validConfigs
+    return filteredConfigs
       .slice(0, limit)
       .map((config) => ({
         slug: config.slug,
@@ -156,20 +131,10 @@ export async function getPopularCalculators(
   }>
 > {
   try {
-    const allSlugs = await getAllCalculatorSlugs();
+    const allConfigs = await getAllCalculators();
+    const popularConfigs = allConfigs.filter((config) => config.popular === true);
 
-    const configs = await Promise.all(
-      allSlugs.map(async (slug) => {
-        const config = await loadCalculator(slug);
-        return config;
-      })
-    );
-
-    const validConfigs = configs.filter(
-      (config): config is NonNullable<typeof config> => config !== null && config !== undefined && config.popular === true
-    );
-
-    return validConfigs
+    return popularConfigs
       .slice(0, limit)
       .map((config) => ({
         slug: config.slug,
@@ -200,24 +165,15 @@ export async function searchCalculators(
   }>
 > {
   try {
-    const allSlugs = await getAllCalculatorSlugs();
+    const allConfigs = await getAllCalculators();
     const queryLower = query.toLowerCase();
-
-    const configs = await Promise.all(
-      allSlugs.map(async (slug) => {
-        const config = await loadCalculator(slug);
-        return config;
-      })
-    );
-
-    const allConfigs = configs.filter((config) => config !== null && config !== undefined);
 
     const validConfigs = allConfigs.filter((config) => {
       return (
         config.name.toLowerCase().includes(queryLower) ||
         config.description.toLowerCase().includes(queryLower) ||
         config.category.toLowerCase().includes(queryLower) ||
-        (config.tags && config.tags.some(tag => tag.toLowerCase().includes(queryLower)))
+        (config.tags && config.tags.some((tag) => tag.toLowerCase().includes(queryLower)))
       );
     });
 
@@ -234,3 +190,4 @@ export async function searchCalculators(
     return [];
   }
 }
+

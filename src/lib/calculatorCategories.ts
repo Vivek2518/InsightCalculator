@@ -23,6 +23,8 @@ export const SUBCATEGORIES = [
   "utility",
   "creator",
   "health",
+  "dietary",
+  "bmi",
   "math",
 ] as const;
 
@@ -49,6 +51,8 @@ export const CATEGORY_DISPLAY_NAME: Record<CalculatorCategoryKey, string> = {
   business: "Business Calculators",
   income: "Income & Salary Calculators",
   utility: "Utility Calculators",
+  dietary: "Dietary calculators 🥗",
+  bmi: "BMI Calculators",
 };
 
 // Maps old subcategories to top-level categories
@@ -63,6 +67,8 @@ const SUBCATEGORY_TO_TOP: Record<SubCategoryKey, TopCategoryKey> = {
   utility: "everyday",
   creator: "creator",
   health: "health",
+  dietary: "health",
+  bmi: "health",
   math: "math",
 };
 
@@ -148,7 +154,14 @@ const SLUG_TO_SUBCATEGORY: Record<string, SubCategoryKey> = {
   "hourly-to-salary-calculator": "income",
 
   // health
-  "calorie-calculator": "health",
+  "calorie-calculator": "dietary",
+  "bmi": "bmi",
+  "bmi-kids": "bmi",
+  "bmi-men": "bmi",
+  "bmi-teens": "bmi",
+  "bmi-women": "bmi",
+  "bmi-weight-loss": "bmi",
+  "bmi-geriatric": "bmi",
 };
 
 export function getSubCategoryForSlug(slug: string): SubCategoryKey | undefined {
@@ -239,4 +252,6 @@ export const CATEGORY_ORDER: (TopCategoryKey | SubCategoryKey)[] = [
   "business",
   "income",
   "utility",
+  "dietary",
+  "bmi",
 ];

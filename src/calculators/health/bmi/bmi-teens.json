@@ -1,0 +1,56 @@
+{
+  "slug": "bmi-teens",
+  "name": "BMI Calculator for Teens",
+  "description": "Estimate BMI for teens and get a general idea of healthy ranges.",
+  "category": "Health",
+  "popular": false,
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "placeholder": "55"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "165"
+    }
+  ],
+  "formula": "BMI = weight / (height/100)^2",
+  "formulaDescription": "BMI gives a quick estimate for teens, but use growth charts for clinical interpretation.",
+  "computationType": "bmi",
+  "computeParams": {
+    "classification": "teens"
+  },
+  "outputs": [
+    {
+      "key": "bmi",
+      "label": "BMI",
+      "format": "number"
+    },
+    {
+      "key": "category",
+      "label": "Interpretation",
+      "format": "text"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 55,
+      "height": 165
+    },
+    "outputs": {
+      "bmi": 20.2,
+      "category": "Use age/gender growth charts for interpretation"
+    },
+    "explanation": "A BMI of 20.2 is a general estimate; growth charts provide more precise guidance for teens."
+  },
+  "faqs": [
+    {
+      "question": "Should teens use adult BMI categories?",
+      "answer": "No, teen BMI is best interpreted using age and gender percentiles."
+    }
+  ]
+}

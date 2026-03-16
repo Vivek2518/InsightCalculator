@@ -1,13 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCalculatorPathFromSlug } from "@/lib/calculatorCategories";
-
-type RelatedCalculatorsProps = {
-  slug: string;
-  category: string;
-};
 
 interface RelatedCalc {
   slug: string;
@@ -16,35 +8,12 @@ interface RelatedCalc {
   category: string;
 }
 
-export function RelatedCalculators({ slug, category }: RelatedCalculatorsProps) {
-  const [related, setRelated] = useState<RelatedCalc[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+type RelatedCalculatorsProps = {
+  related: RelatedCalc[];
+};
 
-  useEffect(() => {
-    async function fetchRelated() {
-      try {
-        const response = await fetch(`/api/calculators/related?slug=${encodeURIComponent(slug)}&category=${encodeURIComponent(category)}`);
-        if (response.ok) {
-          const payload = await response.json();
-          if (payload.success) {
-            setRelated(payload.data);
-          } else {
-            console.error("Error fetching related calculators:", payload.error);
-          }
-        } else {
-          console.error("Error fetching related calculators");
-        }
-      } catch (error) {
-        console.error("Error fetching related calculators:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchRelated();
-  }, [slug, category]);
-
-  if (isLoading || related.length === 0) return null;
+export function RelatedCalculators({ related }: RelatedCalculatorsProps) {
+  if (!related || related.length === 0) return null;
 
   return (
     <section className="space-y-4">

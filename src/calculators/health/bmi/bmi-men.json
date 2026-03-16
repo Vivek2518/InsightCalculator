@@ -1,0 +1,56 @@
+{
+  "slug": "bmi-men",
+  "name": "BMI Calculator for Men",
+  "description": "Estimate BMI and see standard male BMI category ranges.",
+  "category": "Health",
+  "popular": false,
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "placeholder": "80"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "175"
+    }
+  ],
+  "formula": "BMI = weight / (height/100)^2",
+  "formulaDescription": "BMI uses height and weight to estimate body composition.",
+  "computationType": "bmi",
+  "computeParams": {
+    "classification": "men"
+  },
+  "outputs": [
+    {
+      "key": "bmi",
+      "label": "BMI",
+      "format": "number"
+    },
+    {
+      "key": "category",
+      "label": "BMI Category",
+      "format": "text"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 80,
+      "height": 175
+    },
+    "outputs": {
+      "bmi": 26.12,
+      "category": "Overweight"
+    },
+    "explanation": "A 175cm, 80kg man has a BMI of 26.12 which is considered overweight."
+  },
+  "faqs": [
+    {
+      "question": "Does BMI account for muscle mass?",
+      "answer": "No, BMI is a simple ratio and does not distinguish between muscle and fat."
+    }
+  ]
+}

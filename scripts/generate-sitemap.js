@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require("fs");
 const path = require("path");
 
@@ -86,15 +87,15 @@ function getCalculatorCategory(slug) {
     "instagram-engagement": "creator",
 
     // utility (everyday)
-    "age-calculator": "everyday",
-    "average-calculator": "everyday",
-    "test-grade-calculator": "everyday",
-    "percentage-calculator": "math",
-    "discount-calculator": "math",
-    "date-difference-calculator": "everyday",
-    "time-duration-calculator": "everyday",
-    "average-percentage-calculator": "math",
-    "ratio-calculator": "math",
+    "age-calculator": "everyday/utility",
+    "average-calculator": "everyday/utility",
+    "test-grade-calculator": "everyday/utility",
+    "percentage-calculator": "everyday/utility",
+    "discount-calculator": "everyday/utility",
+    "date-difference-calculator": "everyday/utility",
+    "time-duration-calculator": "everyday/utility",
+    "average-percentage-calculator": "everyday/utility",
+    "ratio-calculator": "everyday/utility",
 
     // income (finance)
     "overtime-pay-calculator": "finance/income",
@@ -105,7 +106,14 @@ function getCalculatorCategory(slug) {
     "hourly-to-salary-calculator": "finance/income",
 
     // health
-    "calorie-calculator": "health",
+  "calorie-calculator": "health/dietary",
+  "bmi": "health/bmi",
+  "bmi-kids": "health/bmi",
+  "bmi-men": "health/bmi",
+  "bmi-teens": "health/bmi",
+  "bmi-women": "health/bmi",
+  "bmi-weight-loss": "health/bmi",
+  "bmi-geriatric": "health/bmi",
   };
   return map[slug] || "everyday";
 }

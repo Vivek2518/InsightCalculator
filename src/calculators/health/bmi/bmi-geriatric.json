@@ -1,0 +1,56 @@
+{
+  "slug": "bmi-geriatric",
+  "name": "Geriatric BMI Calculator",
+  "description": "Calculate BMI for older adults and see recommended ranges for healthy aging.",
+  "category": "Health",
+  "popular": false,
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (kg)",
+      "type": "number",
+      "placeholder": "70"
+    },
+    {
+      "key": "height",
+      "label": "Height (cm)",
+      "type": "number",
+      "placeholder": "170"
+    }
+  ],
+  "formula": "BMI = weight / (height/100)^2",
+  "formulaDescription": "BMI is a simple tool; for older adults, slightly higher BMI ranges are often healthier.",
+  "computationType": "bmi",
+  "computeParams": {
+    "classification": "geriatric"
+  },
+  "outputs": [
+    {
+      "key": "bmi",
+      "label": "BMI",
+      "format": "number"
+    },
+    {
+      "key": "category",
+      "label": "Recommended Range",
+      "format": "text"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 70,
+      "height": 170
+    },
+    "outputs": {
+      "bmi": 24.22,
+      "category": "Healthy (22-27)"
+    },
+    "explanation": "For older adults, a BMI range of 22-27 is often considered healthy."
+  },
+  "faqs": [
+    {
+      "question": "Is BMI the same for older adults?",
+      "answer": "BMI is a general guide; slightly higher values can be healthier for older adults."
+    }
+  ]
+}
