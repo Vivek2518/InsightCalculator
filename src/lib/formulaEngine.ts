@@ -707,6 +707,49 @@ export function evaluateCalculator(input: CalculatorInput): any {
       };
     }
 
+    case "bmi": {
+      const weight = values.weight || 0;
+      const height = values.height || 0;
+      const bmi = height > 0 ? weight / ((height / 100) ** 2) : 0;
+      const classification = input.computeParams?.classification || 'adult';
+      let category = '';
+      if (classification === 'adult' || classification === 'men' || classification === 'women') {
+        if (bmi < 18.5) category = 'Underweight';
+        else if (bmi < 25) category = 'Normal weight';
+        else if (bmi < 30) category = 'Overweight';
+        else category = 'Obese';
+      } else if (classification === 'geriatric') {
+        if (bmi < 22) category = 'Underweight (<22)';
+        else if (bmi <= 27) category = 'Healthy (22-27)';
+        else category = 'Overweight (>27)';
+      } else if (classification === 'kids') {
+        category = 'Use pediatric growth charts for full evaluation';
+      } else if (classification === 'teens') {
+        category = 'Use age/gender growth charts for interpretation';
+      }
+      return {
+        bmi: round(bmi, 2),
+        category,
+      };
+    }
+
+    case "bmiWeightLoss": {
+      const weight = values.weight || 0;
+      const height = values.height || 0;
+      const targetBMI = values.targetBMI || 0;
+      const bmi = height > 0 ? weight / ((height / 100) ** 2) : 0;
+      const targetWeight = targetBMI * ((height / 100) ** 2);
+      const change = weight - targetWeight;
+      const direction = change > 0 ? "Lose" : change < 0 ? "Gain" : "Maintain";
+
+      return {
+        bmi: round(bmi, 2),
+        targetWeight: round(targetWeight, 2),
+        weightToLose: round(Math.abs(change), 2),
+        direction,
+      };
+    }
+
     case "mutualFundReturn": {
       const initial = values.initial || 0;
       const final = values.final || 0;

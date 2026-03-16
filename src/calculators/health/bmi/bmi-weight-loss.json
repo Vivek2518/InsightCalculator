@@ -40,8 +40,13 @@
     },
     {
       "key": "weightToLose",
-      "label": "Weight to Lose (kg)",
+      "label": "Weight to Lose / Gain (kg)",
       "format": "number"
+    },
+    {
+      "key": "direction",
+      "label": "Direction",
+      "format": "text"
     }
   ],
   "example": {
@@ -53,7 +58,8 @@
     "outputs": {
       "bmi": 26.12,
       "targetWeight": 76.22,
-      "weightToLose": 3.78
+      "weightToLose": 3.78,
+      "direction": "Lose"
     },
     "explanation": "To reach a BMI of 24.9 at 175cm, you would need to weigh around 76.2kg."
   },

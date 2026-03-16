@@ -218,13 +218,28 @@ const value = (() => {
                 return (result as any)[output.key];
               })();
 
+              const displayLabel = (() => {
+                if (
+                  config.computationType === "bmiWeightLoss" &&
+                  output.key === "weightToLose" &&
+                  result?.direction
+                ) {
+                  return result.direction === "Gain"
+                    ? "Weight to Gain (kg)"
+                    : result.direction === "Lose"
+                    ? "Weight to Lose (kg)"
+                    : "Weight change (kg)";
+                }
+                return output.label;
+              })();
+
                 return (
                   <div
                     key={output.key}
                     className="flex justify-between items-center p-4 bg-green-800/40 rounded border border-green-700"
                   >
                     <span className="text-sm font-medium text-green-100">
-                      {output.label}
+                      {displayLabel}
                     </span>
                     <span className="text-lg font-bold text-green-300">
                       {formatValue(value, output.format)}
