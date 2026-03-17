@@ -26,6 +26,10 @@ export const SUBCATEGORIES = [
   "dietary",
   "bmi",
   "math",
+  "atmosphere",
+  "flight-mechanics",
+  "propulsion",
+  "orbital-mechanics",
 ] as const;
 
 export type SubCategoryKey = (typeof SUBCATEGORIES)[number];
@@ -53,6 +57,10 @@ export const CATEGORY_DISPLAY_NAME: Record<CalculatorCategoryKey, string> = {
   utility: "Utility Calculators",
   dietary: "Dietary calculators 🥗",
   bmi: "BMI Calculators",
+  atmosphere: "Atmosphere & Flight Basics",
+  "flight-mechanics": "Flight Mechanics (Aircraft)",
+  propulsion: "Rocket & Propulsion Basics",
+  "orbital-mechanics": "Orbital Mechanics (Space Basics)",
 };
 
 // Maps old subcategories to top-level categories
@@ -70,6 +78,10 @@ const SUBCATEGORY_TO_TOP: Record<SubCategoryKey, TopCategoryKey> = {
   dietary: "health",
   bmi: "health",
   math: "math",
+  atmosphere: "aerospace",
+  "flight-mechanics": "aerospace",
+  propulsion: "aerospace",
+  "orbital-mechanics": "aerospace",
 };
 
 // Mapping from calculator slug -> subcategory (based on SEO grouping rules)
@@ -162,6 +174,30 @@ const SLUG_TO_SUBCATEGORY: Record<string, SubCategoryKey> = {
   "bmi-women": "bmi",
   "bmi-weight-loss": "bmi",
   "bmi-geriatric": "bmi",
+
+  // aerospace / flight
+  "mach-number": "atmosphere",
+  "speed-of-sound": "atmosphere",
+  "air-density": "atmosphere",
+  "pressure-vs-altitude": "atmosphere",
+  "temperature-lapse-rate": "atmosphere",
+
+  "lift-force": "flight-mechanics",
+  "drag-force": "flight-mechanics",
+  "lift-to-drag-ratio": "flight-mechanics",
+  "stall-speed": "flight-mechanics",
+  "wing-loading": "flight-mechanics",
+  "glide-ratio": "flight-mechanics",
+
+  "thrust": "propulsion",
+  "thrust-to-weight": "propulsion",
+  "fuel-consumption": "propulsion",
+  "specific-impulse": "propulsion",
+
+  "escape-velocity": "orbital-mechanics",
+  "orbital-velocity": "orbital-mechanics",
+  "orbital-period": "orbital-mechanics",
+  "circular-orbit-speed": "orbital-mechanics",
 };
 
 export function getSubCategoryForSlug(slug: string): SubCategoryKey | undefined {
@@ -243,6 +279,10 @@ export const CATEGORY_ORDER: (TopCategoryKey | SubCategoryKey)[] = [
   "math",
   "physics",
   "aerospace",
+  "atmosphere",
+  "flight-mechanics",
+  "propulsion",
+  "orbital-mechanics",
   "everyday",
   "loans",
   "investment",

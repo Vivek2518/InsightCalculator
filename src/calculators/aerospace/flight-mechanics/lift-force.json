@@ -1,0 +1,62 @@
+{
+  "slug": "lift-force",
+  "name": "Lift Force Calculator",
+  "description": "Calculate aerodynamic lift force for a wing using lift coefficient and flight conditions.",
+  "category": "Aerospace",
+  "subcategory": "flight-mechanics",
+  "tags": ["lift", "aerodynamics", "wing"],
+  "fields": [
+    {
+      "key": "airDensity",
+      "label": "Air Density (kg/m³)",
+      "type": "number",
+      "placeholder": "1.225"
+    },
+    {
+      "key": "velocity",
+      "label": "Velocity (m/s)",
+      "type": "number",
+      "placeholder": "70"
+    },
+    {
+      "key": "wingArea",
+      "label": "Wing Area (m²)",
+      "type": "number",
+      "placeholder": "16.2"
+    },
+    {
+      "key": "liftCoefficient",
+      "label": "Lift Coefficient (Cl)",
+      "type": "number",
+      "placeholder": "1.2"
+    }
+  ],
+  "formula": "L = 0.5 * ρ * V² * S * Cl",
+  "formulaDescription": "Lift force is calculated using the standard aerodynamic lift equation.",
+  "computationType": "liftForce",
+  "outputs": [
+    {
+      "key": "lift",
+      "label": "Lift Force (N)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "airDensity": 1.225,
+      "velocity": 70,
+      "wingArea": 16.2,
+      "liftCoefficient": 1.2
+    },
+    "outputs": {
+      "lift": 4464.51
+    },
+    "explanation": "At 70 m/s with a lift coefficient of 1.2, the wing generates around 4.5 kN of lift."
+  },
+  "faqs": [
+    {
+      "question": "What does the lift coefficient represent?",
+      "answer": "Lift coefficient is a dimensionless number that represents the efficiency of a wing at generating lift."
+    }
+  ]
+}

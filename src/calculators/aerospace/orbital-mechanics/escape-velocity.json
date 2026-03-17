@@ -1,0 +1,48 @@
+{
+  "slug": "escape-velocity",
+  "name": "Escape Velocity Calculator",
+  "description": "Calculate the escape velocity required to overcome a body's gravity.",
+  "category": "Aerospace",
+  "subcategory": "orbital-mechanics",
+  "tags": ["escape velocity", "orbit", "gravity"],
+  "fields": [
+    {
+      "key": "mass",
+      "label": "Mass of Body (kg)",
+      "type": "number",
+      "placeholder": "5.972e24"
+    },
+    {
+      "key": "radius",
+      "label": "Radius (m)",
+      "type": "number",
+      "placeholder": "6371000"
+    }
+  ],
+  "formula": "v = sqrt(2 * G * M / r)",
+  "formulaDescription": "Escape velocity is the speed needed to break free from a body's gravitational field without further propulsion.",
+  "computationType": "escapeVelocity",
+  "outputs": [
+    {
+      "key": "escapeVelocity",
+      "label": "Escape Velocity (m/s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "mass": 5.972e24,
+      "radius": 6371000
+    },
+    "outputs": {
+      "escapeVelocity": 11186.05
+    },
+    "explanation": "Earth's escape velocity at the surface is about 11.2 km/s."
+  },
+  "faqs": [
+    {
+      "question": "Does escape velocity depend on mass?",
+      "answer": "Yes, escape velocity depends on the mass of the body and the distance from its center."
+    }
+  ]
+}

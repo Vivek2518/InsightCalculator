@@ -1,0 +1,48 @@
+{
+  "slug": "thrust-to-weight",
+  "name": "Thrust-to-Weight Ratio Calculator",
+  "description": "Compute the thrust-to-weight ratio for rockets and aircraft.",
+  "category": "Aerospace",
+  "subcategory": "propulsion",
+  "tags": ["thrust", "weight", "ratio"],
+  "fields": [
+    {
+      "key": "thrust",
+      "label": "Thrust (N)",
+      "type": "number",
+      "placeholder": "1000000"
+    },
+    {
+      "key": "mass",
+      "label": "Mass (kg)",
+      "type": "number",
+      "placeholder": "100000"
+    }
+  ],
+  "formula": "T/W = Thrust / (mass * g)",
+  "formulaDescription": "Thrust-to-weight ratio compares engine thrust to the weight of the vehicle. Uses g = 9.80665 m/s².",
+  "computationType": "thrustToWeight",
+  "outputs": [
+    {
+      "key": "thrustToWeight",
+      "label": "Thrust-to-Weight Ratio",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "thrust": 1000000,
+      "mass": 100000
+    },
+    "outputs": {
+      "thrustToWeight": 1.02
+    },
+    "explanation": "A 1,000,000 N thrust on a 100,000 kg vehicle gives a thrust-to-weight ratio of about 1.02."
+  },
+  "faqs": [
+    {
+      "question": "What is a good thrust-to-weight ratio?",
+      "answer": "A ratio above 1 means the vehicle can accelerate upward; rockets often have ratios above 1.2 at liftoff."
+    }
+  ]
+}

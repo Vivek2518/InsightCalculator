@@ -1,0 +1,62 @@
+{
+  "slug": "stall-speed",
+  "name": "Stall Speed Calculator",
+  "description": "Estimate the minimum airspeed at which a wing can generate enough lift to support its weight.",
+  "category": "Aerospace",
+  "subcategory": "flight-mechanics",
+  "tags": ["stall speed", "lift", "wing"],
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (N)",
+      "type": "number",
+      "placeholder": "6000"
+    },
+    {
+      "key": "airDensity",
+      "label": "Air Density (kg/m³)",
+      "type": "number",
+      "placeholder": "1.225"
+    },
+    {
+      "key": "wingArea",
+      "label": "Wing Area (m²)",
+      "type": "number",
+      "placeholder": "16.2"
+    },
+    {
+      "key": "clMax",
+      "label": "Maximum Lift Coefficient (Cl_max)",
+      "type": "number",
+      "placeholder": "1.5"
+    }
+  ],
+  "formula": "V = sqrt(2 * W / (ρ * S * Cl_max))",
+  "formulaDescription": "Stall speed is the speed at which the wing can no longer generate enough lift to support the aircraft's weight.",
+  "computationType": "stallSpeed",
+  "outputs": [
+    {
+      "key": "stallSpeed",
+      "label": "Stall Speed (m/s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 6000,
+      "airDensity": 1.225,
+      "wingArea": 16.2,
+      "clMax": 1.5
+    },
+    "outputs": {
+      "stallSpeed": 32.0
+    },
+    "explanation": "A typical light aircraft with these parameters has a stall speed of around 32 m/s (~115 km/h)."
+  },
+  "faqs": [
+    {
+      "question": "Does stall speed change with weight?",
+      "answer": "Yes, a heavier aircraft requires a higher stall speed to generate enough lift."
+    }
+  ]
+}

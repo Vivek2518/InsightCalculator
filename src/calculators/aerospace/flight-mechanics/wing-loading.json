@@ -1,0 +1,48 @@
+{
+  "slug": "wing-loading",
+  "name": "Wing Loading Calculator",
+  "description": "Calculate wing loading based on aircraft weight and wing area.",
+  "category": "Aerospace",
+  "subcategory": "flight-mechanics",
+  "tags": ["wing loading", "weight", "aerodynamics"],
+  "fields": [
+    {
+      "key": "weight",
+      "label": "Weight (N)",
+      "type": "number",
+      "placeholder": "6000"
+    },
+    {
+      "key": "wingArea",
+      "label": "Wing Area (m²)",
+      "type": "number",
+      "placeholder": "16.2"
+    }
+  ],
+  "formula": "Wing Loading = Weight / Wing Area",
+  "formulaDescription": "Wing loading is the amount of weight supported per unit area of wing.",
+  "computationType": "wingLoading",
+  "outputs": [
+    {
+      "key": "wingLoading",
+      "label": "Wing Loading (N/m²)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "weight": 6000,
+      "wingArea": 16.2
+    },
+    "outputs": {
+      "wingLoading": 370.37
+    },
+    "explanation": "A 6000 N weight over 16.2 m² wing area results in a wing loading of about 370 N/m²."
+  },
+  "faqs": [
+    {
+      "question": "Why is wing loading important?",
+      "answer": "Wing loading affects takeoff distance, stall speed, and maneuverability."
+    }
+  ]
+}

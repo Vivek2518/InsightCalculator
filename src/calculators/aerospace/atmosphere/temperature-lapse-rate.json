@@ -1,0 +1,41 @@
+{
+  "slug": "temperature-lapse-rate",
+  "name": "Temperature Lapse Rate Calculator",
+  "description": "Estimate standard atmosphere temperature change with altitude.",
+  "category": "Aerospace",
+  "subcategory": "atmosphere",
+  "tags": ["temperature", "lapse rate", "atmosphere"],
+  "fields": [
+    {
+      "key": "altitude",
+      "label": "Altitude (m)",
+      "type": "number",
+      "placeholder": "1000"
+    }
+  ],
+  "formula": "T = T0 - L * h",
+  "formulaDescription": "Uses standard lapse rate (6.5°C per 1000m) to estimate temperature change with altitude.",
+  "computationType": "temperatureAtAltitude",
+  "outputs": [
+    {
+      "key": "temperature",
+      "label": "Temperature (°C)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "altitude": 1000
+    },
+    "outputs": {
+      "temperature": 8.5
+    },
+    "explanation": "At 1000 m altitude, temperature drops by about 6.5°C from sea level standard 15°C."
+  },
+  "faqs": [
+    {
+      "question": "What is a lapse rate?",
+      "answer": "A lapse rate is the rate at which air temperature decreases with an increase in altitude."
+    }
+  ]
+}

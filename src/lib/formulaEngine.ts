@@ -871,6 +871,165 @@ export function evaluateCalculator(input: CalculatorInput): any {
       return epfCalculation(salary, years, rate);
     }
 
+    // Aerospace / Flight Mechanics Calculations
+    case "machNumber": {
+      const speed = values.speed || 0;
+      const speedOfSound = values.speedOfSound || 0;
+      const mach = speedOfSound > 0 ? speed / speedOfSound : 0;
+      return { mach: round(mach, 2) };
+    }
+
+    case "speedOfSound": {
+      const temperature = values.temperature || 0;
+      const T = temperature + 273.15;
+      const gamma = 1.4;
+      const R = 287.058;
+      const speed = T > 0 ? Math.sqrt(gamma * R * T) : 0;
+      return { speedOfSound: round(speed, 2) };
+    }
+
+    case "airDensity": {
+      const pressure = values.pressure || 0;
+      const temperature = values.temperature || 0;
+      const T = temperature + 273.15;
+      const R = 287.058;
+      const density = T > 0 ? pressure / (R * T) : 0;
+      return { density: round(density, 4) };
+    }
+
+    case "pressureAtAltitude": {
+      const altitude = values.altitude || 0;
+      const P0 = 101325;
+      const T0 = 288.15;
+      const L = 0.0065;
+      const g = 9.80665;
+      const R = 287.058;
+      const term = 1 - (L * altitude) / T0;
+      const pressure = term > 0 ? P0 * Math.pow(term, g / (R * L)) : 0;
+      return { pressure: round(pressure, 2) };
+    }
+
+    case "temperatureAtAltitude": {
+      const altitude = values.altitude || 0;
+      const T0 = 15;
+      const L = 0.0065;
+      const temp = T0 - L * altitude;
+      return { temperature: round(temp, 2) };
+    }
+
+    case "liftForce": {
+      const rho = values.airDensity || 0;
+      const v = values.velocity || 0;
+      const S = values.wingArea || 0;
+      const Cl = values.liftCoefficient || 0;
+      const lift = 0.5 * rho * v * v * S * Cl;
+      return { lift: round(lift, 2) };
+    }
+
+    case "dragForce": {
+      const rho = values.airDensity || 0;
+      const v = values.velocity || 0;
+      const S = values.wingArea || 0;
+      const Cd = values.dragCoefficient || 0;
+      const drag = 0.5 * rho * v * v * S * Cd;
+      return { drag: round(drag, 2) };
+    }
+
+    case "liftToDragRatio": {
+      const lift = values.lift || 0;
+      const drag = values.drag || 0;
+      const ratio = drag > 0 ? lift / drag : 0;
+      return { liftToDragRatio: round(ratio, 2) };
+    }
+
+    case "stallSpeed": {
+      const weight = values.weight || 0;
+      const rho = values.airDensity || 0;
+      const S = values.wingArea || 0;
+      const ClMax = values.clMax || 0;
+      const stall = rho > 0 && S > 0 && ClMax > 0 ? Math.sqrt((2 * weight) / (rho * S * ClMax)) : 0;
+      return { stallSpeed: round(stall, 2) };
+    }
+
+    case "wingLoading": {
+      const weight = values.weight || 0;
+      const S = values.wingArea || 0;
+      const loading = S > 0 ? weight / S : 0;
+      return { wingLoading: round(loading, 2) };
+    }
+
+    case "glideRatio": {
+      const lift = values.lift || 0;
+      const drag = values.drag || 0;
+      const ratio = drag > 0 ? lift / drag : 0;
+      return { glideRatio: round(ratio, 2) };
+    }
+
+    case "thrust": {
+      const massFlow = values.massFlowRate || 0;
+      const exhaustVelocity = values.exhaustVelocity || 0;
+      const thrust = massFlow * exhaustVelocity;
+      return { thrust: round(thrust, 2) };
+    }
+
+    case "thrustToWeight": {
+      const thrust = values.thrust || 0;
+      const mass = values.mass || 0;
+      const g0 = 9.80665;
+      const ratio = mass > 0 ? thrust / (mass * g0) : 0;
+      return { thrustToWeight: round(ratio, 2) };
+    }
+
+    case "fuelConsumption": {
+      const thrust = values.thrust || 0;
+      const isp = values.isp || 0;
+      const g0 = 9.80665;
+      const mdot = isp > 0 ? thrust / (isp * g0) : 0;
+      return { massFlowRate: round(mdot, 4) };
+    }
+
+    case "specificImpulse": {
+      const thrust = values.thrust || 0;
+      const massFlow = values.massFlowRate || 0;
+      const g0 = 9.80665;
+      const isp = massFlow > 0 ? thrust / (massFlow * g0) : 0;
+      return { specificImpulse: round(isp, 2) };
+    }
+
+    case "escapeVelocity": {
+      const mass = values.mass || 0;
+      const radius = values.radius || 0;
+      const G = 6.6743e-11;
+      const vel = mass > 0 && radius > 0 ? Math.sqrt((2 * G * mass) / radius) : 0;
+      return { escapeVelocity: round(vel, 2) };
+    }
+
+    case "orbitalVelocity": {
+      const mass = values.mass || 0;
+      const radius = values.radius || 0;
+      const G = 6.6743e-11;
+      const vel = mass > 0 && radius > 0 ? Math.sqrt((G * mass) / radius) : 0;
+      return { orbitalVelocity: round(vel, 2) };
+    }
+
+    case "orbitalPeriod": {
+      const mass = values.mass || 0;
+      const radius = values.radius || 0;
+      const G = 6.6743e-11;
+      const period = mass > 0 && radius > 0 ? 2 * Math.PI * Math.sqrt((radius ** 3) / (G * mass)) : 0;
+      return { orbitalPeriod: round(period, 2) };
+    }
+
+    case "circularOrbitSpeed": {
+      const mass = values.mass || 0;
+      const bodyRadius = values.radius || 0;
+      const altitude = values.altitude || 0;
+      const G = 6.6743e-11;
+      const r = bodyRadius + altitude;
+      const vel = mass > 0 && r > 0 ? Math.sqrt((G * mass) / r) : 0;
+      return { orbitalSpeed: round(vel, 2) };
+    }
+
     default:
       throw new Error(`Unknown computation type: ${computationType}`);
   }

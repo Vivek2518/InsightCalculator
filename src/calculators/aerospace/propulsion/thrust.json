@@ -1,0 +1,48 @@
+{
+  "slug": "thrust",
+  "name": "Thrust Calculator",
+  "description": "Calculate thrust produced by a rocket engine based on mass flow rate and exhaust velocity.",
+  "category": "Aerospace",
+  "subcategory": "propulsion",
+  "tags": ["thrust", "rocket", "propulsion"],
+  "fields": [
+    {
+      "key": "massFlowRate",
+      "label": "Mass Flow Rate (kg/s)",
+      "type": "number",
+      "placeholder": "250"
+    },
+    {
+      "key": "exhaustVelocity",
+      "label": "Exhaust Velocity (m/s)",
+      "type": "number",
+      "placeholder": "3000"
+    }
+  ],
+  "formula": "Thrust = mass flow rate * exhaust velocity",
+  "formulaDescription": "A simplified thrust equation assuming constant exhaust velocity.",
+  "computationType": "thrust",
+  "outputs": [
+    {
+      "key": "thrust",
+      "label": "Thrust (N)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "massFlowRate": 250,
+      "exhaustVelocity": 3000
+    },
+    "outputs": {
+      "thrust": 750000
+    },
+    "explanation": "A mass flow rate of 250 kg/s with 3000 m/s exhaust velocity produces 750,000 N of thrust."
+  },
+  "faqs": [
+    {
+      "question": "What is exhaust velocity?",
+      "answer": "Exhaust velocity is the speed at which propellant exits the engine and is a key factor in thrust."
+    }
+  ]
+}

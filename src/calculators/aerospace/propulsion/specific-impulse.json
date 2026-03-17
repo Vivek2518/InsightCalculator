@@ -1,0 +1,48 @@
+{
+  "slug": "specific-impulse",
+  "name": "Specific Impulse (Isp) Calculator",
+  "description": "Calculate specific impulse based on thrust and propellant mass flow rate.",
+  "category": "Aerospace",
+  "subcategory": "propulsion",
+  "tags": ["isp", "thrust", "rocket"],
+  "fields": [
+    {
+      "key": "thrust",
+      "label": "Thrust (N)",
+      "type": "number",
+      "placeholder": "1000000"
+    },
+    {
+      "key": "massFlowRate",
+      "label": "Mass Flow Rate (kg/s)",
+      "type": "number",
+      "placeholder": "340"
+    }
+  ],
+  "formula": "Isp = Thrust / (mass flow rate * g0)",
+  "formulaDescription": "Specific impulse is thrust per unit weight flow (g0 = 9.80665 m/s²).",
+  "computationType": "specificImpulse",
+  "outputs": [
+    {
+      "key": "specificImpulse",
+      "label": "Specific Impulse (s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "thrust": 1000000,
+      "massFlowRate": 340
+    },
+    "outputs": {
+      "specificImpulse": 300.18
+    },
+    "explanation": "At 1,000,000 N thrust and 340 kg/s propellant flow, Isp is around 300 s."
+  },
+  "faqs": [
+    {
+      "question": "Why is Isp measured in seconds?",
+      "answer": "Isp is expressed in seconds because it is the effective exhaust velocity divided by g0."
+    }
+  ]
+}

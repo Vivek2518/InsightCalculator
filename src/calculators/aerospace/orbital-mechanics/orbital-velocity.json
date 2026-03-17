@@ -1,0 +1,48 @@
+{
+  "slug": "orbital-velocity",
+  "name": "Orbital Velocity Calculator",
+  "description": "Compute the circular orbital velocity around a body.",
+  "category": "Aerospace",
+  "subcategory": "orbital-mechanics",
+  "tags": ["orbital velocity", "orbit", "space"],
+  "fields": [
+    {
+      "key": "mass",
+      "label": "Mass of Body (kg)",
+      "type": "number",
+      "placeholder": "5.972e24"
+    },
+    {
+      "key": "radius",
+      "label": "Orbit Radius (m)",
+      "type": "number",
+      "placeholder": "6771000"
+    }
+  ],
+  "formula": "v = sqrt(G * M / r)",
+  "formulaDescription": "Circular orbital velocity is based on the gravitational parameter and orbit radius.",
+  "computationType": "orbitalVelocity",
+  "outputs": [
+    {
+      "key": "orbitalVelocity",
+      "label": "Orbital Velocity (m/s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "mass": 5.972e24,
+      "radius": 6771000
+    },
+    "outputs": {
+      "orbitalVelocity": 7746.09
+    },
+    "explanation": "A low Earth orbit at ~200 km altitude has an orbital speed of about 7.75 km/s."
+  },
+  "faqs": [
+    {
+      "question": "What is the difference between orbital and escape velocity?",
+      "answer": "Orbital velocity keeps an object in orbit; escape velocity is the speed needed to leave the gravitational field entirely."
+    }
+  ]
+}

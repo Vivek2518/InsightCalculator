@@ -1,0 +1,55 @@
+{
+  "slug": "circular-orbit-speed",
+  "name": "Circular Orbit Speed Calculator",
+  "description": "Calculate the orbital speed for a circular orbit at a given altitude.",
+  "category": "Aerospace",
+  "subcategory": "orbital-mechanics",
+  "tags": ["orbit", "speed", "space"],
+  "fields": [
+    {
+      "key": "mass",
+      "label": "Mass of Body (kg)",
+      "type": "number",
+      "placeholder": "5.972e24"
+    },
+    {
+      "key": "radius",
+      "label": "Body Radius (m)",
+      "type": "number",
+      "placeholder": "6371000"
+    },
+    {
+      "key": "altitude",
+      "label": "Orbit Altitude (m)",
+      "type": "number",
+      "placeholder": "200000"
+    }
+  ],
+  "formula": "v = sqrt(G * M / (R + h))",
+  "formulaDescription": "Circular orbit speed at altitude is derived from the gravitational parameter and orbital radius.",
+  "computationType": "circularOrbitSpeed",
+  "outputs": [
+    {
+      "key": "orbitalSpeed",
+      "label": "Orbital Speed (m/s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "mass": 5.972e24,
+      "radius": 6371000,
+      "altitude": 200000
+    },
+    "outputs": {
+      "orbitalSpeed": 7730.76
+    },
+    "explanation": "A 200 km circular orbit around Earth requires a speed of roughly 7.73 km/s."
+  },
+  "faqs": [
+    {
+      "question": "Why use radius + altitude?",
+      "answer": "Orbit radius is the distance from the center of the body, which is the body radius plus orbital altitude."
+    }
+  ]
+}

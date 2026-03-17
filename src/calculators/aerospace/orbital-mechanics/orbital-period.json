@@ -1,0 +1,48 @@
+{
+  "slug": "orbital-period",
+  "name": "Orbital Period Calculator",
+  "description": "Calculate the orbital period for a circular orbit around a body.",
+  "category": "Aerospace",
+  "subcategory": "orbital-mechanics",
+  "tags": ["orbital period", "orbit", "space"],
+  "fields": [
+    {
+      "key": "mass",
+      "label": "Mass of Body (kg)",
+      "type": "number",
+      "placeholder": "5.972e24"
+    },
+    {
+      "key": "radius",
+      "label": "Orbit Radius (m)",
+      "type": "number",
+      "placeholder": "6771000"
+    }
+  ],
+  "formula": "T = 2π * sqrt(r³ / (G * M))",
+  "formulaDescription": "Orbital period is the time to complete one full orbit at a given radius.",
+  "computationType": "orbitalPeriod",
+  "outputs": [
+    {
+      "key": "orbitalPeriod",
+      "label": "Orbital Period (s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "mass": 5.972e24,
+      "radius": 6771000
+    },
+    "outputs": {
+      "orbitalPeriod": 5552.92
+    },
+    "explanation": "A low Earth orbit at ~200 km altitude has a period of about 92.5 minutes (5,552 seconds)."
+  },
+  "faqs": [
+    {
+      "question": "How does altitude affect orbital period?",
+      "answer": "Higher orbit radii increase orbital period because the satellite travels a longer path at a slower velocity."
+    }
+  ]
+}

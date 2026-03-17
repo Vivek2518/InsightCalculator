@@ -1,0 +1,48 @@
+{
+  "slug": "mach-number",
+  "name": "Mach Number Calculator",
+  "description": "Calculate Mach number as the ratio of speed to the speed of sound.",
+  "category": "Aerospace",
+  "subcategory": "atmosphere",
+  "tags": ["mach", "speed", "aerodynamics"],
+  "fields": [
+    {
+      "key": "speed",
+      "label": "Speed (m/s)",
+      "type": "number",
+      "placeholder": "340"
+    },
+    {
+      "key": "speedOfSound",
+      "label": "Speed of Sound (m/s)",
+      "type": "number",
+      "placeholder": "343"
+    }
+  ],
+  "formula": "Mach = speed / speedOfSound",
+  "formulaDescription": "Mach number is the ratio of an object's speed to the local speed of sound.",
+  "computationType": "machNumber",
+  "outputs": [
+    {
+      "key": "mach",
+      "label": "Mach Number",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "speed": 410,
+      "speedOfSound": 340
+    },
+    "outputs": {
+      "mach": 1.21
+    },
+    "explanation": "At 410 m/s with a speed of sound of 340 m/s, the Mach number is about 1.21."
+  },
+  "faqs": [
+    {
+      "question": "What is Mach number?",
+      "answer": "Mach number is the ratio of the speed of an object to the speed of sound in the surrounding medium."
+    }
+  ]
+}

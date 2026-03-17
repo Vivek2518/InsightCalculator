@@ -1,0 +1,48 @@
+{
+  "slug": "lift-to-drag-ratio",
+  "name": "Lift-to-Drag Ratio Calculator",
+  "description": "Compute aerodynamic efficiency using lift and drag forces.",
+  "category": "Aerospace",
+  "subcategory": "flight-mechanics",
+  "tags": ["lift", "drag", "efficiency"],
+  "fields": [
+    {
+      "key": "lift",
+      "label": "Lift Force (N)",
+      "type": "number",
+      "placeholder": "4500"
+    },
+    {
+      "key": "drag",
+      "label": "Drag Force (N)",
+      "type": "number",
+      "placeholder": "130"
+    }
+  ],
+  "formula": "L/D = Lift / Drag",
+  "formulaDescription": "The lift-to-drag ratio is a measure of how efficiently an aircraft generates lift relative to drag.",
+  "computationType": "liftToDragRatio",
+  "outputs": [
+    {
+      "key": "liftToDragRatio",
+      "label": "Lift-to-Drag Ratio",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "lift": 4500,
+      "drag": 130
+    },
+    "outputs": {
+      "liftToDragRatio": 34.62
+    },
+    "explanation": "A lift of 4500 N against 130 N drag gives a lift-to-drag ratio of about 34.6."
+  },
+  "faqs": [
+    {
+      "question": "Why is lift-to-drag ratio important?",
+      "answer": "Higher lift-to-drag ratios mean more efficient flight and better glide performance."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "pressure-vs-altitude",
+  "name": "Pressure vs Altitude Calculator",
+  "description": "Estimate atmospheric pressure at a given altitude using the standard atmosphere model.",
+  "category": "Aerospace",
+  "subcategory": "atmosphere",
+  "tags": ["pressure", "altitude", "atmosphere"],
+  "fields": [
+    {
+      "key": "altitude",
+      "label": "Altitude (m)",
+      "type": "number",
+      "placeholder": "1000"
+    }
+  ],
+  "formula": "P = P0 * (1 - L*h/T0)^(g/(R*L))",
+  "formulaDescription": "Uses the international standard atmosphere approximation for pressure variation with altitude.",
+  "computationType": "pressureAtAltitude",
+  "outputs": [
+    {
+      "key": "pressure",
+      "label": "Pressure (Pa)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "altitude": 1000
+    },
+    "outputs": {
+      "pressure": 89875
+    },
+    "explanation": "At 1000 m altitude, standard atmosphere pressure is around 89,875 Pa."
+  },
+  "faqs": [
+    {
+      "question": "Does pressure always decrease with altitude?",
+      "answer": "Yes, in the lower atmosphere pressure decreases with altitude as air becomes less dense."
+    }
+  ]
+}

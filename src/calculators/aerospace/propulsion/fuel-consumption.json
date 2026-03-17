@@ -1,0 +1,48 @@
+{
+  "slug": "fuel-consumption",
+  "name": "Fuel Consumption Calculator",
+  "description": "Estimate rocket propellant mass flow rate from thrust and specific impulse.",
+  "category": "Aerospace",
+  "subcategory": "propulsion",
+  "tags": ["fuel", "consumption", "isp"],
+  "fields": [
+    {
+      "key": "thrust",
+      "label": "Thrust (N)",
+      "type": "number",
+      "placeholder": "1000000"
+    },
+    {
+      "key": "isp",
+      "label": "Specific Impulse (s)",
+      "type": "number",
+      "placeholder": "300"
+    }
+  ],
+  "formula": "ṁ = Thrust / (Isp * g0)",
+  "formulaDescription": "Mass flow rate is derived from thrust and specific impulse using g0 = 9.80665 m/s².",
+  "computationType": "fuelConsumption",
+  "outputs": [
+    {
+      "key": "massFlowRate",
+      "label": "Mass Flow Rate (kg/s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "thrust": 1000000,
+      "isp": 300
+    },
+    "outputs": {
+      "massFlowRate": 340.14
+    },
+    "explanation": "A 1,000,000 N thrust with 300 s Isp consumes about 340 kg/s of propellant."
+  },
+  "faqs": [
+    {
+      "question": "What is specific impulse?",
+      "answer": "Specific impulse measures how effectively a rocket uses propellant; higher Isp means more efficient engines."
+    }
+  ]
+}

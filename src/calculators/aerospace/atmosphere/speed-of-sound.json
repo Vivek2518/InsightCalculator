@@ -1,0 +1,41 @@
+{
+  "slug": "speed-of-sound",
+  "name": "Speed of Sound Calculator",
+  "description": "Estimate the speed of sound based on air temperature.",
+  "category": "Aerospace",
+  "subcategory": "atmosphere",
+  "tags": ["speed of sound", "temperature", "aerodynamics"],
+  "fields": [
+    {
+      "key": "temperature",
+      "label": "Air Temperature (°C)",
+      "type": "number",
+      "placeholder": "15"
+    }
+  ],
+  "formula": "a = sqrt(γ * R * (T + 273.15))",
+  "formulaDescription": "Speed of sound is computed from air temperature assuming standard dry air (γ=1.4, R=287.058 J/kg·K).",
+  "computationType": "speedOfSound",
+  "outputs": [
+    {
+      "key": "speedOfSound",
+      "label": "Speed of Sound (m/s)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "temperature": 15
+    },
+    "outputs": {
+      "speedOfSound": 340.29
+    },
+    "explanation": "At 15°C, the speed of sound in air is approximately 340 m/s."
+  },
+  "faqs": [
+    {
+      "question": "Does air temperature affect the speed of sound?",
+      "answer": "Yes. The speed of sound increases with temperature because warmer air is less dense."
+    }
+  ]
+}

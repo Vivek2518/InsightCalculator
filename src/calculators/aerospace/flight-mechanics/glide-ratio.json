@@ -1,0 +1,48 @@
+{
+  "slug": "glide-ratio",
+  "name": "Glide Ratio Calculator",
+  "description": "Compute glide ratio using lift and drag forces.",
+  "category": "Aerospace",
+  "subcategory": "flight-mechanics",
+  "tags": ["glide", "lift", "drag"],
+  "fields": [
+    {
+      "key": "lift",
+      "label": "Lift Force (N)",
+      "type": "number",
+      "placeholder": "4500"
+    },
+    {
+      "key": "drag",
+      "label": "Drag Force (N)",
+      "type": "number",
+      "placeholder": "130"
+    }
+  ],
+  "formula": "Glide Ratio = Lift / Drag",
+  "formulaDescription": "Glide ratio is the distance traveled horizontally for each unit of descent and is approximated by L/D.",
+  "computationType": "glideRatio",
+  "outputs": [
+    {
+      "key": "glideRatio",
+      "label": "Glide Ratio",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "lift": 4500,
+      "drag": 130
+    },
+    "outputs": {
+      "glideRatio": 34.62
+    },
+    "explanation": "A lift of 4500 N with 130 N of drag yields a glide ratio of about 34.6."
+  },
+  "faqs": [
+    {
+      "question": "What is a good glide ratio?",
+      "answer": "Glide ratios above 20 are considered good for sailplanes, while typical light aircraft have lower ratios."
+    }
+  ]
+}

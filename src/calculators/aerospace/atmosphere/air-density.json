@@ -1,0 +1,48 @@
+{
+  "slug": "air-density",
+  "name": "Air Density Calculator",
+  "description": "Calculate air density from pressure and temperature.",
+  "category": "Aerospace",
+  "subcategory": "atmosphere",
+  "tags": ["air density", "pressure", "temperature"],
+  "fields": [
+    {
+      "key": "pressure",
+      "label": "Pressure (Pa)",
+      "type": "number",
+      "placeholder": "101325"
+    },
+    {
+      "key": "temperature",
+      "label": "Temperature (°C)",
+      "type": "number",
+      "placeholder": "15"
+    }
+  ],
+  "formula": "ρ = P / (R * T)",
+  "formulaDescription": "Air density is calculated using the ideal gas law where R is the specific gas constant for air (≈287.058 J/kg·K).",
+  "computationType": "airDensity",
+  "outputs": [
+    {
+      "key": "density",
+      "label": "Air Density (kg/m³)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "pressure": 101325,
+      "temperature": 15
+    },
+    "outputs": {
+      "density": 1.225
+    },
+    "explanation": "At sea level standard conditions, air density is about 1.225 kg/m³."
+  },
+  "faqs": [
+    {
+      "question": "What is the standard pressure used for air density?",
+      "answer": "Standard atmospheric pressure is 101325 Pa, often used for sea-level calculations."
+    }
+  ]
+}
