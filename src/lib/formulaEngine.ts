@@ -1030,6 +1030,136 @@ export function evaluateCalculator(input: CalculatorInput): any {
       return { orbitalSpeed: round(vel, 2) };
     }
 
+    // Drone Calculators
+    case "droneFlightTime": {
+      // Input parameters
+      const batteryCapacity_mAh = values.batteryCapacity || 5000; // mAh
+      const batteryVoltage = values.batteryVoltage || 11.55; // V
+      const systemEfficiency_percent = values.systemEfficiency || 85; // %
+      const usableDischargeFraction = values.usableDischargeFraction || 0.8; // 0-1
+      const powerModeVal = String(values.powerMode || "direct"); // "direct" or "weight"
+      const averagePower = values.averagePower || 0; // W (if direct mode)
+      const droneWeight = values.droneWeight || 0; // kg (if weight mode)
+      const powerPerKg = values.powerPerKg || 150; // W/kg (default)
+      const flightProfileVal = String(values.flightProfile || "normal"); // "light", "normal", "aggressive"
+
+      // Convert units
+      const C = batteryCapacity_mAh / 1000; // Ah
+      const V = batteryVoltage; // V
+      const eta = systemEfficiency_percent / 100; // dimensionless
+      const D = usableDischargeFraction; // dimensionless
+
+      // Calculate power consumption
+      let P = averagePower; // W
+      if (powerModeVal === "weight" && droneWeight > 0) {
+        P = droneWeight * powerPerKg; // W = kg × W/kg
+      }
+
+      // Handle edge case where power is zero
+      if (P <= 0) {
+        P = 1; // Prevent division by zero
+      }
+
+      // Calculate usable energy: Wh = C (Ah) × V (V) × η × D
+      const usableEnergy_Wh = C * V * eta * D;
+
+      // Calculate ideal flight time: hours = Energy / Power
+      const idealFlightTime_hours = usableEnergy_Wh / P;
+      const idealFlightTimeMin = idealFlightTime_hours * 60;
+
+      // Apply real-world correction based on flight profile
+      const profileMultipliers: Record<string, number> = {
+        light: 0.75, // Hovering/gentle flight
+        normal: 0.6, // Mixed/normal flight
+        aggressive: 0.35, // High-speed/racing
+      };
+      const profileMultiplier =
+        profileMultipliers[flightProfileVal] || profileMultipliers["normal"];
+      const realWorldFlightTimeMin = idealFlightTimeMin * profileMultiplier;
+
+      return {
+        calculatedPower: round(P, 0),
+        usableEnergy: round(usableEnergy_Wh, 2),
+        idealFlightTimeMin: round(idealFlightTimeMin, 2),
+        realWorldFlightTimeMin: round(realWorldFlightTimeMin, 2),
+        profileMultiplier: round(profileMultiplier, 2),
+      };
+    }
+
+    case "batteryCapacityConverter": {
+      const capacity = values.capacity || 0;
+      const unit = values.unit || "mAh";
+      const voltage = values.voltage || 3.7;
+      let mAh, Wh;
+      if (unit === "mAh") {
+        mAh = capacity;
+        Wh = (capacity * voltage) / 1000;
+      } else {
+        Wh = capacity;
+        mAh = (capacity * 1000) / voltage;
+      }
+      return { mAh: round(mAh, 0), Wh: round(Wh, 2) };
+    }
+
+    case "powerConsumption": {
+      const voltage = values.batteryVoltage || 12;
+      const current = values.currentDraw || 0;
+      const power = voltage * current;
+      return { power: round(power, 0) };
+    }
+
+    case "motorEfficiency": {
+      const inputPower = values.inputPower || 1;
+      const outputPower = values.outputPower || 0;
+      const efficiency = (outputPower / inputPower) * 100;
+      const powerLoss = inputPower - outputPower;
+      return { 
+        efficiency: round(efficiency, 2), 
+        powerLoss: round(powerLoss, 2) 
+      };
+    }
+
+    case "energyDensity": {
+      const energy = values.energy || 0; // Wh
+      const weight = values.weight || 0.001; // kg
+      const density = weight > 0 ? energy / weight : 0;
+      return { energyDensity: round(density, 2) };
+    }
+
+    case "hoverPower": {
+      const droneMass = values.droneMass || 1; // kg
+      const numRotors = values.numRotors || 4;
+      const rotorDiameter = values.rotorDiameter || 15; // inches
+      const g = 9.81; // m/s²
+      const rotor_m = rotorDiameter * 0.0254; // convert inches to meters
+      const rotorArea = Math.PI * (rotor_m / 2) ** 2;
+      const rho = 1.225; // kg/m³ air density
+      const efficiency = 0.85;
+      const hoverThrust = (droneMass * g) / numRotors;
+      const totalHoverPower = (hoverThrust ** 2) / (2 * rho * rotorArea * numRotors * efficiency);
+      const powerPerRotor = totalHoverPower / numRotors;
+      return { 
+        hoverThrust: round(hoverThrust, 3), 
+        totalHoverPower: round(totalHoverPower, 2),
+        powerPerRotor: round(powerPerRotor, 2)
+      };
+    }
+
+    case "batteryDischargeRate": {
+      const currentDraw = values.currentDraw || 0; // Amps
+      const batteryCapacity = values.batteryCapacity || 1000; // mAh
+      const cRating = values.cRating || 75;
+      const capacity_A = batteryCapacity / 1000; // Convert mAh to Ah
+      const dischargeRate = capacity_A > 0 ? currentDraw / capacity_A : 0;
+      const isSafe = dischargeRate <= cRating ? "Yes, Safe" : "No, Unsafe";
+      const safetyMargin = cRating - dischargeRate;
+      return { 
+        dischargeRate: round(dischargeRate, 1), 
+        isSafe,
+        safetyMargin: round(Math.max(safetyMargin, 0), 1)
+      };
+    }
+
     default:
       throw new Error(`Unknown computation type: ${computationType}`);
   }

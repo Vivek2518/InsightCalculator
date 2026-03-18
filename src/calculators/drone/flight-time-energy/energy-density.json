@@ -1,0 +1,52 @@
+{
+  "slug": "energy-density",
+  "name": "Energy Density Calculator",
+  "description": "Calculate energy density (Wh/kg) of your drone battery.",
+  "category": "Drone",
+  "subcategory": "flight-time-energy",
+  "tags": ["energy density", "battery weight", "Wh/kg"],
+  "fields": [
+    {
+      "key": "energy",
+      "label": "Battery Energy (Wh)",
+      "type": "number",
+      "placeholder": "58"
+    },
+    {
+      "key": "weight",
+      "label": "Battery Weight (kg)",
+      "type": "number",
+      "placeholder": "0.26"
+    }
+  ],
+  "formula": "Energy Density (Wh/kg) = Battery Energy (Wh) / Battery Weight (kg)",
+  "formulaDescription": "Energy density measures how much energy is stored per unit weight, indicating battery efficiency for drone applications.",
+  "computationType": "energyDensity",
+  "outputs": [
+    {
+      "key": "energyDensity",
+      "label": "Energy Density (Wh/kg)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "energy": 58,
+      "weight": 0.26
+    },
+    "outputs": {
+      "energyDensity": 223.08
+    },
+    "explanation": "A 58 Wh battery weighing 260g has an energy density of 223 Wh/kg, typical for modern LiPo batteries."
+  },
+  "faqs": [
+    {
+      "question": "What is a good energy density for drone batteries?",
+      "answer": "Modern LiPo batteries range from 150-250 Wh/kg. Higher values indicate better performance relative to weight."
+    },
+    {
+      "question": "Why is energy density important for drones?",
+      "answer": "Higher energy density means more flight time with less weight, improving payload capacity and overall drone performance."
+    }
+  ]
+}

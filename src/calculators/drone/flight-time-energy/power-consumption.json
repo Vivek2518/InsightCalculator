@@ -1,0 +1,66 @@
+{
+  "slug": "power-consumption",
+  "name": "Power Consumption Estimator",
+  "description": "Estimate drone power consumption based on motor specifications and thrust.",
+  "category": "Drone",
+  "subcategory": "flight-time-energy",
+  "tags": ["power consumption", "watts", "drone", "motors"],
+  "fields": [
+    {
+      "key": "motorKV",
+      "label": "Motor KV Rating",
+      "type": "number",
+      "placeholder": "920"
+    },
+    {
+      "key": "batteryVoltage",
+      "label": "Battery Voltage (V)",
+      "type": "number",
+      "placeholder": "14.8"
+    },
+    {
+      "key": "thrustPercentage",
+      "label": "Thrust Level (%)",
+      "type": "number",
+      "placeholder": "50"
+    },
+    {
+      "key": "currentDraw",
+      "label": "Current Draw at Thrust (A)",
+      "type": "number",
+      "placeholder": "20"
+    }
+  ],
+  "formula": "Power (W) = Voltage (V) × Current (A)",
+  "formulaDescription": "Power consumption is calculated as voltage multiplied by current draw at the specified thrust level.",
+  "computationType": "powerConsumption",
+  "outputs": [
+    {
+      "key": "power",
+      "label": "Power Consumption (W)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "motorKV": 920,
+      "batteryVoltage": 14.8,
+      "thrustPercentage": 50,
+      "currentDraw": 20
+    },
+    "outputs": {
+      "power": 296
+    },
+    "explanation": "At 50% thrust with 20A current draw on a 14.8V battery, power consumption is 296 W."
+  },
+  "faqs": [
+    {
+      "question": "How do I know the current draw?",
+      "answer": "Use a battery monitor or current meter during test flights. Most drone ESCs log this data."
+    },
+    {
+      "question": "Why does thrust percentage matter?",
+      "answer": "Current draw varies non-linearly with thrust. Hover typically requires 30-50% thrust, full throttle requires 100%."
+    }
+  ]
+}

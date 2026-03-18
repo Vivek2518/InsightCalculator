@@ -7,6 +7,7 @@ export const TOP_CATEGORIES = [
   "math",
   "physics",
   "aerospace",
+  "drone",
   "everyday",
 ] as const;
 
@@ -30,6 +31,7 @@ export const SUBCATEGORIES = [
   "flight-mechanics",
   "propulsion",
   "orbital-mechanics",
+  "flight-time-energy",
 ] as const;
 
 export type SubCategoryKey = (typeof SUBCATEGORIES)[number];
@@ -44,6 +46,7 @@ export const CATEGORY_DISPLAY_NAME: Record<CalculatorCategoryKey, string> = {
   math: "Math ",
   physics: "Physics ",
   aerospace: "Aerospace ",
+  drone: "Drone ",
   everyday: "Everyday",
 
   // Subcategories
@@ -61,6 +64,7 @@ export const CATEGORY_DISPLAY_NAME: Record<CalculatorCategoryKey, string> = {
   "flight-mechanics": "Flight Mechanics (Aircraft)",
   propulsion: "Rocket & Propulsion Basics",
   "orbital-mechanics": "Orbital Mechanics (Space Basics)",
+  "flight-time-energy": "Flight Time & Energy",
 };
 
 // Maps old subcategories to top-level categories
@@ -82,6 +86,7 @@ const SUBCATEGORY_TO_TOP: Record<SubCategoryKey, TopCategoryKey> = {
   "flight-mechanics": "aerospace",
   propulsion: "aerospace",
   "orbital-mechanics": "aerospace",
+  "flight-time-energy": "drone",
 };
 
 // Mapping from calculator slug -> subcategory (based on SEO grouping rules)
@@ -198,6 +203,15 @@ const SLUG_TO_SUBCATEGORY: Record<string, SubCategoryKey> = {
   "orbital-velocity": "orbital-mechanics",
   "orbital-period": "orbital-mechanics",
   "circular-orbit-speed": "orbital-mechanics",
+
+  // drone / flight-time-energy
+  "drone-flight-time": "flight-time-energy",
+  "battery-capacity-converter": "flight-time-energy",
+  "power-consumption": "flight-time-energy",
+  "motor-efficiency": "flight-time-energy",
+  "energy-density": "flight-time-energy",
+  "hover-power": "flight-time-energy",
+  "battery-discharge-rate": "flight-time-energy",
 };
 
 export function getSubCategoryForSlug(slug: string): SubCategoryKey | undefined {
@@ -279,10 +293,12 @@ export const CATEGORY_ORDER: (TopCategoryKey | SubCategoryKey)[] = [
   "math",
   "physics",
   "aerospace",
+  "drone",
   "atmosphere",
   "flight-mechanics",
   "propulsion",
   "orbital-mechanics",
+  "flight-time-energy",
   "everyday",
   "loans",
   "investment",

@@ -1,0 +1,58 @@
+{
+  "slug": "motor-efficiency",
+  "name": "Motor Efficiency Calculator",
+  "description": "Calculate motor efficiency based on electrical power input and mechanical power output.",
+  "category": "Drone",
+  "subcategory": "flight-time-energy",
+  "tags": ["motor efficiency", "drone motors", "power loss"],
+  "fields": [
+    {
+      "key": "inputPower",
+      "label": "Electrical Power Input (W)",
+      "type": "number",
+      "placeholder": "300"
+    },
+    {
+      "key": "outputPower",
+      "label": "Mechanical Power Output (W)",
+      "type": "number",
+      "placeholder": "270"
+    }
+  ],
+  "formula": "Efficiency (%) = (Output Power / Input Power) × 100",
+  "formulaDescription": "Motor efficiency is the ratio of useful mechanical power output to electrical power input, expressed as a percentage.",
+  "computationType": "motorEfficiency",
+  "outputs": [
+    {
+      "key": "efficiency",
+      "label": "Motor Efficiency (%)",
+      "format": "number"
+    },
+    {
+      "key": "powerLoss",
+      "label": "Power Loss (W)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "inputPower": 300,
+      "outputPower": 270
+    },
+    "outputs": {
+      "efficiency": 90,
+      "powerLoss": 30
+    },
+    "explanation": "A motor with 300W input and 270W output has 90% efficiency with 30W loss as heat."
+  },
+  "faqs": [
+    {
+      "question": "What is typical drone motor efficiency?",
+      "answer": "Good quality brushless motors typically achieve 85-95% efficiency. ESC losses add another 5-10%."
+    },
+    {
+      "question": "How is mechanical power measured?",
+      "answer": "Mechanical power is calculated from thrust and velocity. Use test data or motor simulation tools."
+    }
+  ]
+}

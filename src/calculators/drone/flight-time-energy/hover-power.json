@@ -1,0 +1,71 @@
+{
+  "slug": "hover-power",
+  "name": "Hover Power Requirement",
+  "description": "Calculate the power required to hover based on drone weight and rotor specifications.",
+  "category": "Drone",
+  "subcategory": "flight-time-energy",
+  "tags": ["hover power", "thrust", "rotor", "hovering"],
+  "fields": [
+    {
+      "key": "droneMass",
+      "label": "Drone Mass (kg)",
+      "type": "number",
+      "placeholder": "2.5"
+    },
+    {
+      "key": "numRotors",
+      "label": "Number of Rotors",
+      "type": "number",
+      "placeholder": "4"
+    },
+    {
+      "key": "rotorDiameter",
+      "label": "Rotor Diameter (inches)",
+      "type": "number",
+      "placeholder": "15"
+    }
+  ],
+  "formula": "Hover Thrust = Mass × g | Hover Power ≈ (Hover Thrust)² / (2 × ρ × A × numRotors × efficiency)",
+  "formulaDescription": "Hover power is calculated from the thrust required to counteract gravity, adjusted for rotor disk area and efficiency losses.",
+  "computationType": "hoverPower",
+  "outputs": [
+    {
+      "key": "hoverThrust",
+      "label": "Hover Thrust per Rotor (N)",
+      "format": "number"
+    },
+    {
+      "key": "totalHoverPower",
+      "label": "Total Hover Power (W)",
+      "format": "number"
+    },
+    {
+      "key": "powerPerRotor",
+      "label": "Power per Rotor (W)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "droneMass": 2.5,
+      "numRotors": 4,
+      "rotorDiameter": 15
+    },
+    "outputs": {
+      "hoverThrust": 6.125,
+      "totalHoverPower": 187.5,
+      "powerPerRotor": 46.88
+    },
+    "explanation": "A 2.5 kg quad-rotor with 15-inch props requires approximately 188W total to hover, or 47W per motor."
+  },
+  "faqs": [
+    {
+      "question": "How accurate is this estimate?",
+      "answer": "This is an approximation. Actual hover power varies with air density, blade pitch, and design. Use as a guideline."
+    },
+    {
+      "question": "What's the difference between hover and max power?",
+      "answer": "Hover is the sustained power needed to maintain altitude. Max power is needed for acceleration and climbing."
+    }
+  ]
+}

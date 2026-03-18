@@ -1,0 +1,71 @@
+{
+  "slug": "battery-discharge-rate",
+  "name": "Battery Discharge Rate (C-rating Usage)",
+  "description": "Calculate battery discharge rate and C-rating usage based on current draw and capacity.",
+  "category": "Drone",
+  "subcategory": "flight-time-energy",
+  "tags": ["C-rating", "discharge rate", "battery", "current"],
+  "fields": [
+    {
+      "key": "currentDraw",
+      "label": "Current Draw (A)",
+      "type": "number",
+      "placeholder": "60"
+    },
+    {
+      "key": "batteryCapacity",
+      "label": "Battery Capacity (mAh)",
+      "type": "number",
+      "placeholder": "5000"
+    },
+    {
+      "key": "cRating",
+      "label": "Battery C-Rating",
+      "type": "number",
+      "placeholder": "75"
+    }
+  ],
+  "formula": "Discharge Rate (C) = Current (A) / (Capacity (mAh) / 1000) | Safe = Discharge Rate ≤ C-Rating",
+  "formulaDescription": "C-rating discharge is calculated by dividing current draw by capacity in Amps. The result should not exceed the battery's rated C-rating for safe operation.",
+  "computationType": "batteryDischargeRate",
+  "outputs": [
+    {
+      "key": "dischargeRate",
+      "label": "Discharge Rate (C)",
+      "format": "number"
+    },
+    {
+      "key": "isSafe",
+      "label": "Safe Operation",
+      "format": "text"
+    },
+    {
+      "key": "safetyMargin",
+      "label": "Safety Margin (C)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "currentDraw": 60,
+      "batteryCapacity": 5000,
+      "cRating": 75
+    },
+    "outputs": {
+      "dischargeRate": 12,
+      "isSafe": true,
+      "safetyMargin": 63
+    },
+    "explanation": "Drawing 60A from a 5000 mAh battery is a 12C discharge rate. Safe for a 75C-rated battery with a 63C safety margin."
+  },
+  "faqs": [
+    {
+      "question": "What happens if I exceed C-rating?",
+      "answer": "Exceeding C-rating causes excessive heat, battery swell, voltage drop, and potential damage or fire. Always stay within limits."
+    },
+    {
+      "question": "What's a typical C-rating for drone batteries?",
+      "answer": "Racing drones use 50-150C, photography drones 25-50C. Higher C-rating handles peak current better."
+    }
+  ]
+}

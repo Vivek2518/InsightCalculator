@@ -15,6 +15,7 @@ export type CalculatorCategory =
   | "Savings"
   | "Government"
   | "aerospace"
+  | "drone"
   | "Creator Economy";
 
 export type Calculator = {
@@ -705,6 +706,64 @@ export const calculators: Calculator[] = [
     added: "2026-03-16",
     tags: ["hourly", "salary"],
   },
+
+  // Drone Calculators
+  {
+    slug: "drone-flight-time",
+    name: "Drone Flight Time Prediction",
+    description: "Estimate flight time based on battery capacity and power consumption.",
+    category: "drone",
+    added: "2026-03-18",
+    tags: ["drone", "flight time", "battery"],
+  },
+  {
+    slug: "battery-capacity-converter",
+    name: "Battery Capacity Converter (mAh ↔ Wh)",
+    description: "Convert between battery capacity in mAh and Wh.",
+    category: "drone",
+    added: "2026-03-18",
+    tags: ["battery", "mAh", "Wh", "converter"],
+  },
+  {
+    slug: "power-consumption",
+    name: "Power Consumption Estimator",
+    description: "Estimate drone power consumption based on voltage and current.",
+    category: "drone",
+    added: "2026-03-18",
+    tags: ["power", "watts", "consumption"],
+  },
+  {
+    slug: "motor-efficiency",
+    name: "Motor Efficiency Calculator",
+    description: "Calculate motor efficiency based on input and output power.",
+    category: "drone",
+    added: "2026-03-18",
+    tags: ["motor", "efficiency", "performance"],
+  },
+  {
+    slug: "energy-density",
+    name: "Energy Density Calculator",
+    description: "Calculate energy density (Wh/kg) of your drone battery.",
+    category: "drone",
+    added: "2026-03-18",
+    tags: ["energy density", "battery", "weight"],
+  },
+  {
+    slug: "hover-power",
+    name: "Hover Power Requirement",
+    description: "Calculate the power required to hover based on drone weight and rotors.",
+    category: "drone",
+    added: "2026-03-18",
+    tags: ["hover", "power", "thrust"],
+  },
+  {
+    slug: "battery-discharge-rate",
+    name: "Battery Discharge Rate (C-rating Usage)",
+    description: "Calculate battery discharge rate and C-rating usage.",
+    category: "drone",
+    added: "2026-03-18",
+    tags: ["battery", "C-rating", "discharge"],
+  },
   {
     slug: "percentage-calculator",
     name: "Percentage Calculator",
@@ -779,6 +838,10 @@ export const categories: { name: CalculatorCategory; description: string }[] = [
   {
     name: "aerospace",
     description: "Aerospace and flight calculators for aircraft and orbital mechanics.",
+  },
+  {
+    name: "drone",
+    description: "Drone calculators for flight time, power, energy, and battery management.",
   },
   {
     name: "creator",

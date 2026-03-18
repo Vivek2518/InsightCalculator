@@ -1,0 +1,68 @@
+{
+  "slug": "battery-capacity-converter",
+  "name": "Battery Capacity Converter (mAh ↔ Wh)",
+  "description": "Convert between battery capacity in mAh and Wh (Watt-hours).",
+  "category": "Drone",
+  "subcategory": "flight-time-energy",
+  "tags": ["battery", "mAh", "Wh", "capacity", "converter"],
+  "fields": [
+    {
+      "key": "capacity",
+      "label": "Capacity Value",
+      "type": "number",
+      "placeholder": "5000"
+    },
+    {
+      "key": "unit",
+      "label": "From Unit",
+      "type": "select",
+      "options": [
+        { "label": "mAh", "value": "mAh" },
+        { "label": "Wh", "value": "Wh" }
+      ]
+    },
+    {
+      "key": "voltage",
+      "label": "Battery Voltage (V)",
+      "type": "number",
+      "placeholder": "11.55"
+    }
+  ],
+  "formula": "Wh = (mAh × Voltage) / 1000 | mAh = (Wh × 1000) / Voltage",
+  "formulaDescription": "Energy (Wh) equals capacity (mAh) multiplied by voltage (V) divided by 1000. Reverse calculation converts Wh back to mAh.",
+  "computationType": "batteryCapacityConverter",
+  "outputs": [
+    {
+      "key": "mAh",
+      "label": "Capacity (mAh)",
+      "format": "number"
+    },
+    {
+      "key": "Wh",
+      "label": "Capacity (Wh)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "capacity": 5000,
+      "unit": "mAh",
+      "voltage": 11.55
+    },
+    "outputs": {
+      "mAh": 5000,
+      "Wh": 57.75
+    },
+    "explanation": "A 5000 mAh battery at 11.55V has a capacity of 57.75 Wh."
+  },
+  "faqs": [
+    {
+      "question": "What voltage should I use?",
+      "answer": "Use the nominal voltage of your battery pack. LiPo cells are 3.7V nominal; a 3S pack is 11.1V, 4S is 14.8V, etc."
+    },
+    {
+      "question": "Why are mAh and Wh different?",
+      "answer": "mAh measures charge capacity, while Wh measures energy. Wh accounts for voltage, making it more useful for energy calculations."
+    }
+  ]
+}

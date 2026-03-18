@@ -138,6 +138,15 @@ function getCalculatorCategory(slug) {
   "orbital-velocity": "aerospace/orbital-mechanics",
   "orbital-period": "aerospace/orbital-mechanics",
   "circular-orbit-speed": "aerospace/orbital-mechanics",
+
+  // drone
+  "drone-flight-time": "drone/flight-time-energy",
+  "battery-capacity-converter": "drone/flight-time-energy",
+  "power-consumption": "drone/flight-time-energy",
+  "motor-efficiency": "drone/flight-time-energy",
+  "energy-density": "drone/flight-time-energy",
+  "hover-power": "drone/flight-time-energy",
+  "battery-discharge-rate": "drone/flight-time-energy",
   };
   return map[slug] || "everyday";
 }
