@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { evaluateCalculator } from "@/lib/formulaEngine";
 import type { CalculatorConfig } from "@/lib/loadCalculator";
 import { useRecent } from "@/lib/recent";
@@ -335,69 +336,87 @@ export function CalculatorEngine({ config, addToRecent }: CalculatorEngineProps)
 
       <section id="guide" className="space-y-6">
         <h2 className="text-2xl font-semibold">Quick Guide</h2>
-        <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-          {guideSteps.map((step, idx) => (
-            <li key={idx}>{step}</li>
-          ))}
-        </ol>
-      </section>
-
-      <section id="concept" className="space-y-6">
-        <h2 className="text-2xl font-semibold">What is {config.name}?</h2>
-        <p className="text-sm text-muted-foreground leading-relaxed">{effectiveConcept}</p>
-      </section>
-
-      <section id="formula" className="space-y-6">
-        <h2 className="text-2xl font-semibold">The Formula</h2>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Formula Used</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p className="font-mono text-sm text-muted-foreground">{config.formula}</p>
-            {config.formulaDescription && (
-              <p className="text-sm text-muted-foreground">{config.formulaDescription}</p>
-            )}
-          </CardContent>
-        </Card>
-      </section>
-
-      <section id="standards" className="space-y-6">
-        <h2 className="text-2xl font-semibold">Key Standards & Benchmarks</h2>
-        {standards.length > 0 ? (
-          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-            {standards.map((item, idx) => (
-              <li key={idx}>{item}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-muted-foreground">No specific benchmarks available for this tool.</p>
-        )}
-      </section>
-
-      <section id="faq" className="space-y-6">
-        <h2 className="text-2xl font-semibold">FAQ</h2>
-        {config.faqs.length > 0 ? (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Frequently Asked Questions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {config.faqs.map((faq, idx) => (
-                  <div key={idx}>
-                    <p className="text-sm font-medium text-foreground mb-1">
-                      {idx + 1}. {faq.question}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{faq.answer}</p>
-                  </div>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="steps">
+            <AccordionTrigger>How to use</AccordionTrigger>
+            <AccordionContent>
+              <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                {guideSteps.map((step, idx) => (
+                  <li key={idx}>{step}</li>
                 ))}
+              </ol>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="concept">
+            <AccordionTrigger>What is {config.name}?</AccordionTrigger>
+            <AccordionContent>
+              <p className="text-sm text-muted-foreground leading-relaxed">{effectiveConcept}</p>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="formula">
+            <AccordionTrigger>Formula</AccordionTrigger>
+            <AccordionContent>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Formula Used</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <p className="font-mono text-sm text-muted-foreground">{config.formula}</p>
+                  {config.formulaDescription && (
+                    <p className="text-sm text-muted-foreground">{config.formulaDescription}</p>
+                  )}
+                </CardContent>
+              </Card>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="benchmarks">
+            <AccordionTrigger>Keywords and Benchmarks</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Key Standards & Benchmarks</h3>
+                {standards.length > 0 ? (
+                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                    {standards.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No specific benchmarks available for this tool.</p>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <p className="text-sm text-muted-foreground">No FAQs available for this calculator.</p>
-        )}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="faq">
+            <AccordionTrigger>FAQ</AccordionTrigger>
+            <AccordionContent>
+              {config.faqs.length > 0 ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Frequently Asked Questions</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {config.faqs.map((faq, idx) => (
+                        <div key={idx}>
+                          <p className="text-sm font-medium text-foreground mb-1">
+                            {idx + 1}. {faq.question}
+                          </p>
+                          <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <p className="text-sm text-muted-foreground">No FAQs available for this calculator.</p>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </section>
     </div>
   );
