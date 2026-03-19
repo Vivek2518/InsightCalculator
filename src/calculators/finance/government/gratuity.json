@@ -1,9 +1,9 @@
 {
   "slug": "gratuity",
   "name": "Gratuity Calculator",
-  "description": "Calculate gratuity based on salary and service years.",
+  "description": "Calculate gratuity amount based on your last drawn salary and years of service under the Payment of Gratuity Act, 1972. Get instant results for retirement planning in India.",
   "category": "Government",
-  "tags": ["gratuity", "salary", "retirement", "benefits", "employment", "finance", "payout", "calculator"],
+  "tags": ["gratuity", "salary", "retirement", "benefits", "employment", "finance", "payout", "calculator", "gratuity calculator India", "gratuity formula", "calculate gratuity online", "retirement benefits calculator", "employee benefits India"],
   "fields": [
     {
       "key": "salary",
@@ -18,7 +18,29 @@
       "placeholder": "10"
     }
   ],
-  "formula": "Gratuity = (Last Salary * Years * 15) / 26",
+  "formula": "Gratuity = (Last Drawn Salary × Years of Service × 15) / 26",
+  "formulaDescription": "This formula is prescribed under the Payment of Gratuity Act, 1972. The 15/26 factor represents 15 days of salary for each year of service, divided by 26 working days in a month.",
+  "introduction": "Gratuity is a retirement benefit paid by employers to employees who have completed at least 5 years of continuous service. It's a statutory benefit governed by the Payment of Gratuity Act, 1972, and provides financial security to employees upon retirement, resignation, or death.",
+  "eligibilityCriteria": "To be eligible for gratuity, an employee must have completed at least 5 years of continuous service with the same employer. This applies to all establishments with 10 or more employees. Service includes periods of leave, maternity leave, and layoff, but excludes periods of unauthorized absence.",
+  "calculationNotes": [
+    "Minimum service requirement: 5 years of continuous service",
+    "Service rounding: Any period of 6 months or more in a year counts as a full year",
+    "Maximum gratuity limit: ₹20 lakh (as per latest amendments)",
+    "Salary includes basic pay plus dearness allowance",
+    "Payment timeline: Must be paid within 30 days of retirement/resignation"
+  ],
+  "benefits": [
+    "Provides financial security for retirement planning",
+    "Tax-exempt up to ₹20 lakh under Section 10(10) of Income Tax Act",
+    "Helps calculate exact entitlement before retirement",
+    "Useful for financial planning and investment decisions"
+  ],
+  "howToUse": [
+    "Enter your last drawn monthly salary (basic + DA)",
+    "Enter total years of completed service",
+    "Click 'Calculate' to get instant gratuity amount",
+    "Use the result for retirement planning and tax calculations"
+  ],
   "computationType": "simple",
   "computeParams": {
     "baseKey": "gratuity",
@@ -39,20 +61,36 @@
     "outputs": {
       "gratuity": 346153.85
     },
-    "explanation": "Gratuity is typically calculated based on last salary, years of service, and a 15/26 factor."
+    "explanation": "For an employee earning ₹60,000 monthly with 10 years of service: Gratuity = (60,000 × 10 × 15) / 26 = ₹3,46,153.85"
   },
   "faqs": [
     {
-      "question": "Who is eligible for gratuity?",
-      "answer": "Employees with 5+ years of continuous service are generally eligible."
+      "question": "Who is eligible for gratuity under the Payment of Gratuity Act, 1972?",
+      "answer": "Employees who have completed at least 5 years of continuous service with an organization are eligible. This applies to all establishments with 10 or more employees."
     },
     {
-      "question": "Is gratuity taxable?",
-      "answer": "A portion may be tax-exempt; consult tax rules for exact treatment."
+      "question": "Is gratuity taxable in India?",
+      "answer": "Gratuity is partially tax-exempt. The exemption limit is the minimum of: (a) ₹20 lakh, (b) actual gratuity received, or (c) 15 days salary × number of years of service. Any amount above this limit is taxable."
     },
     {
-      "question": "What is the 15/26 factor?",
-      "answer": "It's a standard formula used to calculate gratuity under the Payment of Gratuity Act."
+      "question": "What is the 15/26 factor in the gratuity formula?",
+      "answer": "The formula provides 15 days of basic salary plus dearness allowance for each completed year of service. The 26 represents the number of working days in a month (30 days minus 4 Sundays)."
+    },
+    {
+      "question": "How is service period calculated for gratuity?",
+      "answer": "Service is calculated from the date of joining to the date of leaving. Any period of 6 months or more in a year is rounded up to a full year. Less than 6 months is ignored."
+    },
+    {
+      "question": "What is the maximum gratuity amount under current rules?",
+      "answer": "The maximum gratuity payable is capped at ₹20 lakh, as per the latest amendments to the Payment of Gratuity Act."
+    },
+    {
+      "question": "When should gratuity be paid?",
+      "answer": "Gratuity must be paid within 30 days of retirement/resignation/death. If delayed beyond 30 days, the employer must pay interest at bank rates."
+    },
+    {
+      "question": "Can I calculate gratuity for part-time or contract employees?",
+      "answer": "Gratuity applies to regular employees with continuous service. Contract or part-time workers may not be eligible unless specified in their employment terms."
     }
   ]
 }

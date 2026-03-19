@@ -252,10 +252,38 @@ const value = (() => {
         </Card>
       )}
 
+      {/* Introduction */}
+      {config.introduction && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">What is Gratuity?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {config.introduction}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Eligibility Criteria */}
+      {config.eligibilityCriteria && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Eligibility Criteria</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {config.eligibilityCriteria}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Formula Information */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Formula Used</CardTitle>
+          <CardTitle className="text-base">Gratuity Calculation Formula</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <p className="font-mono text-sm text-muted-foreground">{config.formula}</p>
@@ -264,6 +292,63 @@ const value = (() => {
           )}
         </CardContent>
       </Card>
+
+      {/* Calculation Notes */}
+      {config.calculationNotes && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Important Notes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              {config.calculationNotes.map((note, idx) => (
+                <li key={idx} className="flex items-start">
+                  <span className="text-primary mr-2">•</span>
+                  {note}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Benefits */}
+      {config.benefits && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Benefits of Using This Calculator</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              {config.benefits.map((benefit, idx) => (
+                <li key={idx} className="flex items-start">
+                  <span className="text-primary mr-2">•</span>
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* How to Use */}
+      {config.howToUse && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">How to Use the Calculator</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ol className="text-sm text-muted-foreground space-y-1">
+              {config.howToUse.map((step, idx) => (
+                <li key={idx} className="flex items-start">
+                  <span className="text-primary mr-2 font-medium">{idx + 1}.</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Example Card */}
       <Card>
