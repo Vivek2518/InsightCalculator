@@ -1196,6 +1196,101 @@ export function evaluateCalculator(input: CalculatorInput): any {
       };
     }
 
+    case "youtubeThumbnailCtr": {
+      // INPUT: Real YouTube analytics
+      const impressions = values.impressions || 1;
+      const clicks = values.clicks || 0;
+      const niche = String(values.niche || "gaming");
+      const channelSize = String(values.channelSize || "growing");
+      const hasFace = String(values.hasFace || "no");
+      const hasContrast = String(values.hasContrast || "no");
+      const hasTextOverlay = String(values.hasTextOverlay || "no");
+      const cpm = values.cpm || 100;
+
+      // 1. ACTUAL CTR from real YouTube data
+      const actualCtr = (clicks / Math.max(1, impressions)) * 100;
+
+      // 2. NICHE BENCHMARKS (typical CTR ranges for different niches)
+      // These are industry research benchmarks
+      const nicheBenchmarks: Record<string, { min: number; avg: number; max: number }> = {
+        entertainment: { min: 4.5, avg: 6.5, max: 9.0 },
+        education: { min: 3.5, avg: 5.5, max: 7.5 },
+        howto: { min: 5.0, avg: 7.0, max: 9.5 },
+        gaming: { min: 4.0, avg: 5.5, max: 8.0 },
+        music: { min: 2.5, avg: 4.0, max: 6.0 },
+        vlog: { min: 3.0, avg: 4.5, max: 7.0 },
+        news: { min: 5.0, avg: 8.0, max: 11.0 },
+        tech: { min: 4.0, avg: 6.5, max: 8.5 },
+        comedy: { min: 5.0, avg: 7.0, max: 10.0 },
+        fitness: { min: 4.0, avg: 5.5, max: 7.5 },
+        cooking: { min: 3.5, avg: 5.0, max: 7.0 },
+        finance: { min: 3.0, avg: 5.0, max: 7.0 },
+        science: { min: 4.0, avg: 6.0, max: 8.5 },
+        travel: { min: 3.5, avg: 5.5, max: 7.5 },
+        beauty: { min: 4.0, avg: 6.0, max: 8.5 },
+        sports: { min: 3.5, avg: 5.5, max: 8.0 },
+      };
+
+      const benchmark = nicheBenchmarks[niche] || { min: 3.5, avg: 5.5, max: 8.0 };
+
+      // 3. PERFORMANCE RATING - Compare actual CTR vs niche benchmark
+      let performance = "Poor";
+      if (actualCtr >= benchmark.max) {
+        performance = "Excellent";
+      } else if (actualCtr >= benchmark.avg) {
+        performance = "Good";
+      } else if (actualCtr >= benchmark.min) {
+        performance = "Average";
+      } else {
+        performance = "Below Average";
+      }
+
+      // 4. THUMBNAIL DESIGN SCORE (0-100)
+      // Base score: 10 points
+      // Design factors: 20-30 points each
+      let designScore = 10;
+      if (hasFace === "yes") designScore += 30;
+      if (hasContrast === "yes") designScore += 30;
+      if (hasTextOverlay === "yes") designScore += 25;
+      
+      // Cap at 100
+      designScore = Math.min(designScore, 100);
+
+      // 5. REVENUE IMPACT CALCULATIONS
+      // If CTR improves by X%, how many more clicks?
+      // New clicks = impressions * (newCTR / 100)
+      // Additional clicks = new clicks - current clicks
+      // Revenue = additional clicks * (CPM / 1000)
+
+      const calculateImprovementScenario = (ctrIncrease: number) => {
+        const newCtr = actualCtr + ctrIncrease;
+        const newClicks = (impressions * newCtr) / 100;
+        const additionalClicks = newClicks - clicks;
+        const revenuePerClick = cpm / 1000;
+        const additionalRevenue = additionalClicks * revenuePerClick;
+        return {
+          addlClicks: round(additionalClicks, 0),
+          addlRevenue: round(additionalRevenue, 2),
+        };
+      };
+
+      const scenario1 = calculateImprovementScenario(1);
+      const scenario2 = calculateImprovementScenario(2);
+      const scenario5 = calculateImprovementScenario(5);
+
+      return {
+        actualCtr: round(actualCtr, 1),
+        performance,
+        thumbnailScore: designScore,
+        ctrImprovement1Pct: scenario1.addlClicks,
+        revenueImprovement1Pct: scenario1.addlRevenue,
+        ctrImprovement2Pct: scenario2.addlClicks,
+        revenueImprovement2Pct: scenario2.addlRevenue,
+        ctrImprovement5Pct: scenario5.addlClicks,
+        revenueImprovement5Pct: scenario5.addlRevenue,
+      };
+    }
+
     default:
       throw new Error(`Unknown computation type: ${computationType}`);
   }
