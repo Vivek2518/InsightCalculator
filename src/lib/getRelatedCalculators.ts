@@ -1,4 +1,5 @@
 import { getAllCalculators } from "@/lib/loadCalculator";
+import { getTopCategoryForSlug } from "@/lib/calculatorCategories";
 
 /**
  * Get related calculators based on category, tags, and similarity
@@ -132,7 +133,10 @@ export async function getPopularCalculators(
 > {
   try {
     const allConfigs = await getAllCalculators();
-    const popularConfigs = allConfigs.filter((config) => config.popular === true);
+    const popularConfigs = allConfigs.filter((config) => {
+      const topCategory = getTopCategoryForSlug(config.slug);
+      return config.popular === true && topCategory === "aerospace";
+    });
 
     return popularConfigs
       .slice(0, limit)

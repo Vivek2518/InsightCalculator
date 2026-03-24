@@ -4,21 +4,20 @@ import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCalculatorConfig } from "@/lib/calculatorConfigs";
-import { Calculator } from "@/data/calculators";
+import { evaluateCalculator } from "@/lib/formulaEngine";
 import { useRecent } from "@/lib/recent";
+import type { CalculatorConfig } from "@/lib/loadCalculator";
 
 type CalculatorToolProps = {
-  calculator: Calculator;
+  calculator: CalculatorConfig;
 };
 
 export function CalculatorTool({ calculator }: CalculatorToolProps) {
-  const config = getCalculatorConfig(calculator.slug);
   const { addRecent } = useRecent();
 
   const [values, setValues] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
-    config?.fields.forEach((field) => {
+    calculator.fields.forEach((field) => {
       initial[field.key] = "";
     });
     return initial;
@@ -27,6 +26,8 @@ export function CalculatorTool({ calculator }: CalculatorToolProps) {
   useEffect(() => {
     addRecent(calculator.slug);
   }, [addRecent, calculator.slug]);
+
+  const [result, setResult] = useState<any>(null);
 
   const parsedValues = useMemo(() => {
     const parsed: Record<string, number> = {};
@@ -37,42 +38,40 @@ export function CalculatorTool({ calculator }: CalculatorToolProps) {
     return parsed;
   }, [values]);
 
-  const result = useMemo(() => {
-    if (!config) return null;
-    const hasAll = config.fields.every((field) => values[field.key] !== "");
-    if (!hasAll) return null;
-    return config.compute(parsedValues);
-  }, [config, parsedValues, values]);
+  const canCalculate = calculator.fields.every((field) => values[field.key] !== "");
 
   const handleChange = (key: string, value: string) => {
     setValues((prev) => ({ ...prev, [key]: value }));
   };
 
-  if (!config) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Coming soon</CardTitle>
-          <CardDescription>
-            We are working on this calculator. Check back soon for updates.
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    );
-  }
+  const handleCalculate = () => {
+    if (!canCalculate) return;
+
+    try {
+      const output = evaluateCalculator({
+        computationType: calculator.computationType,
+        values: parsedValues,
+        computeParams: calculator.computeParams,
+      });
+      setResult(output);
+    } catch (error) {
+      console.error("Calculator error:", error);
+      setResult({ error: "Could not compute result." });
+    }
+  };
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Inputs</CardTitle>
+          <CardTitle>Calculator</CardTitle>
           <CardDescription>
-            Enter values below and click calculate to see results.
+            Enter your values below to calculate instantly.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            {config.fields.map((field) => (
+            {calculator.fields.map((field) => (
               <div key={field.key} className="space-y-1">
                 <label className="text-sm font-medium text-foreground">
                   {field.label}
@@ -88,10 +87,9 @@ export function CalculatorTool({ calculator }: CalculatorToolProps) {
               </div>
             ))}
             <Button
-              onClick={() => {
-                // no-op: results update automatically
-              }}
               className="w-full"
+              onClick={handleCalculate}
+              disabled={!canCalculate}
             >
               Calculate
             </Button>
@@ -102,67 +100,31 @@ export function CalculatorTool({ calculator }: CalculatorToolProps) {
       <Card>
         <CardHeader>
           <CardTitle>Results</CardTitle>
-          <CardDescription>
-            Your output will appear below once all required inputs are provided.
-          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="rounded-xl bg-muted/30 p-6 text-center">
-              <p className="text-sm text-muted-foreground">Result</p>
-              <p className="mt-1 text-3xl font-semibold text-foreground">
-                {result != null ? result : "Enter values to see the result"}
+          {result == null ? (
+            <div className="rounded-xl border border-dashed border-muted p-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Press Calculate to see results.
               </p>
             </div>
-            {config.formula && (
-              <div>
-                <h4 className="text-sm font-semibold">Formula</h4>
-                <p className="text-sm text-muted-foreground">{config.formula}</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Example</CardTitle>
-          <CardDescription>{config.example.explanation}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div className="grid gap-2 sm:grid-cols-2">
-              {Object.entries(config.example.inputs).map(([key, value]) => (
-                <div key={key} className="rounded-xl bg-muted/20 p-3">
-                  <p className="text-xs text-muted-foreground capitalize">{key}</p>
-                  <p className="text-lg font-medium">{value}</p>
+          ) : typeof result === "number" ? (
+            <div className="rounded-xl bg-muted/30 p-8 text-center">
+              <p className="text-sm text-muted-foreground">Result</p>
+              <p className="mt-2 text-4xl font-bold text-foreground">{result}</p>
+            </div>
+          ) : result && typeof result === "object" ? (
+            <div className="rounded-xl bg-muted/30 p-4">
+              {Object.entries(result).map(([key, value]) => (
+                <div key={key} className="flex justify-between border-b border-border/40 py-2">
+                  <span className="text-sm text-muted-foreground capitalize">{key}</span>
+                  <span className="text-sm font-semibold">{value}</span>
                 </div>
               ))}
             </div>
-            <div className="rounded-xl bg-muted/20 p-4">
-              <p className="text-xs text-muted-foreground">Expected result</p>
-              <p className="mt-1 text-xl font-semibold">{config.example.output}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>FAQ</CardTitle>
-          <CardDescription>
-            Common questions about this calculator.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {config.faqs.map((faq) => (
-              <div key={faq.question} className="space-y-1">
-                <p className="text-sm font-semibold">{faq.question}</p>
-                <p className="text-sm text-muted-foreground">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
+          ) : (
+            <div className="rounded-xl bg-red-500/10 p-4 text-red-600">Unable to compute.</div>
+          )}
         </CardContent>
       </Card>
     </div>

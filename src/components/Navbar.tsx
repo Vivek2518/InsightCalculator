@@ -11,13 +11,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
-const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/calculators", label: "Calculators" },
-  { href: "/about-us", label: "About Us" },
-];
+const navItems = [];
 
 export function Navbar() {
   return (
@@ -48,11 +43,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <div className="hidden md:block">
-            <ThemeToggle />
-          </div>
-
+        <div>
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -79,9 +70,6 @@ export function Navbar() {
                     {item.label}
                   </Link>
                 ))}
-                <div className="pt-2">
-                  <ThemeToggle />
-                </div>
               </div>
             </SheetContent>
           </Sheet>
