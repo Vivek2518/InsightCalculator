@@ -1,18 +1,15 @@
 import Link from "next/link";
-import { Airplay, BarChart2, Cloud, Drone, Globe2, Navigation2, Rocket, TrendingUp } from "lucide-react";
+import { Airplay, BarChart2, Drone, Globe2, Rocket } from "lucide-react";
 import { getAllCalculators } from "@/lib/loadCalculator";
 import { getCalculatorPathFromSlug, getCategoryPath } from "@/lib/calculatorCategories";
 
 const categoryCards = [
-  { key: "atmosphere", title: "Atmosphere", subtitle: "Air density, temperature, and pressure", icon: Cloud },
-  { key: "flight-mechanics", title: "Flight Mechanics", subtitle: "Lift, drag, and wing performance", icon: BarChart2 },
+  { key: "aerodynamics", title: "Aerodynamics", subtitle: "Air density, pressure, and flow", icon: Airplay, alias: "atmosphere" },
+  { key: "structures", title: "Structures", subtitle: "Strength, loads, and materials", icon: BarChart2, alias: "structures" },
   { key: "propulsion", title: "Propulsion", subtitle: "Thrust, Isp, and fuel performance", icon: Rocket },
-  { key: "orbital-mechanics", title: "Space", subtitle: "Orbit speed, period, and escape velocity", icon: Globe2 },
-  { key: "aerodynamics", title: "Aerodynamics", subtitle: "Aerodynamic coefficients and flow", icon: Airplay, alias: "atmosphere" },
-  { key: "performance", title: "Performance", subtitle: "Aircraft and rocket performance metrics", icon: TrendingUp, alias: "flight-mechanics" },
-  { key: "gnc", title: "GNC", subtitle: "Guidance, navigation, and control", icon: Navigation2, alias: "flight-mechanics" },
-  { key: "structures", title: "Structures", subtitle: "Strength, load, and simplicity", icon: BarChart2, alias: "flight-mechanics" },
-  { key: "drones", title: "Drones", subtitle: "UAV flight time and energy", icon: Drone, alias: "drone" },
+  { key: "flight-mechanics", title: "Flight Mechanics", subtitle: "Lift, drag, and wing performance", icon: BarChart2 },
+  { key: "space", title: "Space", subtitle: "Orbits, escape velocity, and mechanics", icon: Globe2, alias: "orbital-mechanics" },
+  { key: "drones", title: "Drones", subtitle: "UAV flight time and battery", icon: Drone, alias: "drone" },
 ];
 
 export default async function Home() {
