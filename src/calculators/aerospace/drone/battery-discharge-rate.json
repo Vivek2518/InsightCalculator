@@ -1,0 +1,90 @@
+{
+  "slug": "battery-discharge-rate",
+  "name": "Battery Discharge Rate Calculator",
+  "description": "Calculate the actual discharge rate (C-rating) of your battery based on current draw.",
+  "category": "aerospace",
+  "subcategory": "drone",
+  "subdomain": "Battery & Energy",
+  "tags": [
+    "battery",
+    "C-rating",
+    "discharge",
+    "drone",
+    "safety"
+  ],
+  "fields": [
+    {
+      "key": "currentDraw",
+      "label": "Total Current Draw (A)",
+      "type": "number",
+      "placeholder": "50"
+    },
+    {
+      "key": "batteryCapacity",
+      "label": "Battery Capacity (mAh)",
+      "type": "number",
+      "placeholder": "1300"
+    },
+    {
+      "key": "cRating",
+      "label": "Battery's Rated C-Rating",
+      "type": "number",
+      "placeholder": "75"
+    }
+  ],
+  "formula": "Actual C = Amps / (Capacity_mAh / 1000)",
+  "formulaDescription": "The discharge rate is the ratio of current draw in Amps to the battery capacity in Amp-hours.",
+  "computationType": "batteryDischargeRate",
+  "outputs": [
+    {
+      "key": "dischargeRate",
+      "label": "Actual Discharge Rate (C)",
+      "format": "number"
+    },
+    {
+      "key": "isSafe",
+      "label": "Safety Status",
+      "format": "text"
+    },
+    {
+      "key": "safetyMargin",
+      "label": "Safety Margin (C)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "currentDraw": 65,
+      "batteryCapacity": 1300,
+      "cRating": 75
+    },
+    "outputs": {
+      "dischargeRate": 50,
+      "isSafe": "Yes, Safe",
+      "safetyMargin": 25
+    },
+    "explanation": "With 65A draw on a 1.3Ah battery, the discharge is 50C. Since the battery is rated for 75C, it is safe with a 25C margin."
+  },
+  "faqs": [
+    {
+      "question": "What happens if I exceed the C-rating?",
+      "answer": "Exceeding the C-rating causes excessive heat, which can damage the battery, lead to 'puffing', or in extreme cases, cause a fire."
+    },
+    {
+      "question": "Are manufacturer C-ratings always accurate?",
+      "answer": "Many manufacturers inflate their C-ratings. It is best practice to stay within 60-70% of the labeled C-rating for longevity."
+    }
+  ],
+  "concept": "C-rating represents how fast a battery can be discharged relative to its maximum capacity without damage.",
+  "guideSteps": [
+    "Enter the maximum current your drone draws at full throttle (in Amps).",
+    "Enter your battery capacity in mAh.",
+    "Enter the C-rating printed on your battery label.",
+    "The calculator will determine if your battery can handle the load."
+  ],
+  "standards": [
+    "Low-speed drones: 10-30C",
+    "Freestyle drones: 50-100C",
+    "Racing drones: 100C+"
+  ]
+}
