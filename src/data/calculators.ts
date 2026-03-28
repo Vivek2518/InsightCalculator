@@ -164,6 +164,38 @@ export const calculators: Calculator[] = [
     added: "2026-03-17",
     tags: ["orbit", "speed", "space"],
   },
+  {
+    slug: "wing-aspect-ratio",
+    name: "Wing Aspect Ratio Calculator",
+    description: "Calculate the aspect ratio of an aircraft wing.",
+    category: "aerospace",
+    added: "2026-03-28",
+    tags: ["wing", "aspect ratio", "aerodynamics"],
+  },
+  {
+    slug: "drone-flight-time",
+    name: "Drone Flight Time Calculator",
+    description: "Estimate drone flight time based on battery and power.",
+    category: "aerospace",
+    added: "2026-03-28",
+    tags: ["drone", "flight time", "battery"],
+  },
+  {
+    slug: "structural-load-factor",
+    name: "Structural Load Factor Calculator",
+    description: "Calculate g-force on aircraft structures.",
+    category: "aerospace",
+    added: "2026-03-28",
+    tags: ["load factor", "g-force", "structures"],
+  },
+  {
+    slug: "battery-capacity-converter",
+    name: "Battery Capacity Converter",
+    description: "Convert between mAh and Wh.",
+    category: "aerospace",
+    added: "2026-03-28",
+    tags: ["battery", "conversion", "drone"],
+  },
 ];
 
 export const categories: { name: CalculatorCategory; description: string }[] = [

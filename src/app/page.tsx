@@ -4,12 +4,12 @@ import { getAllCalculators } from "@/lib/loadCalculator";
 import { getCalculatorPathFromSlug, getCategoryPath } from "@/lib/calculatorCategories";
 
 const categoryCards = [
-  { key: "aerodynamics", title: "Aerodynamics", subtitle: "Air density, pressure, and flow", icon: Airplay, alias: "atmosphere" },
-  { key: "structures", title: "Structures", subtitle: "Strength, loads, and materials", icon: BarChart2, alias: "structures" },
+  { key: "aerodynamics", title: "Aerodynamics", subtitle: "Air density, pressure, and flow", icon: Airplay },
+  { key: "structures", title: "Structures", subtitle: "Strength, loads, and materials", icon: BarChart2 },
   { key: "propulsion", title: "Propulsion", subtitle: "Thrust, Isp, and fuel performance", icon: Rocket },
   { key: "flight-mechanics", title: "Flight Mechanics", subtitle: "Lift, drag, and wing performance", icon: BarChart2 },
-  { key: "space", title: "Space", subtitle: "Orbits, escape velocity, and mechanics", icon: Globe2, alias: "orbital-mechanics" },
-  { key: "drones", title: "Drones", subtitle: "UAV flight time and battery", icon: Drone, alias: "drone" },
+  { key: "space", title: "Space", subtitle: "Orbits, escape velocity, and mechanics", icon: Globe2 },
+  { key: "drone", title: "Drones", subtitle: "UAV flight time and battery", icon: Drone },
 ];
 
 export default async function Home() {

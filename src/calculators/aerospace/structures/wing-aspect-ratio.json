@@ -1,0 +1,72 @@
+{
+  "slug": "wing-aspect-ratio",
+  "name": "Wing Aspect Ratio Calculator",
+  "description": "Calculate the aspect ratio of an aircraft wing, a key factor in aerodynamic efficiency.",
+  "category": "Aerospace",
+  "subcategory": "structures",
+  "tags": [
+    "wing",
+    "aspect ratio",
+    "aerodynamics",
+    "structures"
+  ],
+  "fields": [
+    {
+      "key": "span",
+      "label": "Wingspan (m)",
+      "type": "number",
+      "placeholder": "10"
+    },
+    {
+      "key": "area",
+      "label": "Wing Area (m²)",
+      "type": "number",
+      "placeholder": "15"
+    }
+  ],
+  "formula": "AR = b² / S",
+  "formulaDescription": "Aspect Ratio (AR) is the square of the wingspan (b) divided by the wing area (S).",
+  "computationType": "simple",
+  "computeParams": {
+    "expression": "(span * span) / area",
+    "baseKey": "aspectRatio"
+  },
+  "outputs": [
+    {
+      "key": "aspectRatio",
+      "label": "Aspect Ratio",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "span": 12,
+      "area": 18
+    },
+    "outputs": {
+      "aspectRatio": 8
+    },
+    "explanation": "With a wingspan of 12m and an area of 18m², the aspect ratio is (12 * 12) / 18 = 144 / 18 = 8."
+  },
+  "faqs": [
+    {
+      "question": "What is a high aspect ratio?",
+      "answer": "Gliders typically have high aspect ratios (20-30), which reduces induced drag and improves glide efficiency."
+    },
+    {
+      "question": "Why do fighter jets have low aspect ratios?",
+      "answer": "Low aspect ratio wings (like delta wings) are stronger and perform better at supersonic speeds, though they are less efficient at low speeds."
+    }
+  ],
+  "concept": "Aspect ratio is a measure of how long and slender a wing is compared to its width (chord).",
+  "guideSteps": [
+    "Enter the total wingspan of the aircraft.",
+    "Enter the total surface area of the wing.",
+    "The calculator will compute the ratio of span to chord."
+  ],
+  "standards": [
+    "General Aviation: 6-9",
+    "Commercial Airliners: 8-10",
+    "High-Performance Gliders: 20-40"
+  ]
+}

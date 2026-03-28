@@ -1,0 +1,102 @@
+{
+  "slug": "drone-flight-time",
+  "name": "Drone Flight Time Calculator",
+  "description": "Estimate how long your drone can fly based on battery capacity, voltage, and system efficiency.",
+  "category": "aerospace",
+  "subcategory": "drone",
+  "tags": [
+    "drone",
+    "flight time",
+    "battery",
+    "power"
+  ],
+  "fields": [
+    {
+      "key": "batteryCapacity",
+      "label": "Battery Capacity (mAh)",
+      "type": "number",
+      "placeholder": "5000"
+    },
+    {
+      "key": "batteryVoltage",
+      "label": "Battery Voltage (V)",
+      "type": "number",
+      "placeholder": "11.1"
+    },
+    {
+      "key": "averagePower",
+      "label": "Average Power Draw (W)",
+      "type": "number",
+      "placeholder": "100"
+    },
+    {
+      "key": "systemEfficiency",
+      "label": "System Efficiency (%)",
+      "type": "number",
+      "placeholder": "85"
+    },
+    {
+      "key": "usableDischargeFraction",
+      "label": "Usable Battery (%)",
+      "type": "number",
+      "placeholder": "80"
+    }
+  ],
+  "formula": "Time (min) = (C * V * η * D / P) * 60",
+  "formulaDescription": "Flight time is energy (Capacity * Voltage * Efficiency * Usable Fraction) divided by Power draw.",
+  "computationType": "droneFlightTime",
+  "outputs": [
+    {
+      "key": "realWorldFlightTimeMin",
+      "label": "Est. Real World Flight Time (min)",
+      "format": "number"
+    },
+    {
+      "key": "idealFlightTimeMin",
+      "label": "Ideal Flight Time (min)",
+      "format": "number"
+    },
+    {
+      "key": "usableEnergy",
+      "label": "Usable Energy (Wh)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "batteryCapacity": 5000,
+      "batteryVoltage": 11.1,
+      "averagePower": 100,
+      "systemEfficiency": 85,
+      "usableDischargeFraction": 0.8
+    },
+    "outputs": {
+      "realWorldFlightTimeMin": 13.59,
+      "idealFlightTimeMin": 22.64,
+      "usableEnergy": 37.74
+    },
+    "explanation": "At 5000mAh and 11.1V with 85% efficiency and 80% discharge, you have 37.74Wh usable energy. At 100W draw, ideal time is 22.6min, real-world is lower due to aerodynamic losses."
+  },
+  "faqs": [
+    {
+      "question": "Why is real-world flight time lower?",
+      "answer": "Ideal time only considers battery capacity and static power. Real-world flight involves acceleration, wind, and aerodynamic drag, which consume more energy."
+    },
+    {
+      "question": "What's a safe battery discharge level?",
+      "answer": "It is recommended to discharge LiPo batteries only to about 20% (80% used) to preserve battery health and prevent crashes."
+    }
+  ],
+  "concept": "Flight time depends on the total energy stored in the battery and how quickly it is consumed by the motors and electronics.",
+  "guideSteps": [
+    "Enter your battery's total capacity in milliamp-hours (mAh).",
+    "Enter the nominal voltage of the battery pack.",
+    "Estimate your drone's average power consumption during flight.",
+    "The calculator will provide both ideal and adjusted real-world flight estimates."
+  ],
+  "standards": [
+    "Usable Battery: 80% (Safe margin)",
+    "System Efficiency: 70-90% for modern quadcopters",
+    "Power Draw: 100-200W for typical 5-inch drones"
+  ]
+}

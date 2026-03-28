@@ -2,18 +2,17 @@
 
 export const TOP_CATEGORIES = [
   "aerospace",
-  "drone",
 ] as const;
 
 export type TopCategoryKey = (typeof TOP_CATEGORIES)[number];
 
 export const SUBCATEGORIES = [
-  "atmosphere",
+  "aerodynamics",
   "structures",
   "propulsion",
   "flight-mechanics",
-  "orbital-mechanics",
-  "flight-time-energy",
+  "space",
+  "drone",
 ] as const;
 
 export type SubCategoryKey = (typeof SUBCATEGORIES)[number];
@@ -26,32 +25,32 @@ export const CATEGORY_DISPLAY_NAME: Record<CalculatorCategoryKey, string> = {
   drone: "Drones",
 
   // Subcategories
-  atmosphere: "Aerodynamics",
+  aerodynamics: "Aerodynamics",
   structures: "Structures",
   propulsion: "Propulsion",
   "flight-mechanics": "Flight Mechanics",
-  "orbital-mechanics": "Space",
-  "flight-time-energy": "Drones",
+  space: "Space",
+  drone: "Drones",
 };
 
 // Maps old subcategories to top-level categories
 const SUBCATEGORY_TO_TOP: Record<SubCategoryKey, TopCategoryKey> = {
-  atmosphere: "aerospace",
+  aerodynamics: "aerospace",
   structures: "aerospace",
   propulsion: "aerospace",
   "flight-mechanics": "aerospace",
-  "orbital-mechanics": "aerospace",
-  "flight-time-energy": "drone",
+  space: "aerospace",
+  drone: "aerospace",
 };
 
 // Mapping from calculator slug -> subcategory (based on SEO grouping rules)
 const SLUG_TO_SUBCATEGORY: Record<string, SubCategoryKey> = {
-  // Aerodynamics (atmosphere)
-  "mach-number": "atmosphere",
-  "speed-of-sound": "atmosphere",
-  "air-density": "atmosphere",
-  "pressure-vs-altitude": "atmosphere",
-  "temperature-lapse-rate": "atmosphere",
+  // Aerodynamics
+  "mach-number": "aerodynamics",
+  "speed-of-sound": "aerodynamics",
+  "air-density": "aerodynamics",
+  "pressure-vs-altitude": "aerodynamics",
+  "temperature-lapse-rate": "aerodynamics",
 
   // Flight Mechanics
   "lift-force": "flight-mechanics",
@@ -67,20 +66,24 @@ const SLUG_TO_SUBCATEGORY: Record<string, SubCategoryKey> = {
   "fuel-consumption": "propulsion",
   "specific-impulse": "propulsion",
 
-  // Space (orbital-mechanics)
-  "escape-velocity": "orbital-mechanics",
-  "orbital-velocity": "orbital-mechanics",
-  "orbital-period": "orbital-mechanics",
-  "circular-orbit-speed": "orbital-mechanics",
+  // Space
+  "escape-velocity": "space",
+  "orbital-velocity": "space",
+  "orbital-period": "space",
+  "circular-orbit-speed": "space",
+
+  // Structures
+  "wing-aspect-ratio": "structures",
+  "structural-load-factor": "structures",
 
   // Drones
-  "drone-flight-time": "flight-time-energy",
-  "battery-capacity-converter": "flight-time-energy",
-  "power-consumption": "flight-time-energy",
-  "motor-efficiency": "flight-time-energy",
-  "energy-density": "flight-time-energy",
-  "hover-power": "flight-time-energy",
-  "battery-discharge-rate": "flight-time-energy",
+  "drone-flight-time": "drone",
+  "battery-capacity-converter": "drone",
+  "power-consumption": "drone",
+  "motor-efficiency": "drone",
+  "energy-density": "drone",
+  "hover-power": "drone",
+  "battery-discharge-rate": "drone",
 };
 
 export function getSubCategoryForSlug(slug: string): SubCategoryKey | undefined {
@@ -158,10 +161,9 @@ export function formatCategoryName(category: string): string {
 export const CATEGORY_ORDER: (TopCategoryKey | SubCategoryKey)[] = [
   "aerospace",
   "drone",
-  "atmosphere",
+  "aerodynamics",
   "structures",
   "propulsion",
   "flight-mechanics",
-  "orbital-mechanics",
-  "flight-time-energy",
+  "space",
 ];

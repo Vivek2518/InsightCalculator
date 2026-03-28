@@ -1,0 +1,86 @@
+{
+  "slug": "battery-capacity-converter",
+  "name": "Battery Capacity Converter (mAh to Wh)",
+  "description": "Convert battery capacity between milliamp-hours (mAh) and watt-hours (Wh).",
+  "category": "aerospace",
+  "subcategory": "drone",
+  "tags": [
+    "battery",
+    "conversion",
+    "mAh",
+    "Wh",
+    "power"
+  ],
+  "fields": [
+    {
+      "key": "capacity",
+      "label": "Capacity",
+      "type": "number",
+      "placeholder": "5000"
+    },
+    {
+      "key": "unit",
+      "label": "From Unit",
+      "type": "select",
+      "options": [
+        { "value": "mAh", "label": "mAh" },
+        { "value": "Wh", "label": "Wh" }
+      ]
+    },
+    {
+      "key": "voltage",
+      "label": "Battery Voltage (V)",
+      "type": "number",
+      "placeholder": "3.7"
+    }
+  ],
+  "formula": "Wh = (mAh * V) / 1000 | mAh = (Wh * 1000) / V",
+  "formulaDescription": "Watt-hours measure total energy, whereas milliamp-hours measure charge. Voltage is the link between them.",
+  "computationType": "batteryCapacityConverter",
+  "outputs": [
+    {
+      "key": "mAh",
+      "label": "Capacity (mAh)",
+      "format": "number"
+    },
+    {
+      "key": "Wh",
+      "label": "Energy (Wh)",
+      "format": "number"
+    }
+  ],
+  "example": {
+    "inputs": {
+      "capacity": 5000,
+      "unit": "mAh",
+      "voltage": 3.7
+    },
+    "outputs": {
+      "mAh": 5000,
+      "Wh": 18.5
+    },
+    "explanation": "A 5000mAh battery at 3.7V has 5000 * 3.7 / 1000 = 18.5 Wh of energy."
+  },
+  "faqs": [
+    {
+      "question": "Why is Wh better than mAh for comparison?",
+      "answer": "mAh doesn't account for voltage. A 5000mAh 3.7V battery has much less energy than a 5000mAh 11.1V battery. Wh represents the actual work the battery can do."
+    },
+    {
+      "question": "What is the standard voltage for a LiPo cell?",
+      "answer": "Nominal voltage is 3.7V per cell. Fully charged is 4.2V."
+    }
+  ],
+  "concept": "Understanding battery capacity in Wh is crucial for air travel regulations and drone flight endurance calculations.",
+  "guideSteps": [
+    "Enter the capacity value you want to convert.",
+    "Select whether the input is in mAh or Wh.",
+    "Enter the nominal voltage of the battery.",
+    "The calculator will show the equivalent value in the other unit."
+  ],
+  "standards": [
+    "Airline Limit: 100Wh (usually the limit for carry-on without approval)",
+    "Typical Phone: 10-15 Wh",
+    "Typical Drone (DJI Mavic 3): 77 Wh"
+  ]
+}

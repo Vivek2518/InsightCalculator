@@ -2,15 +2,12 @@ import { redirect, notFound } from "next/navigation";
 import { getCategoryPath } from "@/lib/calculatorCategories";
 
 const categoryMapping: Record<string, { topCategory: string; subcategory: string; displayName: string }> = {
-  atmosphere: { topCategory: "aerospace", subcategory: "atmosphere", displayName: "Atmosphere" },
+  aerodynamics: { topCategory: "aerospace", subcategory: "aerodynamics", displayName: "Aerodynamics" },
   "flight-mechanics": { topCategory: "aerospace", subcategory: "flight-mechanics", displayName: "Flight Mechanics" },
   propulsion: { topCategory: "aerospace", subcategory: "propulsion", displayName: "Propulsion" },
-  "orbital-mechanics": { topCategory: "aerospace", subcategory: "orbital-mechanics", displayName: "Space" },
-  aerodynamics: { topCategory: "aerospace", subcategory: "atmosphere", displayName: "Aerodynamics" },
-  performance: { topCategory: "aerospace", subcategory: "flight-mechanics", displayName: "Performance" },
-  gnc: { topCategory: "aerospace", subcategory: "flight-mechanics", displayName: "GNC" },
-  structures: { topCategory: "aerospace", subcategory: "flight-mechanics", displayName: "Structures" },
-  drones: { topCategory: "drone", subcategory: "drone", displayName: "Drones" },
+  space: { topCategory: "aerospace", subcategory: "space", displayName: "Space" },
+  structures: { topCategory: "aerospace", subcategory: "structures", displayName: "Structures" },
+  drone: { topCategory: "aerospace", subcategory: "drone", displayName: "Drones" },
 };
 
 type PageProps = {
