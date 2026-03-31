@@ -66,22 +66,22 @@ export function Footer() {
             <h4 className="mb-4 font-semibold text-sm">Calculators</h4>
             <ul className="space-y-2 text-xs text-muted-foreground">
               <li>
-                <Link href="/calculators/aerospace/aerodynamics" className="hover:text-foreground transition-colors">
+                <Link href="/aerodynamics" className="hover:text-foreground transition-colors">
                   Aerodynamics
                 </Link>
               </li>
               <li>
-                <Link href="/calculators/aerospace/structures" className="hover:text-foreground transition-colors">
+                <Link href="/structures" className="hover:text-foreground transition-colors">
                   Structures
                 </Link>
               </li>
               <li>
-                <Link href="/calculators/aerospace/propulsion" className="hover:text-foreground transition-colors">
+                <Link href="/propulsion" className="hover:text-foreground transition-colors">
                   Propulsion
                 </Link>
               </li>
               <li>
-                <Link href="/calculators/aerospace/flight-mechanics" className="hover:text-foreground transition-colors">
+                <Link href="/flight-mechanics" className="hover:text-foreground transition-colors">
                   Flight Mechanics
                 </Link>
               </li>
@@ -93,12 +93,12 @@ export function Footer() {
             <h4 className="mb-4 font-semibold text-sm">More</h4>
             <ul className="space-y-2 text-xs text-muted-foreground">
               <li>
-                <Link href="/calculators/aerospace/space" className="hover:text-foreground transition-colors">
+                <Link href="/space" className="hover:text-foreground transition-colors">
                   Space & Orbital
                 </Link>
               </li>
               <li>
-                <Link href="/calculators/aerospace/drone" className="hover:text-foreground transition-colors">
+                <Link href="/drone" className="hover:text-foreground transition-colors">
                   Drones
                 </Link>
               </li>

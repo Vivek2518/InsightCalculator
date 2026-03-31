@@ -2,82 +2,142 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.insightcalculator.com</loc>
-    <lastmod>2026-03-24T15:23:19.944Z</lastmod>
+    <lastmod>2026-03-31T06:49:32.265Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/atmosphere/air-density-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/atmosphere</loc>
+    <lastmod>2026-03-31T06:49:32.266Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/atmosphere/mach-number-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/atmosphere/pressure-vs-altitude-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-mechanics</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/atmosphere/speed-of-sound-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/propulsion</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/atmosphere/temperature-lapse-rate-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/orbital-mechanics</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/flight-mechanics/drag-force-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/everyday</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/flight-mechanics/glide-ratio-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/atmosphere/air-density-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/flight-mechanics/lift-force-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/atmosphere/mach-number-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/flight-mechanics/lift-to-drag-ratio-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/atmosphere/pressure-vs-altitude-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/flight-mechanics/stall-speed-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/atmosphere/speed-of-sound-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/flight-mechanics/wing-loading-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/atmosphere/temperature-lapse-rate-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/orbital-mechanics/circular-orbit-speed-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy/battery-capacity-converter-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/orbital-mechanics/escape-velocity-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy/battery-discharge-rate-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/orbital-mechanics/orbital-period-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy/drone-flight-time-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/orbital-mechanics/orbital-velocity-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy/energy-density-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/propulsion/fuel-consumption-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy/hover-power-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/propulsion/specific-impulse-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy/motor-efficiency-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/propulsion/thrust-to-weight-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-time-energy/power-consumption-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
   <url>
-    <loc>https://www.insightcalculator.com/calculators/aerospace/propulsion/thrust-calculator</loc>
-    <lastmod>2026-03-24T15:23:19.945Z</lastmod>
+    <loc>https://www.insightcalculator.com/flight-mechanics/drag-force-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/flight-mechanics/glide-ratio-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/flight-mechanics/lift-force-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/flight-mechanics/lift-to-drag-ratio-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/flight-mechanics/stall-speed-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/flight-mechanics/wing-loading-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/propulsion/fuel-consumption-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/propulsion/specific-impulse-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/propulsion/thrust-to-weight-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/propulsion/thrust-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/orbital-mechanics/circular-orbit-speed-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/orbital-mechanics/escape-velocity-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/orbital-mechanics/orbital-period-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/orbital-mechanics/orbital-velocity-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/everyday/structural-load-factor-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.insightcalculator.com/everyday/wing-aspect-ratio-calculator</loc>
+    <lastmod>2026-03-31T06:49:32.267Z</lastmod>
   </url>
 </urlset>

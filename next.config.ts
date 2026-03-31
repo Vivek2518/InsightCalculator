@@ -48,9 +48,9 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Cache static assets (1 year for static calculator JSON)
+      // Cache static assets (1 year for calculators)
       {
-        source: "/calculators/:path*",
+        source: "/:category/:calculator*",
         headers: [
           {
             key: "Cache-Control",
@@ -61,9 +61,20 @@ const nextConfig: NextConfig = {
     ];
   },
   
-  // Redirects for canonical domain
+  // Redirects for canonical domain and old URLs
   async redirects() {
     return [
+      // Redirect old deep URLs to new flatter URLs
+      {
+        source: "/calculators/aerospace/:subcategory/:slug*",
+        destination: "/:subcategory/:slug*",
+        permanent: true,
+      },
+      {
+        source: "/calculators/:path*",
+        destination: "/aerospace", // Fallback
+        permanent: true,
+      },
       // Redirect non-www to www
       {
         source: "/:path*",

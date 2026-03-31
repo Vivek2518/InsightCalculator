@@ -117,31 +117,27 @@ export function isValidCategory(category: string): category is TopCategoryKey {
 }
 
 export function getCalculatorPathFromSlug(slug: string): string {
-  const topCategory = getTopCategoryForSlug(slug);
   const subCategory = getSubCategoryForSlug(slug);
+  const topCategory = getTopCategoryForSlug(slug);
+  const category = subCategory || topCategory;
   const calculatorSegment = slug.endsWith("-calculator") ? slug : `${slug}-calculator`;
-  if (subCategory && subCategory !== topCategory) {
-    return `/calculators/${topCategory}/${subCategory}/${calculatorSegment}`;
+  
+  if (category && category !== "everyday") {
+    return `/${category}/${calculatorSegment}`;
   }
-  return `/calculators/${topCategory}/${calculatorSegment}`;
+  return `/everyday/${calculatorSegment}`;
 }
 
 export function getCategoryPath(category: string): string {
   const normalized = category?.trim().toLowerCase();
 
-  // Top-level category
-  if (TOP_CATEGORIES.includes(normalized as TopCategoryKey)) {
-    return `/calculators/${normalized}`;
-  }
-
-  // Subcategory
-  if (SUBCATEGORIES.includes(normalized as SubCategoryKey)) {
-    const top = SUBCATEGORY_TO_TOP[normalized as SubCategoryKey];
-    return `/calculators/${top}/${normalized}`;
+  // Subcategory or Top-level category
+  if (SUBCATEGORIES.includes(normalized as SubCategoryKey) || TOP_CATEGORIES.includes(normalized as TopCategoryKey)) {
+    return `/${normalized}`;
   }
 
   // Fallback
-  return `/calculators/${normalized}`;
+  return `/${normalized}`;
 }
 
 export function formatCategoryName(category: string): string {

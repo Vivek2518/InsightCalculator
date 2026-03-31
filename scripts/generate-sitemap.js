@@ -174,10 +174,22 @@ function getCalculatorUrls() {
   const calculatorUrls = slugs.map((slug) => {
     const categoryPath = getCalculatorCategory(slug);
     const calculatorSegment = slug.endsWith("-calculator") ? slug : `${slug}-calculator`;
-    return `${CANONICAL_DOMAIN}/calculators/${categoryPath}/${calculatorSegment}`;
+    
+    // Split category path to get only the last segment if it's nested (e.g., aerospace/aerodynamics -> aerodynamics)
+    const categorySegments = categoryPath.split('/');
+    const lastCategory = categorySegments[categorySegments.length - 1];
+    
+    return `${CANONICAL_DOMAIN}/${lastCategory}/${calculatorSegment}`;
   });
 
-  return [CANONICAL_DOMAIN, ...calculatorUrls];
+  const categories = Array.from(new Set(slugs.map(getCalculatorCategory))).map(path => {
+    const segments = path.split('/');
+    return segments[segments.length - 1];
+  });
+  
+  const categoryUrls = Array.from(new Set(categories)).map(cat => `${CANONICAL_DOMAIN}/${cat}`);
+
+  return [CANONICAL_DOMAIN, ...categoryUrls, ...calculatorUrls];
 }
 
 function ensurePublicDir() {

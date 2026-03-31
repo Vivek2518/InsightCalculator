@@ -12,19 +12,19 @@ import { getCategoryPath } from "@/lib/calculatorCategories";
 
 type PageProps = {
   params: Promise<{
-    slug: string[];
+    category: string;
+    calculator: string;
   }>;
 };
 
 export default async function CalculatorPage({ params }: PageProps) {
-  const { slug } = await params;
+  const { category, calculator: calculatorSlugRaw } = await params;
   
-  // Extract calculator slug from the last segment of the path
-  // e.g., from ['aerospace', 'atmosphere', 'air-density-calculator'] -> 'air-density'
-  const lastSegment = slug[slug.length - 1];
-  const calculatorSlug = lastSegment.endsWith('-calculator') 
-    ? lastSegment.slice(0, -'-calculator'.length)
-    : lastSegment;
+  // Extract calculator slug from the segment
+  // e.g., 'air-density-calculator' -> 'air-density'
+  const calculatorSlug = calculatorSlugRaw.endsWith('-calculator') 
+    ? calculatorSlugRaw.slice(0, -'-calculator'.length)
+    : calculatorSlugRaw;
   
   const calculator = await loadCalculator(calculatorSlug);
 
@@ -32,14 +32,13 @@ export default async function CalculatorPage({ params }: PageProps) {
     notFound();
   }
 
-  const backCategory = calculator.subcategory || calculator.category;
-  const backUrl = getCategoryPath(backCategory);
+  const backUrl = getCategoryPath(category);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 lg:px-8">
       <Link href={backUrl} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition mb-8">
         <ArrowLeft className="h-4 w-4" />
-        Back to {formatCategoryName(backCategory)}
+        Back to {formatCategoryName(category)}
       </Link>
 
       <header className="mb-8">
@@ -59,13 +58,12 @@ export default async function CalculatorPage({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { slug } = await params;
+  const { calculator: calculatorSlugRaw } = await params;
   
-  // Extract calculator slug from the last segment
-  const lastSegment = slug[slug.length - 1];
-  const calculatorSlug = lastSegment.endsWith('-calculator') 
-    ? lastSegment.slice(0, -'-calculator'.length)
-    : lastSegment;
+  // Extract calculator slug from the segment
+  const calculatorSlug = calculatorSlugRaw.endsWith('-calculator') 
+    ? calculatorSlugRaw.slice(0, -'-calculator'.length)
+    : calculatorSlugRaw;
   
   const calculator = await loadCalculator(calculatorSlug);
 
