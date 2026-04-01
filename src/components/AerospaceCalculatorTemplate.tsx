@@ -10,6 +10,7 @@ type InputDef = {
   label: string;
   description: string;
   unit?: string;
+  hint?: string;
 };
 
 type Props = {
@@ -96,7 +97,12 @@ export function AerospaceCalculatorTemplate(props: Props) {
                 className="w-full rounded-md border border-input bg-background px-3 py-2"
                 value={inputs[key]}
                 onChange={(e) => setInputs((prev) => ({ ...prev, [key]: e.target.value }))}
-                placeholder="Enter value"
+                placeholder={
+                  inputDefinitions[i]?.hint ??
+                  `Enter ${inputDefinitions[i]?.label?.toLowerCase() ?? "value"}${
+                    inputDefinitions[i]?.unit ? ` (${inputDefinitions[i]?.unit})` : ""
+                  }`
+                }
               />
             </label>
           ))}

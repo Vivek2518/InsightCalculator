@@ -152,6 +152,9 @@ function getCalculatorCategory(slug) {
 }
 
 function getAllJsonFiles(dir) {
+  if (!fs.existsSync(dir)) {
+    return [];
+  }
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   const files = [];
 

@@ -3,6 +3,7 @@ type InputDef = {
   label: string;
   description: string;
   unit?: string;
+  hint?: string;
 };
 
 export type FormulaProfile = {

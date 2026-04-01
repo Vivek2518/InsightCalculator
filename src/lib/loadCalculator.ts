@@ -128,6 +128,12 @@ const isProduction = process.env.NODE_ENV === "production";
  * Caches them in memory for subsequent calls (production only).
  */
 async function walkDir(dir: string): Promise<string[]> {
+  try {
+    await fs.access(dir);
+  } catch {
+    return [];
+  }
+
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const files: string[] = [];
 
