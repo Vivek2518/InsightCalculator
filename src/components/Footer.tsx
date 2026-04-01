@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getCategoryPath } from "@/lib/calculatorCategories";
 import { Rocket } from "lucide-react";
 
 export function Footer() {
@@ -66,22 +67,22 @@ export function Footer() {
             <h4 className="mb-4 font-semibold text-sm">Calculators</h4>
             <ul className="space-y-2 text-xs text-muted-foreground">
               <li>
-                <Link href="/aerodynamics" className="hover:text-foreground transition-colors">
+                <Link href={getCategoryPath("aerodynamics")} className="hover:text-foreground transition-colors">
                   Aerodynamics
                 </Link>
               </li>
               <li>
-                <Link href="/structures" className="hover:text-foreground transition-colors">
+                <Link href={getCategoryPath("structures")} className="hover:text-foreground transition-colors">
                   Structures
                 </Link>
               </li>
               <li>
-                <Link href="/propulsion" className="hover:text-foreground transition-colors">
+                <Link href={getCategoryPath("propulsion")} className="hover:text-foreground transition-colors">
                   Propulsion
                 </Link>
               </li>
               <li>
-                <Link href="/flight-mechanics" className="hover:text-foreground transition-colors">
+                <Link href={getCategoryPath("flight-mechanics")} className="hover:text-foreground transition-colors">
                   Flight Mechanics
                 </Link>
               </li>
@@ -93,12 +94,12 @@ export function Footer() {
             <h4 className="mb-4 font-semibold text-sm">More</h4>
             <ul className="space-y-2 text-xs text-muted-foreground">
               <li>
-                <Link href="/space" className="hover:text-foreground transition-colors">
+                <Link href={getCategoryPath("space")} className="hover:text-foreground transition-colors">
                   Space & Orbital
                 </Link>
               </li>
               <li>
-                <Link href="/drone" className="hover:text-foreground transition-colors">
+                <Link href={getCategoryPath("drone")} className="hover:text-foreground transition-colors">
                   Drones
                 </Link>
               </li>

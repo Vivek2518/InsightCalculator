@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Airplay, BarChart2, Drone, Globe2, Rocket } from "lucide-react";
-import { getAllCalculators } from "@/lib/loadCalculator";
-import { getCalculatorPathFromSlug, getCategoryPath } from "@/lib/calculatorCategories";
+import { getCategoryPath } from "@/lib/calculatorCategories";
 
 const categoryCards = [
   { key: "aerodynamics", title: "Aerodynamics", subtitle: "Air density, pressure, and flow", icon: Airplay },
@@ -13,24 +12,6 @@ const categoryCards = [
 ];
 
 export default async function Home() {
-  const calculators = await getAllCalculators();
-
-  const categoryCounts = calculators.reduce<Record<string, number>>((map, calculator) => {
-    const category = calculator.subcategory || calculator.category;
-    map[category] = (map[category] || 0) + 1;
-    return map;
-  }, {});
-
-  const cards = categoryCards.map((card) => {
-    const normalized = card.alias || card.key;
-    const count = categoryCounts[normalized] || 0;
-
-    return {
-      ...card,
-      count,
-    };
-  });
-
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-10 lg:px-8">
       <section className="space-y-5 text-center">
@@ -39,7 +20,7 @@ export default async function Home() {
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((card) => {
+        {categoryCards.map((card) => {
           const Icon = card.icon;
           const normalized = card.alias || card.key;
           const href = getCategoryPath(normalized);
@@ -51,7 +32,7 @@ export default async function Home() {
               </div>
               <h3 className="text-xl font-semibold">{card.title}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{card.subtitle}</p>
-              <p className="mt-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">{card.count} calculator{card.count === 1 ? "" : "s"}</p>
+              <p className="mt-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Browse subcategories</p>
             </Link>
           );
         })}

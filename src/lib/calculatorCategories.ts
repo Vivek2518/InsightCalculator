@@ -131,6 +131,14 @@ export function getCalculatorPathFromSlug(slug: string): string {
 export function getCategoryPath(category: string): string {
   const normalized = category?.trim().toLowerCase();
 
+  // New Aerospace hierarchy
+  if (normalized === "aerospace") {
+    return "/aerospace";
+  }
+  if (SUBCATEGORIES.includes(normalized as SubCategoryKey)) {
+    return `/aerospace/${normalized}`;
+  }
+
   // Subcategory or Top-level category
   if (SUBCATEGORIES.includes(normalized as SubCategoryKey) || TOP_CATEGORIES.includes(normalized as TopCategoryKey)) {
     return `/${normalized}`;

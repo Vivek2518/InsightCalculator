@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 import { getAllCalculators } from "@/lib/loadCalculator";
 import { getCalculatorPathFromSlug } from "@/lib/calculatorCategories";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { isAerospaceCategoryKey } from "@/lib/aerospaceTaxonomy";
 
 const categoryMapping: Record<string, { displayName: string }> = {
   aerodynamics: { displayName: "Aerodynamics" },
@@ -24,6 +25,15 @@ type PageProps = {
 export default async function CategoryPage({ params }: PageProps) {
   const { category } = await params;
   const categoryLower = category.toLowerCase();
+
+  // New Aerospace hierarchy lives under `/aerospace/...`
+  if (categoryLower === "aerospace") {
+    redirect("/aerospace");
+  }
+  if (isAerospaceCategoryKey(categoryLower)) {
+    redirect(`/aerospace/${categoryLower}`);
+  }
+
   const categoryConfig = categoryMapping[categoryLower];
 
   if (!categoryConfig) {
