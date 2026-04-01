@@ -25,6 +25,26 @@ type Props = {
   relatedCalculators: RelatedCalculator[];
 };
 
+function getDefaultHint(label: string, unit?: string): string {
+  const lowerLabel = label.toLowerCase();
+  const lowerUnit = (unit || "").toLowerCase();
+
+  if (lowerLabel.includes("pressure") || lowerUnit === "pa") return "e.g. 101325";
+  if (lowerLabel.includes("temperature") || lowerUnit === "k") return "e.g. 288.15";
+  if (lowerLabel.includes("gas constant")) return "e.g. 287.05";
+  if (lowerLabel.includes("velocity") || lowerUnit === "m/s") return "e.g. 250";
+  if (lowerLabel.includes("density") || lowerUnit === "kg/m^3") return "e.g. 1.225";
+  if (lowerLabel.includes("area") || lowerUnit === "m^2") return "e.g. 16.2";
+  if (lowerLabel.includes("mass") || lowerUnit === "kg") return "e.g. 1200";
+  if (lowerLabel.includes("weight") || lowerUnit === "n") return "e.g. 11772";
+  if (lowerLabel.includes("power") || lowerUnit === "w") return "e.g. 4500";
+  if (lowerLabel.includes("current") || lowerUnit === "a") return "e.g. 22";
+  if (lowerLabel.includes("voltage") || lowerUnit === "v") return "e.g. 22.2";
+  if (lowerLabel.includes("time") || lowerUnit === "h") return "e.g. 1.5";
+
+  return `e.g. ${unit ? `value in ${unit}` : "10"}`;
+}
+
 export function AerospaceCalculatorTemplate(props: Props) {
   const {
     title,
@@ -99,9 +119,10 @@ export function AerospaceCalculatorTemplate(props: Props) {
                 onChange={(e) => setInputs((prev) => ({ ...prev, [key]: e.target.value }))}
                 placeholder={
                   inputDefinitions[i]?.hint ??
-                  `Enter ${inputDefinitions[i]?.label?.toLowerCase() ?? "value"}${
-                    inputDefinitions[i]?.unit ? ` (${inputDefinitions[i]?.unit})` : ""
-                  }`
+                  getDefaultHint(
+                    inputDefinitions[i]?.label ?? "value",
+                    inputDefinitions[i]?.unit
+                  )
                 }
               />
             </label>
