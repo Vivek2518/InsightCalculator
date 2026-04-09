@@ -86,7 +86,10 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
     },
   ];
 
-  const formulaProfile = getAerospaceFormulaProfile(calculatorConfig.title);
+  const formulaProfile = getAerospaceFormulaProfile(calculatorConfig.title, {
+    categoryKey: categoryLower,
+    subcategoryKey: subLower,
+  });
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 py-10 lg:px-8">
@@ -106,11 +109,15 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
       </header>
 
       <AerospaceCalculatorTemplate
+        key={`${categoryLower}-${subLower}-${calculatorLower}`}
         title={calculatorConfig.title}
         intro={intro}
         inputDefinitions={formulaProfile.inputDefinitions}
         formulaLatex={formulaProfile.formulaLatex}
         formulaExplanation={formulaProfile.formulaExplanation}
+        calculationType={formulaProfile.calculationType}
+        resultLabel={formulaProfile.resultLabel}
+        resultUnit={formulaProfile.resultUnit}
         assumptions={assumptions}
         recommendations={recommendations}
         faqs={faqs}
@@ -135,4 +142,3 @@ export async function generateStaticParams() {
     )
   );
 }
-

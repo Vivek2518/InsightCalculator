@@ -1,15 +1,19 @@
 type InputDef = {
-  key: "input1" | "input2" | "input3";
+  key: string;
   label: string;
   description: string;
   unit?: string;
   hint?: string;
+  defaultValue?: number;
 };
 
 export type FormulaProfile = {
   inputDefinitions: InputDef[];
   formulaLatex: string;
   formulaExplanation: string;
+  calculationType?: "genericRatio" | "droneRequiredThrust" | "droneThrustToWeightRatio";
+  resultLabel?: string;
+  resultUnit?: string;
 };
 
 const DEFAULT_PROFILE: FormulaProfile = {
@@ -20,10 +24,55 @@ const DEFAULT_PROFILE: FormulaProfile = {
   ],
   formulaLatex: "Result = (Primary Input * Secondary Input) / Scale",
   formulaExplanation: "Generic engineering ratio form used as a fallback when a dedicated formula profile is not defined.",
+  calculationType: "genericRatio",
+  resultLabel: "Calculated output",
 };
 
-export function getAerospaceFormulaProfile(calculatorTitle: string): FormulaProfile {
+type FormulaProfileContext = {
+  categoryKey?: string;
+  subcategoryKey?: string;
+};
+
+export function getAerospaceFormulaProfile(
+  calculatorTitle: string,
+  context: FormulaProfileContext = {}
+): FormulaProfile {
   const t = calculatorTitle.toLowerCase();
+  const categoryKey = context.categoryKey?.toLowerCase();
+  const subcategoryKey = context.subcategoryKey?.toLowerCase();
+
+  if (categoryKey === "drone" && subcategoryKey === "thrust-to-weight-sizing") {
+    if (t === "required thrust") {
+      return {
+        inputDefinitions: [
+          { key: "mass", label: "Mass (m)", description: "Total drone mass", unit: "kg" },
+          { key: "gravity", label: "Gravity (g)", description: "Gravitational acceleration, typically 9.81", unit: "m/s^2", defaultValue: 9.81 },
+          { key: "thrustFactor", label: "Thrust Factor (k)", description: "Sizing margin for maneuvering and reserve thrust, default 2.5", unit: "-", defaultValue: 2.5 },
+          { key: "efficiency", label: "Efficiency (eta)", description: "Overall propulsion efficiency used in sizing, default 0.8", unit: "-", defaultValue: 0.8 },
+        ],
+        formulaLatex: "T_required = (m × g × k) / η",
+        formulaExplanation: "Required thrust is sized from vehicle weight, thrust margin, and overall efficiency.",
+        calculationType: "droneRequiredThrust",
+        resultLabel: "Required thrust",
+        resultUnit: "N",
+      };
+    }
+
+    if (t === "thrust-to-weight ratio") {
+      return {
+        inputDefinitions: [
+          { key: "totalThrust", label: "Available Thrust (T_available)", description: "Total thrust from all motors", unit: "N" },
+          { key: "mass", label: "Mass (m)", description: "Total drone mass", unit: "kg" },
+          { key: "gravity", label: "Gravity (g)", description: "Gravitational acceleration, typically 9.81", unit: "m/s^2", defaultValue: 9.81 },
+          { key: "efficiency", label: "Efficiency (eta)", description: "Overall propulsion efficiency, default 0.8", unit: "-", defaultValue: 0.8 },
+        ],
+        formulaLatex: "TWR = (T_available × η) / (m × g)",
+        formulaExplanation: "Thrust-to-weight ratio compares efficiency-adjusted available thrust against vehicle weight.",
+        calculationType: "droneThrustToWeightRatio",
+        resultLabel: "Thrust-to-weight ratio",
+      };
+    }
+  }
 
   if (t.includes("air density")) {
     return {
@@ -276,6 +325,8 @@ export function getAerospaceFormulaProfile(calculatorTitle: string): FormulaProf
       ],
       formulaLatex: "T/W = T / W",
       formulaExplanation: "Thrust-to-weight ratio indicates acceleration/climb capability.",
+      calculationType: "genericRatio",
+      resultLabel: "Thrust-to-weight ratio",
     };
   }
   if (t.includes("thrust")) {
@@ -573,9 +624,11 @@ export function getAerospaceFormulaProfile(calculatorTitle: string): FormulaProf
       ],
       formulaLatex: "Trequired = m * g * (T/W)",
       formulaExplanation: "Required total thrust scales with weight and chosen performance margin.",
+      calculationType: "genericRatio",
+      resultLabel: "Required thrust",
+      resultUnit: "N",
     };
   }
 
   return DEFAULT_PROFILE;
 }
-

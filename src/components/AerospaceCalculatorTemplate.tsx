@@ -6,11 +6,12 @@ import { useMemo, useState } from "react";
 type RelatedCalculator = { title: string; href: string };
 
 type InputDef = {
-  key: "input1" | "input2" | "input3";
+  key: string;
   label: string;
   description: string;
   unit?: string;
   hint?: string;
+  defaultValue?: number;
 };
 
 type Props = {
@@ -19,6 +20,9 @@ type Props = {
   inputDefinitions: InputDef[];
   formulaLatex: string;
   formulaExplanation: string;
+  calculationType?: "genericRatio" | "droneRequiredThrust" | "droneThrustToWeightRatio";
+  resultLabel?: string;
+  resultUnit?: string;
   assumptions: string[];
   recommendations: string[];
   faqs: Array<{ question: string; answer: string }>;
@@ -37,12 +41,27 @@ function getDefaultHint(label: string, unit?: string): string {
   if (lowerLabel.includes("area") || lowerUnit === "m^2") return "e.g. 16.2";
   if (lowerLabel.includes("mass") || lowerUnit === "kg") return "e.g. 1200";
   if (lowerLabel.includes("weight") || lowerUnit === "n") return "e.g. 11772";
+  if (lowerLabel.includes("thrust factor")) return "e.g. 2.5";
+  if (lowerLabel.includes("efficiency")) return "e.g. 0.8";
+  if (lowerLabel.includes("thrust")) return "e.g. 45";
   if (lowerLabel.includes("power") || lowerUnit === "w") return "e.g. 4500";
   if (lowerLabel.includes("current") || lowerUnit === "a") return "e.g. 22";
   if (lowerLabel.includes("voltage") || lowerUnit === "v") return "e.g. 22.2";
   if (lowerLabel.includes("time") || lowerUnit === "h") return "e.g. 1.5";
 
   return `e.g. ${unit ? `value in ${unit}` : "10"}`;
+}
+
+function formatDefaultValue(value: number): string {
+  return Number.isInteger(value) ? String(value) : value.toString();
+}
+
+function createInitialInputs(inputDefinitions: InputDef[]): Record<string, string> {
+  return inputDefinitions.reduce<Record<string, string>>((acc, input) => {
+    acc[input.key] =
+      input.defaultValue == null ? "" : formatDefaultValue(input.defaultValue);
+    return acc;
+  }, {});
 }
 
 export function AerospaceCalculatorTemplate(props: Props) {
@@ -52,22 +71,72 @@ export function AerospaceCalculatorTemplate(props: Props) {
     inputDefinitions,
     formulaLatex,
     formulaExplanation,
+    calculationType = "genericRatio",
+    resultLabel = "Calculated output",
+    resultUnit,
     assumptions,
     recommendations,
     faqs,
     relatedCalculators,
   } = props;
 
-  const [inputs, setInputs] = useState({ input1: "", input2: "", input3: "" });
+  const [inputs, setInputs] = useState<Record<string, string>>(() =>
+    createInitialInputs(inputDefinitions)
+  );
   const [hasCalculated, setHasCalculated] = useState(false);
 
   const result = useMemo(() => {
-    const a = Number(inputs.input1 || 0);
-    const b = Number(inputs.input2 || 0);
-    const c = Number(inputs.input3 || 1);
-    const raw = (a * b) / (c === 0 ? 1 : c);
+    const getValue = (key: string) => {
+      const value = Number(inputs[key] || 0);
+      return Number.isFinite(value) ? value : 0;
+    };
+
+    let raw = 0;
+
+    switch (calculationType) {
+      case "droneRequiredThrust": {
+        const efficiency = getValue("efficiency");
+        if (efficiency === 0) {
+          raw = 0;
+          break;
+        }
+        raw =
+          (getValue("mass") * getValue("gravity") * getValue("thrustFactor")) /
+          efficiency;
+        break;
+      }
+      case "droneThrustToWeightRatio": {
+        const denominator = getValue("mass") * getValue("gravity");
+        if (denominator === 0) {
+          raw = 0;
+          break;
+        }
+        raw = (getValue("totalThrust") * getValue("efficiency")) / denominator;
+        break;
+      }
+      case "genericRatio":
+      default: {
+        const [first, second, third] = inputDefinitions;
+        const a = first ? getValue(first.key) : 0;
+        const b = second ? getValue(second.key) : 0;
+        const c = third ? getValue(third.key) : 1;
+        raw = (a * b) / (c === 0 ? 1 : c);
+      }
+    }
+
     return Number.isFinite(raw) ? raw : 0;
-  }, [inputs.input1, inputs.input2, inputs.input3]);
+  }, [calculationType, inputDefinitions, inputs]);
+
+  const canCalculate = inputDefinitions.every((input) => (inputs[input.key] ?? "") !== "");
+  const hasDefaultedInputs = inputDefinitions.some((input) => input.defaultValue != null);
+  const inputGridClassName =
+    inputDefinitions.length >= 4
+      ? "mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+      : inputDefinitions.length === 3
+        ? "mt-4 grid gap-4 md:grid-cols-3"
+        : inputDefinitions.length === 2
+          ? "mt-4 grid gap-4 md:grid-cols-2"
+          : "mt-4 grid gap-4";
 
   return (
     <div className="space-y-8">
@@ -99,6 +168,11 @@ export function AerospaceCalculatorTemplate(props: Props) {
         </p>
         <div className="mt-4 rounded-md border border-border bg-background p-4">
           <p className="text-sm font-medium">Required inputs for calculation</p>
+          {hasDefaultedInputs ? (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Default values are prefilled where applicable. You can overwrite them.
+            </p>
+          ) : null}
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
             {inputDefinitions.map((item) => (
               <li key={item.key}>
@@ -108,20 +182,20 @@ export function AerospaceCalculatorTemplate(props: Props) {
             ))}
           </ul>
         </div>
-        <div className="mt-4 grid gap-4 md:grid-cols-3">
-          {(["input1", "input2", "input3"] as const).map((key, i) => (
-            <label className="text-sm" key={key}>
-              <div className="mb-1 text-muted-foreground">{inputDefinitions[i]?.label ?? key}</div>
+        <div className={inputGridClassName}>
+          {inputDefinitions.map((input) => (
+            <label className="text-sm" key={input.key}>
+              <div className="mb-1 text-muted-foreground">{input.label}</div>
               <input
                 type="number"
                 className="w-full rounded-md border border-input bg-background px-3 py-2"
-                value={inputs[key]}
-                onChange={(e) => setInputs((prev) => ({ ...prev, [key]: e.target.value }))}
+                value={inputs[input.key] ?? ""}
+                onChange={(e) => setInputs((prev) => ({ ...prev, [input.key]: e.target.value }))}
                 placeholder={
-                  inputDefinitions[i]?.hint ??
+                  input.hint ??
                   getDefaultHint(
-                    inputDefinitions[i]?.label ?? "value",
-                    inputDefinitions[i]?.unit
+                    input.label ?? "value",
+                    input.unit
                   )
                 }
               />
@@ -132,6 +206,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
           type="button"
           className="mt-4 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
           onClick={() => setHasCalculated(true)}
+          disabled={!canCalculate}
         >
           Calculate
         </button>
@@ -143,8 +218,11 @@ export function AerospaceCalculatorTemplate(props: Props) {
           <p className="mt-3 text-sm text-muted-foreground">Results are hidden until you click Calculate.</p>
         ) : (
           <div className="mt-3 rounded-md border border-border bg-background p-4">
-            <p className="text-sm text-muted-foreground">Calculated output for {title}</p>
-            <p className="mt-1 text-2xl font-semibold">{result.toFixed(4)}</p>
+            <p className="text-sm text-muted-foreground">{resultLabel} for {title}</p>
+            <p className="mt-1 text-2xl font-semibold">
+              {result.toFixed(4)}
+              {resultUnit ? ` ${resultUnit}` : ""}
+            </p>
           </div>
         )}
       </section>
@@ -196,4 +274,3 @@ export function AerospaceCalculatorTemplate(props: Props) {
     </div>
   );
 }
-
