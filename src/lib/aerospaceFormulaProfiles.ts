@@ -7,11 +7,21 @@ type InputDef = {
   defaultValue?: number;
 };
 
+type FormulaDetailSection = {
+  title: string;
+  lines: string[];
+};
+
 export type FormulaProfile = {
   inputDefinitions: InputDef[];
   formulaLatex: string;
   formulaExplanation: string;
-  calculationType?: "genericRatio" | "droneRequiredThrust" | "droneThrustToWeightRatio";
+  formulaDetails?: FormulaDetailSection[];
+  calculationType?:
+    | "genericRatio"
+    | "droneRequiredThrust"
+    | "droneThrustToWeightRatio"
+    | "isaAirDensity";
   resultLabel?: string;
   resultUnit?: string;
 };
@@ -77,12 +87,43 @@ export function getAerospaceFormulaProfile(
   if (t.includes("air density")) {
     return {
       inputDefinitions: [
-        { key: "input1", label: "Pressure (P)", description: "Static pressure", unit: "Pa" },
-        { key: "input2", label: "Temperature (T)", description: "Absolute temperature", unit: "K" },
-        { key: "input3", label: "Gas Constant (R)", description: "Specific gas constant for air", unit: "J/kg.K" },
+        {
+          key: "altitude",
+          label: "Altitude (h)",
+          description: "ISA altitude above mean sea level, valid from 0 to 86,000 m",
+          unit: "m",
+          hint: "e.g. 12000",
+          defaultValue: 0,
+        },
       ],
-      formulaLatex: "rho = P / (R * T)",
-      formulaExplanation: "Air density is obtained from the ideal gas equation using pressure and absolute temperature.",
+      formulaLatex: "rho(h) = P(h) / (R * T(h))",
+      formulaDetails: [
+        {
+          title: "Temperature by ISA layer",
+          lines: [
+            "0-11 km: T = 288.15 - 0.0065h",
+            "11-20 km: T = 216.65",
+            "20-32 km: T = 216.65 + 0.001(h - 20000)",
+            "32-47 km: T = 228.65 + 0.0028(h - 32000)",
+            "47-51 km: T = 270.65",
+            "51-71 km: T = 270.65 - 0.0028(h - 51000)",
+            "71-86 km: T = 214.65 - 0.002(h - 71000)",
+          ],
+        },
+        {
+          title: "Pressure relation used in each layer",
+          lines: [
+            "Lapse-rate layers: P = P_b * (T / T_b)^(-g0 / (R * L))",
+            "Isothermal layers: P = P_b * exp(-g0(h - h_b) / (R * T_b))",
+            "At every boundary, compute P_b and T_b first, then carry them into the next layer.",
+          ],
+        },
+      ],
+      formulaExplanation:
+        "This calculator uses the standard ISA layer model from sea level to 86 km. Base temperature and pressure are propagated across every layer boundary so the density profile stays continuous, with g0 = 9.80665 m/s^2 and R = 287.05 J/kg.K.",
+      calculationType: "isaAirDensity",
+      resultLabel: "Air density",
+      resultUnit: "kg/m^3",
     };
   }
   if (t.includes("speed of sound")) {

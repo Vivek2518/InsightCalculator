@@ -147,6 +147,7 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
         inputDefinitions={formulaProfile.inputDefinitions}
         formulaLatex={formulaProfile.formulaLatex}
         formulaExplanation={formulaProfile.formulaExplanation}
+        formulaDetails={formulaProfile.formulaDetails}
         calculationType={formulaProfile.calculationType}
         resultLabel={formulaProfile.resultLabel}
         resultUnit={formulaProfile.resultUnit}

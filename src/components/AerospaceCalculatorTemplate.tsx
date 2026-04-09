@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import {
+  calculateIsaAirDensity,
+  ISA_MAX_ALTITUDE_METERS,
+} from "@/lib/aerospaceCalculations";
 
 type RelatedCalculator = { title: string; href: string };
 
@@ -14,13 +18,23 @@ type InputDef = {
   defaultValue?: number;
 };
 
+type FormulaDetailSection = {
+  title: string;
+  lines: string[];
+};
+
 type Props = {
   title: string;
   intro: string[];
   inputDefinitions: InputDef[];
   formulaLatex: string;
   formulaExplanation: string;
-  calculationType?: "genericRatio" | "droneRequiredThrust" | "droneThrustToWeightRatio";
+  formulaDetails?: FormulaDetailSection[];
+  calculationType?:
+    | "genericRatio"
+    | "droneRequiredThrust"
+    | "droneThrustToWeightRatio"
+    | "isaAirDensity";
   resultLabel?: string;
   resultUnit?: string;
   assumptions: string[];
@@ -36,6 +50,7 @@ function getDefaultHint(label: string, unit?: string): string {
   if (lowerLabel.includes("pressure") || lowerUnit === "pa") return "e.g. 101325";
   if (lowerLabel.includes("temperature") || lowerUnit === "k") return "e.g. 288.15";
   if (lowerLabel.includes("gas constant")) return "e.g. 287.05";
+  if (lowerLabel.includes("altitude")) return "e.g. 12000";
   if (lowerLabel.includes("velocity") || lowerUnit === "m/s") return "e.g. 250";
   if (lowerLabel.includes("density") || lowerUnit === "kg/m^3") return "e.g. 1.225";
   if (lowerLabel.includes("area") || lowerUnit === "m^2") return "e.g. 16.2";
@@ -64,6 +79,16 @@ function createInitialInputs(inputDefinitions: InputDef[]): Record<string, strin
   }, {});
 }
 
+function formatResultValue(value: number): string {
+  const absoluteValue = Math.abs(value);
+
+  if (absoluteValue > 0 && absoluteValue < 0.001) {
+    return value.toExponential(4);
+  }
+
+  return value.toFixed(4);
+}
+
 export function AerospaceCalculatorTemplate(props: Props) {
   const {
     title,
@@ -71,6 +96,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
     inputDefinitions,
     formulaLatex,
     formulaExplanation,
+    formulaDetails,
     calculationType = "genericRatio",
     resultLabel = "Calculated output",
     resultUnit,
@@ -92,8 +118,20 @@ export function AerospaceCalculatorTemplate(props: Props) {
     };
 
     let raw = 0;
+    let error: string | null = null;
 
     switch (calculationType) {
+      case "isaAirDensity": {
+        const isaResult = calculateIsaAirDensity(getValue("altitude"));
+
+        if (!isaResult) {
+          error = `Enter an altitude between 0 and ${ISA_MAX_ALTITUDE_METERS.toLocaleString()} m for the ISA model.`;
+          break;
+        }
+
+        raw = isaResult.density;
+        break;
+      }
       case "droneRequiredThrust": {
         const efficiency = getValue("efficiency");
         if (efficiency === 0) {
@@ -124,7 +162,10 @@ export function AerospaceCalculatorTemplate(props: Props) {
       }
     }
 
-    return Number.isFinite(raw) ? raw : 0;
+    return {
+      raw: Number.isFinite(raw) ? raw : 0,
+      error,
+    };
   }, [calculationType, inputDefinitions, inputs]);
 
   const canCalculate = inputDefinitions.every((input) => (inputs[input.key] ?? "") !== "");
@@ -216,11 +257,15 @@ export function AerospaceCalculatorTemplate(props: Props) {
         <h2 className="text-xl font-semibold">Results</h2>
         {!hasCalculated ? (
           <p className="mt-3 text-sm text-muted-foreground">Results are hidden until you click Calculate.</p>
+        ) : result.error ? (
+          <div className="mt-3 rounded-md border border-border bg-background p-4">
+            <p className="text-sm text-muted-foreground">{result.error}</p>
+          </div>
         ) : (
           <div className="mt-3 rounded-md border border-border bg-background p-4">
             <p className="text-sm text-muted-foreground">{resultLabel} for {title}</p>
             <p className="mt-1 text-2xl font-semibold">
-              {result.toFixed(4)}
+              {formatResultValue(result.raw)}
               {resultUnit ? ` ${resultUnit}` : ""}
             </p>
           </div>
@@ -230,7 +275,23 @@ export function AerospaceCalculatorTemplate(props: Props) {
       <section id="formula" className="rounded-lg border border-border bg-card p-6">
         <h2 className="text-xl font-semibold">Formula used for calculations</h2>
         <div className="mt-3 rounded-md border border-border bg-background p-4">
-          <p className="font-mono text-sm">{formulaLatex}</p>
+          <p className="font-mono text-base font-semibold">{formulaLatex}</p>
+          {formulaDetails?.length ? (
+            <div className="mt-4 space-y-4">
+              {formulaDetails.map((section) => (
+                <div key={section.title} className="rounded-md border border-border/70 bg-card p-4">
+                  <p className="text-sm font-medium text-foreground">{section.title}</p>
+                  <div className="mt-3 space-y-2">
+                    {section.lines.map((line) => (
+                      <p key={line} className="font-mono text-sm leading-6 text-foreground/90">
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
           <p className="mt-2 text-sm text-muted-foreground">{formulaExplanation}</p>
         </div>
       </section>
