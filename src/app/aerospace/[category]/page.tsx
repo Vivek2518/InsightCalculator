@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import {
   getAerospaceCategory,
+  getAerospaceCategoryPath,
   getAerospaceSubcategoryPath,
   isAerospaceCategoryKey,
   type AerospaceCategoryKey,
@@ -14,6 +16,29 @@ type PageProps = {
     category: string;
   }>;
 };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { category } = await params;
+  const categoryLower = category.toLowerCase();
+
+  if (!isAerospaceCategoryKey(categoryLower)) {
+    return {};
+  }
+
+  const categoryConfig = getAerospaceCategory(categoryLower);
+
+  if (!categoryConfig) {
+    return {};
+  }
+
+  return {
+    title: `${categoryConfig.title} Calculators | InsightCalculator`,
+    description: `Browse free ${categoryConfig.title.toLowerCase()} calculators from InsightCalculator. Explore ${categoryConfig.subcategories.length} subcategories for fast aerospace engineering estimates.`,
+    alternates: {
+      canonical: getAerospaceCategoryPath(categoryLower),
+    },
+  };
+}
 
 export default async function AerospaceCategoryPage({ params }: PageProps) {
   const { category } = await params;
@@ -71,4 +96,3 @@ export default async function AerospaceCategoryPage({ params }: PageProps) {
 export async function generateStaticParams() {
   return AEROSPACE_CATEGORIES.map((c) => ({ category: c.key }));
 }
-

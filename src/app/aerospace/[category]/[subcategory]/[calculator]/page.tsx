@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -22,6 +23,37 @@ type PageProps = {
     calculator: string;
   }>;
 };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { category, subcategory, calculator } = await params;
+  const categoryLower = category.toLowerCase();
+  const subLower = subcategory.toLowerCase();
+  const calculatorLower = calculator.toLowerCase();
+
+  if (!isAerospaceCategoryKey(categoryLower)) {
+    return {};
+  }
+
+  const categoryConfig = getAerospaceCategory(categoryLower);
+  const subcategoryConfig = getAerospaceSubcategory(categoryLower, subLower);
+  const calculatorConfig = getAerospaceCalculator(categoryLower, subLower, calculatorLower);
+
+  if (!categoryConfig || !subcategoryConfig || !calculatorConfig) {
+    return {};
+  }
+
+  return {
+    title: `${calculatorConfig.title} Calculator | InsightCalculator`,
+    description: `Use the free ${calculatorConfig.title} calculator for quick ${subcategoryConfig.title.toLowerCase()} estimates in ${categoryConfig.title.toLowerCase()}.`,
+    alternates: {
+      canonical: getAerospaceCalculatorPath(
+        categoryLower as AerospaceCategoryKey,
+        subLower,
+        calculatorLower
+      ),
+    },
+  };
+}
 
 export default async function AerospaceCalculatorPage({ params }: PageProps) {
   const { category, subcategory, calculator } = await params;

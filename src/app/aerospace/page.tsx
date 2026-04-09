@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { AEROSPACE_CATEGORIES, getAerospaceCategoryPath } from "@/lib/aerospaceTaxonomy";
+
+export const metadata: Metadata = {
+  title: "Aerospace Calculators | InsightCalculator",
+  description:
+    "Browse aerospace calculator categories for aerodynamics, propulsion, structures, flight mechanics, space, and drone analysis.",
+  alternates: {
+    canonical: "/aerospace",
+  },
+};
 
 export default function AerospacePage() {
   return (
@@ -42,4 +52,3 @@ export default function AerospacePage() {
 }
 
 export const dynamic = "force-static";
-

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ChevronRight } from "lucide-react";
@@ -6,6 +7,7 @@ import {
   getAerospaceSubcategory,
   getAerospaceCalculators,
   getAerospaceCalculatorPath,
+  getAerospaceSubcategoryPath,
   isAerospaceCategoryKey,
   AEROSPACE_CATEGORIES,
   type AerospaceCategoryKey,
@@ -17,6 +19,32 @@ type PageProps = {
     subcategory: string;
   }>;
 };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { category, subcategory } = await params;
+  const categoryLower = category.toLowerCase();
+  const subLower = subcategory.toLowerCase();
+
+  if (!isAerospaceCategoryKey(categoryLower)) {
+    return {};
+  }
+
+  const categoryConfig = getAerospaceCategory(categoryLower);
+  const subConfig = getAerospaceSubcategory(categoryLower, subLower);
+  const calculators = getAerospaceCalculators(categoryLower, subLower);
+
+  if (!categoryConfig || !subConfig) {
+    return {};
+  }
+
+  return {
+    title: `${subConfig.title} Calculators | ${categoryConfig.title} | InsightCalculator`,
+    description: `Use ${calculators.length} free ${subConfig.title.toLowerCase()} calculators for ${categoryConfig.title.toLowerCase()} workflows and quick engineering estimates.`,
+    alternates: {
+      canonical: getAerospaceSubcategoryPath(categoryLower as AerospaceCategoryKey, subLower),
+    },
+  };
+}
 
 export default async function AerospaceSubcategoryPage({ params }: PageProps) {
   const { category, subcategory } = await params;
@@ -85,4 +113,3 @@ export async function generateStaticParams() {
     }))
   );
 }
-

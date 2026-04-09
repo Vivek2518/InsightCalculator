@@ -4,4 +4,3 @@ Disallow: /tmp/
 Disallow: /admin/
 
 Sitemap: https://www.insightcalculator.com/sitemap.xml
-Sitemap: https://insightcalculator.com/sitemap.xml

@@ -7,13 +7,11 @@ import { Footer } from "@/components/Footer";
 const CANONICAL_DOMAIN = "https://www.insightcalculator.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(CANONICAL_DOMAIN),
   title: "InsightCalculator | Precision Aerospace, Drone & Engineering Tools",
   description:
     "Fast, accurate, and free online calculators for Aerospace, Drone, and Engineering professionals. Get instant results for Mach number, air density, flight mechanics, and more with InsightCalculator.",
   keywords: "aerospace calculator, drone calculator, engineering tools, mach number calculator, air density calculator, flight mechanics, propulsion tools, orbit calculator, wing loading, stall speed, free online calculators",
-  alternates: {
-    canonical: CANONICAL_DOMAIN,
-  },
   robots: {
     index: true,
     follow: true,

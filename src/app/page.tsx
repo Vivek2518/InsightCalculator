@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Airplay, BarChart2, Drone, Globe2, Rocket } from "lucide-react";
 import { getCategoryPath } from "@/lib/calculatorCategories";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const categoryCards = [
   { key: "aerodynamics", title: "Aerodynamics", subtitle: "Air density, pressure, and flow", icon: Airplay },
