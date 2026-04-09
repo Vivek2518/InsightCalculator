@@ -2,6 +2,7 @@ const ISA_STANDARD_GRAVITY = 9.80665;
 const ISA_SPECIFIC_GAS_CONSTANT = 287.05;
 const ISA_SEA_LEVEL_TEMPERATURE = 288.15;
 const ISA_SEA_LEVEL_PRESSURE = 101325;
+const STANDARD_AIR_HEAT_CAPACITY_RATIO = 1.4;
 const SUTHERLAND_REFERENCE_TEMPERATURE = 273.15;
 const SUTHERLAND_REFERENCE_VISCOSITY = 1.716e-5;
 const SUTHERLAND_CONSTANT = 110.4;
@@ -95,6 +96,16 @@ export type IsaAirDensityResult = {
   layer: string;
 };
 
+export type DynamicPressureResult = {
+  dynamicPressure: number;
+  density: number;
+  velocity: number;
+  altitude?: number;
+  temperature?: number;
+  speedOfSound?: number;
+  layer?: string;
+};
+
 export function calculateIsaAirDensity(
   altitudeMeters: number
 ): IsaAirDensityResult | null {
@@ -138,6 +149,25 @@ export function calculateIsaAirDensity(
   };
 }
 
+export function calculateSpeedOfSound(
+  temperatureKelvin: number,
+  gamma = STANDARD_AIR_HEAT_CAPACITY_RATIO,
+  gasConstant = ISA_SPECIFIC_GAS_CONSTANT
+): number | null {
+  if (
+    !Number.isFinite(temperatureKelvin) ||
+    !Number.isFinite(gamma) ||
+    !Number.isFinite(gasConstant) ||
+    temperatureKelvin <= 0 ||
+    gamma <= 0 ||
+    gasConstant <= 0
+  ) {
+    return null;
+  }
+
+  return Math.sqrt(gamma * gasConstant * temperatureKelvin);
+}
+
 export function calculateSutherlandDynamicViscosity(
   temperatureKelvin: number
 ): number | null {
@@ -154,6 +184,101 @@ export function calculateSutherlandDynamicViscosity(
     ((SUTHERLAND_REFERENCE_TEMPERATURE + SUTHERLAND_CONSTANT) /
       (temperatureKelvin + SUTHERLAND_CONSTANT))
   );
+}
+
+type DynamicPressureInput = {
+  density: number;
+  velocity: number;
+};
+
+export function calculateDynamicPressure({
+  density,
+  velocity,
+}: DynamicPressureInput): number | null {
+  if (
+    !Number.isFinite(density) ||
+    !Number.isFinite(velocity) ||
+    density <= 0 ||
+    velocity < 0
+  ) {
+    return null;
+  }
+
+  return 0.5 * density * velocity * velocity;
+}
+
+export function calculateDynamicPressureAtAltitude(
+  altitudeMeters: number,
+  velocity: number
+): DynamicPressureResult | null {
+  if (!Number.isFinite(velocity) || velocity < 0) {
+    return null;
+  }
+
+  const isaResult = calculateIsaAirDensity(altitudeMeters);
+
+  if (!isaResult) {
+    return null;
+  }
+
+  const dynamicPressure = calculateDynamicPressure({
+    density: isaResult.density,
+    velocity,
+  });
+
+  if (dynamicPressure == null) {
+    return null;
+  }
+
+  return {
+    dynamicPressure,
+    density: isaResult.density,
+    velocity,
+    altitude: isaResult.altitude,
+    temperature: isaResult.temperature,
+    layer: isaResult.layer,
+  };
+}
+
+export function calculateDynamicPressureFromMachAndAltitude(
+  machNumber: number,
+  altitudeMeters: number
+): DynamicPressureResult | null {
+  if (!Number.isFinite(machNumber) || machNumber < 0) {
+    return null;
+  }
+
+  const isaResult = calculateIsaAirDensity(altitudeMeters);
+
+  if (!isaResult) {
+    return null;
+  }
+
+  const speedOfSound = calculateSpeedOfSound(isaResult.temperature);
+
+  if (speedOfSound == null) {
+    return null;
+  }
+
+  const velocity = machNumber * speedOfSound;
+  const dynamicPressure = calculateDynamicPressure({
+    density: isaResult.density,
+    velocity,
+  });
+
+  if (dynamicPressure == null) {
+    return null;
+  }
+
+  return {
+    dynamicPressure,
+    density: isaResult.density,
+    velocity,
+    altitude: isaResult.altitude,
+    temperature: isaResult.temperature,
+    speedOfSound,
+    layer: isaResult.layer,
+  };
 }
 
 type ReynoldsNumberInput = {

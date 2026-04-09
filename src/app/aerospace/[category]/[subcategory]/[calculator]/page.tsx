@@ -90,6 +90,7 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
     subcategoryKey: subLower,
   });
   const isReynoldsNumber = formulaProfile.calculationType === "reynoldsNumber";
+  const isDynamicPressure = formulaProfile.calculationType === "dynamicPressure";
 
   const intro = isReynoldsNumber
     ? [
@@ -97,6 +98,12 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
         "Choose characteristic length to match the problem geometry, such as airfoil chord, pipe diameter, or missile/UAV body length.",
         "Advanced mode can estimate density from ISA altitude and dynamic viscosity from Sutherland's law for quick atmospheric checks.",
       ]
+    : isDynamicPressure
+      ? [
+          "Dynamic Pressure converts air density and air-relative speed into the aerodynamic loading term used in lift, drag, and air-data work.",
+          "Use manual mode when local density is already known, altitude mode when you want ISA density from height, and Mach + altitude mode when flight condition is defined by compressible-flow inputs.",
+          "Integrated mode computes ISA temperature, local speed of sound, velocity, density, and dynamic pressure in one engineering workflow.",
+        ]
     : [
         `${calculatorConfig.title} helps estimate key ${subcategoryConfig.title.toLowerCase()} values quickly.`,
         "Use it for quick design checks, what-if analysis, and early sizing decisions.",
@@ -109,6 +116,12 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
         "Advanced mode assumes standard ISA conditions up to 86 km and air viscosity from Sutherland's law.",
         "Characteristic length should represent the dominant dimension of the flow problem.",
       ]
+    : isDynamicPressure
+      ? [
+          "Velocity is relative to the surrounding air and all inputs use SI units.",
+          "Altitude-based modes assume ISA conditions up to 86 km.",
+          "Mach + altitude mode assumes standard air with gamma = 1.4 and R = 287.05 J/kg.K.",
+        ]
     : [
         "Inputs are in consistent units.",
         "The selected formula is a simplified engineering relation.",
@@ -121,6 +134,12 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
         "If measured density or viscosity is available, prefer manual mode over atmospheric estimates.",
         "Interpret the result alongside the geometry-specific transition criteria for your application.",
       ]
+    : isDynamicPressure
+      ? [
+          "Use local measured density in manual mode when atmospheric conditions deviate from ISA.",
+          "Use Mach + altitude mode when your flight condition is defined in terms of compressible-flow variables.",
+          "For loads and performance calculations, make sure velocity is true airspeed or another air-relative speed consistent with the density used.",
+        ]
     : [
         "Validate boundary conditions before using outputs in design decisions.",
         "Compare multiple scenarios by varying one input at a time.",
@@ -145,6 +164,24 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
             "Yes for preliminary engineering analysis, provided you use the correct characteristic length and validate against measured properties when available.",
         },
       ]
+    : isDynamicPressure
+      ? [
+          {
+            question: "What velocity should I use for dynamic pressure?",
+            answer:
+              "Use air-relative velocity. In most aircraft workflows that means true airspeed or another speed quantity that is consistent with the density being used.",
+          },
+          {
+            question: "What does Mach + altitude mode compute?",
+            answer:
+              "It computes ISA temperature from altitude, local speed of sound, velocity from Mach number, ISA density, and then dynamic pressure.",
+          },
+          {
+            question: "Is this suitable for engineering use?",
+            answer:
+              "Yes for real engineering workflows such as performance checks, loads estimates, and air-data calculations, provided the ISA assumption matches the atmosphere you want to model.",
+          },
+        ]
     : [
         {
           question: `What does ${calculatorConfig.title} calculate?`,

@@ -22,7 +22,8 @@ export type FormulaProfile = {
     | "droneRequiredThrust"
     | "droneThrustToWeightRatio"
     | "isaAirDensity"
-    | "reynoldsNumber";
+    | "reynoldsNumber"
+    | "dynamicPressure";
   resultLabel?: string;
   resultUnit?: string;
 };
@@ -209,12 +210,53 @@ export function getAerospaceFormulaProfile(
   if (t.includes("dynamic pressure")) {
     return {
       inputDefinitions: [
-        { key: "input1", label: "Density (rho)", description: "Air density", unit: "kg/m^3" },
-        { key: "input2", label: "Velocity (V)", description: "Flow speed", unit: "m/s" },
-        { key: "input3", label: "Reference", description: "Use 1 if unused", unit: "-" },
+        {
+          key: "density",
+          label: "Density (rho)",
+          description: "Local air density",
+          unit: "kg/m^3",
+          hint: "e.g. 1.225",
+        },
+        {
+          key: "velocity",
+          label: "Velocity (V)",
+          description: "Flow or aircraft speed relative to air",
+          unit: "m/s",
+          hint: "e.g. 70",
+        },
       ],
       formulaLatex: "q = 0.5 * rho * V^2",
-      formulaExplanation: "Dynamic pressure is the kinetic energy per unit volume of the flow.",
+      formulaDetails: [
+        {
+          title: "Manual engineering inputs",
+          lines: [
+            "Density rho is the local air density in kg/m^3.",
+            "Velocity V is the flow or aircraft speed relative to the surrounding air in m/s.",
+          ],
+        },
+        {
+          title: "Optional altitude mode",
+          lines: [
+            "Input altitude h and velocity V.",
+            "Density rho is computed automatically from ISA.",
+          ],
+        },
+        {
+          title: "Optional Mach + altitude mode",
+          lines: [
+            "T = T_ISA(h)",
+            "a = sqrt(gamma * R * T)",
+            "V = M * a",
+            "rho = rho_ISA(h)",
+            "q = 0.5 * rho * V^2",
+          ],
+        },
+      ],
+      formulaExplanation:
+        "Dynamic pressure is the aerodynamic loading term used in lift, drag, and air-data workflows. Keep SI units consistent: rho in kg/m^3 and V in m/s. In integrated mode the calculator derives temperature, speed of sound, velocity, and density from altitude and Mach number.",
+      calculationType: "dynamicPressure",
+      resultLabel: "Dynamic pressure",
+      resultUnit: "Pa",
     };
   }
   if (t.includes("lift force")) {

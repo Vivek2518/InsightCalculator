@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+  calculateDynamicPressure,
+  calculateDynamicPressureAtAltitude,
+  calculateDynamicPressureFromMachAndAltitude,
   calculateIsaAirDensity,
   calculateReynoldsNumber,
   calculateSutherlandDynamicViscosity,
@@ -42,7 +45,8 @@ type Props = {
     | "droneRequiredThrust"
     | "droneThrustToWeightRatio"
     | "isaAirDensity"
-    | "reynoldsNumber";
+    | "reynoldsNumber"
+    | "dynamicPressure";
   resultLabel?: string;
   resultUnit?: string;
   assumptions: string[];
@@ -58,6 +62,7 @@ function getDefaultHint(label: string, unit?: string): string {
   if (lowerLabel.includes("pressure") || lowerUnit === "pa") return "e.g. 101325";
   if (lowerLabel.includes("temperature") || lowerUnit === "k") return "e.g. 288.15";
   if (lowerLabel.includes("gas constant")) return "e.g. 287.05";
+  if (lowerLabel.includes("mach")) return "e.g. 0.78";
   if (lowerLabel.includes("viscosity") || lowerUnit === "pa.s") return "e.g. 1.789e-5";
   if (lowerLabel.includes("altitude")) return "e.g. 12000";
   if (lowerLabel.includes("velocity") || lowerUnit === "m/s") return "e.g. 250";
@@ -134,6 +139,42 @@ const REYNOLDS_ADVANCED_INPUT_DEFINITIONS: InputDef[] = [
   },
 ];
 
+const DYNAMIC_PRESSURE_ALTITUDE_INPUT_DEFINITIONS: InputDef[] = [
+  {
+    key: "altitude",
+    label: "Altitude (h)",
+    description: "ISA altitude above mean sea level for automatic density estimation",
+    unit: "m",
+    hint: "e.g. 5000",
+    defaultValue: 0,
+  },
+  {
+    key: "velocity",
+    label: "Velocity (V)",
+    description: "Flow or aircraft speed relative to air",
+    unit: "m/s",
+    hint: "e.g. 70",
+  },
+];
+
+const DYNAMIC_PRESSURE_MACH_INPUT_DEFINITIONS: InputDef[] = [
+  {
+    key: "altitude",
+    label: "Altitude (h)",
+    description: "ISA altitude above mean sea level for integrated flight-condition calculations",
+    unit: "m",
+    hint: "e.g. 11000",
+    defaultValue: 0,
+  },
+  {
+    key: "mach",
+    label: "Mach Number (M)",
+    description: "Flow speed divided by local speed of sound",
+    unit: "-",
+    hint: "e.g. 0.78",
+  },
+];
+
 function mergeInputDefinitions(...groups: InputDef[][]): InputDef[] {
   const merged = new Map<string, InputDef>();
 
@@ -164,13 +205,32 @@ export function AerospaceCalculatorTemplate(props: Props) {
   } = props;
 
   const [reynoldsMode, setReynoldsMode] = useState<"manual" | "advanced">("manual");
+  const [dynamicPressureMode, setDynamicPressureMode] = useState<
+    "manual" | "altitude" | "machAltitude"
+  >("manual");
+  const isReynoldsCalculator = calculationType === "reynoldsNumber";
+  const isDynamicPressureCalculator = calculationType === "dynamicPressure";
   const allInputDefinitions =
-    calculationType === "reynoldsNumber"
+    isReynoldsCalculator
       ? mergeInputDefinitions(inputDefinitions, REYNOLDS_ADVANCED_INPUT_DEFINITIONS)
+      : isDynamicPressureCalculator
+        ? mergeInputDefinitions(
+            inputDefinitions,
+            DYNAMIC_PRESSURE_ALTITUDE_INPUT_DEFINITIONS,
+            DYNAMIC_PRESSURE_MACH_INPUT_DEFINITIONS
+          )
       : inputDefinitions;
   const activeInputDefinitions =
-    calculationType === "reynoldsNumber" && reynoldsMode === "advanced"
-      ? REYNOLDS_ADVANCED_INPUT_DEFINITIONS
+    isReynoldsCalculator
+      ? reynoldsMode === "advanced"
+        ? REYNOLDS_ADVANCED_INPUT_DEFINITIONS
+        : inputDefinitions
+      : isDynamicPressureCalculator
+        ? dynamicPressureMode === "altitude"
+          ? DYNAMIC_PRESSURE_ALTITUDE_INPUT_DEFINITIONS
+          : dynamicPressureMode === "machAltitude"
+            ? DYNAMIC_PRESSURE_MACH_INPUT_DEFINITIONS
+            : inputDefinitions
       : inputDefinitions;
   const [inputs, setInputs] = useState<Record<string, string>>(() =>
     createInitialInputs(allInputDefinitions)
@@ -197,6 +257,117 @@ export function AerospaceCalculatorTemplate(props: Props) {
         }
 
         raw = isaResult.density;
+        break;
+      }
+      case "dynamicPressure": {
+        if (dynamicPressureMode === "manual") {
+          const density = getValue("density");
+          const velocity = getValue("velocity");
+
+          if (density <= 0) {
+            error = "Density must be greater than zero.";
+            break;
+          }
+
+          if (velocity < 0) {
+            error = "Velocity must be zero or greater.";
+            break;
+          }
+
+          const dynamicPressure = calculateDynamicPressure({
+            density,
+            velocity,
+          });
+
+          if (dynamicPressure == null) {
+            error = "Check that density and velocity are valid for dynamic pressure.";
+            break;
+          }
+
+          raw = dynamicPressure;
+          break;
+        }
+
+        if (dynamicPressureMode === "altitude") {
+          const altitude = getValue("altitude");
+          const velocity = getValue("velocity");
+
+          if (velocity < 0) {
+            error = "Velocity must be zero or greater.";
+            break;
+          }
+
+          const dynamicPressureResult = calculateDynamicPressureAtAltitude(
+            altitude,
+            velocity
+          );
+
+          if (!dynamicPressureResult) {
+            error = `Enter an altitude between 0 and ${ISA_MAX_ALTITUDE_METERS.toLocaleString()} m, and a velocity greater than or equal to zero.`;
+            break;
+          }
+
+          raw = dynamicPressureResult.dynamicPressure;
+          details = [
+            {
+              label: "Density used (ISA)",
+              value: formatResultDetailValue(dynamicPressureResult.density, "kg/m^3"),
+            },
+            {
+              label: "Temperature used (ISA)",
+              value: `${dynamicPressureResult.temperature?.toFixed(2) ?? "0.00"} K`,
+            },
+            {
+              label: "ISA layer",
+              value: dynamicPressureResult.layer ?? "N/A",
+            },
+          ];
+          break;
+        }
+
+        const machNumber = getValue("mach");
+
+        if (machNumber < 0) {
+          error = "Mach number must be zero or greater.";
+          break;
+        }
+
+        const dynamicPressureResult = calculateDynamicPressureFromMachAndAltitude(
+          machNumber,
+          getValue("altitude")
+        );
+
+        if (!dynamicPressureResult) {
+          error = `Enter an altitude between 0 and ${ISA_MAX_ALTITUDE_METERS.toLocaleString()} m, and a Mach number greater than or equal to zero.`;
+          break;
+        }
+
+        raw = dynamicPressureResult.dynamicPressure;
+        details = [
+          {
+            label: "Temperature used (ISA)",
+            value: `${dynamicPressureResult.temperature?.toFixed(2) ?? "0.00"} K`,
+          },
+          {
+            label: "Speed of sound (a)",
+            value: formatResultDetailValue(
+              dynamicPressureResult.speedOfSound ?? 0,
+              "m/s"
+            ),
+          },
+          {
+            label: "Velocity from Mach",
+            value: formatResultDetailValue(dynamicPressureResult.velocity, "m/s"),
+          },
+          {
+            label: "Density used (ISA)",
+            value: formatResultDetailValue(dynamicPressureResult.density, "kg/m^3"),
+          },
+          {
+            label: "ISA layer",
+            value: dynamicPressureResult.layer ?? "N/A",
+          },
+        ];
         break;
       }
       case "reynoldsNumber": {
@@ -323,7 +494,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
       error,
       details,
     };
-  }, [calculationType, inputDefinitions, inputs, reynoldsMode]);
+  }, [calculationType, dynamicPressureMode, inputDefinitions, inputs, reynoldsMode]);
 
   const canCalculate = activeInputDefinitions.every(
     (input) => (inputs[input.key] ?? "") !== ""
@@ -368,7 +539,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
         <p className="mt-2 text-sm text-muted-foreground">
           Enter the required values used in the formula for {title}.
         </p>
-        {calculationType === "reynoldsNumber" ? (
+        {isReynoldsCalculator ? (
           <div className="mt-4 rounded-md border border-border bg-background p-4">
             <p className="text-sm font-medium">Calculation mode</p>
             <div className="mt-3 flex flex-wrap gap-2">
@@ -404,6 +575,60 @@ export function AerospaceCalculatorTemplate(props: Props) {
             <p className="mt-3 text-xs text-muted-foreground">
               Advanced mode computes density from ISA and dynamic viscosity from
               Sutherland&apos;s law using altitude.
+            </p>
+          </div>
+        ) : null}
+        {isDynamicPressureCalculator ? (
+          <div className="mt-4 rounded-md border border-border bg-background p-4">
+            <p className="text-sm font-medium">Calculation mode</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className={`rounded-md px-3 py-2 text-sm ${
+                  dynamicPressureMode === "manual"
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-foreground"
+                }`}
+                onClick={() => {
+                  setDynamicPressureMode("manual");
+                  setHasCalculated(false);
+                }}
+              >
+                Manual rho and V
+              </button>
+              <button
+                type="button"
+                className={`rounded-md px-3 py-2 text-sm ${
+                  dynamicPressureMode === "altitude"
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-foreground"
+                }`}
+                onClick={() => {
+                  setDynamicPressureMode("altitude");
+                  setHasCalculated(false);
+                }}
+              >
+                Altitude + velocity
+              </button>
+              <button
+                type="button"
+                className={`rounded-md px-3 py-2 text-sm ${
+                  dynamicPressureMode === "machAltitude"
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-foreground"
+                }`}
+                onClick={() => {
+                  setDynamicPressureMode("machAltitude");
+                  setHasCalculated(false);
+                }}
+              >
+                Mach + altitude
+              </button>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Altitude mode computes density from ISA. Mach + altitude mode computes
+              ISA temperature, local speed of sound, velocity, density, and then
+              dynamic pressure.
             </p>
           </div>
         ) : null}
