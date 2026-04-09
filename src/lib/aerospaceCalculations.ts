@@ -2,6 +2,9 @@ const ISA_STANDARD_GRAVITY = 9.80665;
 const ISA_SPECIFIC_GAS_CONSTANT = 287.05;
 const ISA_SEA_LEVEL_TEMPERATURE = 288.15;
 const ISA_SEA_LEVEL_PRESSURE = 101325;
+const SUTHERLAND_REFERENCE_TEMPERATURE = 273.15;
+const SUTHERLAND_REFERENCE_VISCOSITY = 1.716e-5;
+const SUTHERLAND_CONSTANT = 110.4;
 
 export const ISA_MAX_ALTITUDE_METERS = 86000;
 
@@ -133,4 +136,51 @@ export function calculateIsaAirDensity(
     temperature,
     layer: layer.label,
   };
+}
+
+export function calculateSutherlandDynamicViscosity(
+  temperatureKelvin: number
+): number | null {
+  if (!Number.isFinite(temperatureKelvin) || temperatureKelvin <= 0) {
+    return null;
+  }
+
+  return (
+    SUTHERLAND_REFERENCE_VISCOSITY *
+    Math.pow(
+      temperatureKelvin / SUTHERLAND_REFERENCE_TEMPERATURE,
+      1.5
+    ) *
+    ((SUTHERLAND_REFERENCE_TEMPERATURE + SUTHERLAND_CONSTANT) /
+      (temperatureKelvin + SUTHERLAND_CONSTANT))
+  );
+}
+
+type ReynoldsNumberInput = {
+  density: number;
+  velocity: number;
+  characteristicLength: number;
+  dynamicViscosity: number;
+};
+
+export function calculateReynoldsNumber({
+  density,
+  velocity,
+  characteristicLength,
+  dynamicViscosity,
+}: ReynoldsNumberInput): number | null {
+  if (
+    !Number.isFinite(density) ||
+    !Number.isFinite(velocity) ||
+    !Number.isFinite(characteristicLength) ||
+    !Number.isFinite(dynamicViscosity) ||
+    density <= 0 ||
+    velocity < 0 ||
+    characteristicLength <= 0 ||
+    dynamicViscosity <= 0
+  ) {
+    return null;
+  }
+
+  return (density * velocity * characteristicLength) / dynamicViscosity;
 }

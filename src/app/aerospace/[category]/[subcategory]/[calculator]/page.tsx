@@ -85,43 +85,80 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
       ),
     }));
 
-  const intro = [
-    `${calculatorConfig.title} helps estimate key ${subcategoryConfig.title.toLowerCase()} values quickly.`,
-    "Use it for quick design checks, what-if analysis, and early sizing decisions.",
-    "For final design, always validate with higher-fidelity methods and standards.",
-  ];
-
-  const assumptions = [
-    "Inputs are in consistent units.",
-    "The selected formula is a simplified engineering relation.",
-    "Results are intended for preliminary analysis.",
-  ];
-
-  const recommendations = [
-    "Validate boundary conditions before using outputs in design decisions.",
-    "Compare multiple scenarios by varying one input at a time.",
-    "Use conservative margins for safety-critical use cases.",
-  ];
-
-  const faqs = [
-    {
-      question: `What does ${calculatorConfig.title} calculate?`,
-      answer: `It computes a key value in ${subcategoryConfig.title.toLowerCase()} using a standard aerospace engineering formula.`,
-    },
-    {
-      question: "Are these results suitable for certification work?",
-      answer: "Treat this as a fast estimation tool. Use detailed models and standard references for certification.",
-    },
-    {
-      question: "Why are results hidden initially?",
-      answer: "Results appear only after Calculate so inputs and outputs remain clearly separated.",
-    },
-  ];
-
   const formulaProfile = getAerospaceFormulaProfile(calculatorConfig.title, {
     categoryKey: categoryLower,
     subcategoryKey: subLower,
   });
+  const isReynoldsNumber = formulaProfile.calculationType === "reynoldsNumber";
+
+  const intro = isReynoldsNumber
+    ? [
+        "Reynolds Number estimates the flow regime by combining density, velocity, characteristic length, and dynamic viscosity.",
+        "Choose characteristic length to match the problem geometry, such as airfoil chord, pipe diameter, or missile/UAV body length.",
+        "Advanced mode can estimate density from ISA altitude and dynamic viscosity from Sutherland's law for quick atmospheric checks.",
+      ]
+    : [
+        `${calculatorConfig.title} helps estimate key ${subcategoryConfig.title.toLowerCase()} values quickly.`,
+        "Use it for quick design checks, what-if analysis, and early sizing decisions.",
+        "For final design, always validate with higher-fidelity methods and standards.",
+      ];
+
+  const assumptions = isReynoldsNumber
+    ? [
+        "Use consistent SI units throughout the calculation.",
+        "Advanced mode assumes standard ISA conditions up to 86 km and air viscosity from Sutherland's law.",
+        "Characteristic length should represent the dominant dimension of the flow problem.",
+      ]
+    : [
+        "Inputs are in consistent units.",
+        "The selected formula is a simplified engineering relation.",
+        "Results are intended for preliminary analysis.",
+      ];
+
+  const recommendations = isReynoldsNumber
+    ? [
+        "For airfoils, use chord length; for pipes, use diameter; for missiles or UAVs, use body length.",
+        "If measured density or viscosity is available, prefer manual mode over atmospheric estimates.",
+        "Interpret the result alongside the geometry-specific transition criteria for your application.",
+      ]
+    : [
+        "Validate boundary conditions before using outputs in design decisions.",
+        "Compare multiple scenarios by varying one input at a time.",
+        "Use conservative margins for safety-critical use cases.",
+      ];
+
+  const faqs = isReynoldsNumber
+    ? [
+        {
+          question: "What characteristic length should I use?",
+          answer:
+            "Use the dimension that governs the flow problem: chord for an airfoil, diameter for a pipe, and body length for a missile or UAV.",
+        },
+        {
+          question: "What does advanced altitude mode do?",
+          answer:
+            "It replaces manual density and viscosity inputs by computing density from ISA altitude and dynamic viscosity from Sutherland's law.",
+        },
+        {
+          question: "Is this suitable for engineering work?",
+          answer:
+            "Yes for preliminary engineering analysis, provided you use the correct characteristic length and validate against measured properties when available.",
+        },
+      ]
+    : [
+        {
+          question: `What does ${calculatorConfig.title} calculate?`,
+          answer: `It computes a key value in ${subcategoryConfig.title.toLowerCase()} using a standard aerospace engineering formula.`,
+        },
+        {
+          question: "Are these results suitable for certification work?",
+          answer: "Treat this as a fast estimation tool. Use detailed models and standard references for certification.",
+        },
+        {
+          question: "Why are results hidden initially?",
+          answer: "Results appear only after Calculate so inputs and outputs remain clearly separated.",
+        },
+      ];
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 py-10 lg:px-8">

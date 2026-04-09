@@ -21,7 +21,8 @@ export type FormulaProfile = {
     | "genericRatio"
     | "droneRequiredThrust"
     | "droneThrustToWeightRatio"
-    | "isaAirDensity";
+    | "isaAirDensity"
+    | "reynoldsNumber";
   resultLabel?: string;
   resultUnit?: string;
 };
@@ -151,12 +152,58 @@ export function getAerospaceFormulaProfile(
   if (t.includes("reynolds number")) {
     return {
       inputDefinitions: [
-        { key: "input1", label: "Density (rho)", description: "Fluid density", unit: "kg/m^3" },
-        { key: "input2", label: "Velocity (V)", description: "Characteristic flow speed", unit: "m/s" },
-        { key: "input3", label: "mu / L Combined", description: "Set as (mu / L) denominator term", unit: "Pa.s/m" },
+        {
+          key: "density",
+          label: "Density (rho)",
+          description: "Fluid density",
+          unit: "kg/m^3",
+          hint: "e.g. 1.225",
+        },
+        {
+          key: "velocity",
+          label: "Velocity (V)",
+          description: "Flow speed",
+          unit: "m/s",
+          hint: "e.g. 70",
+        },
+        {
+          key: "length",
+          label: "Characteristic Length (L)",
+          description: "Relevant physical length, such as chord, diameter, or body length",
+          unit: "m",
+          hint: "e.g. 1.5",
+        },
+        {
+          key: "dynamicViscosity",
+          label: "Dynamic Viscosity (mu)",
+          description: "Fluid dynamic viscosity",
+          unit: "Pa.s",
+          hint: "e.g. 1.789e-5",
+        },
       ],
       formulaLatex: "Re = (rho * V * L) / mu",
-      formulaExplanation: "Reynolds number compares inertial and viscous effects in a flow.",
+      formulaDetails: [
+        {
+          title: "Choose characteristic length L for the actual geometry",
+          lines: [
+            "Airfoil -> chord length",
+            "Pipe -> diameter",
+            "Missile/UAV -> body length",
+          ],
+        },
+        {
+          title: "Optional advanced altitude mode",
+          lines: [
+            "Input altitude h instead of density and viscosity.",
+            "Density rho is computed from ISA.",
+            "Dynamic viscosity mu is computed from Sutherland's law using ISA temperature.",
+          ],
+        },
+      ],
+      formulaExplanation:
+        "Reynolds number compares inertial and viscous effects using the standard aerodynamics relation. Keep SI units consistent: rho in kg/m^3, V in m/s, L in m, and mu in Pa.s.",
+      calculationType: "reynoldsNumber",
+      resultLabel: "Reynolds number",
     };
   }
   if (t.includes("dynamic pressure")) {

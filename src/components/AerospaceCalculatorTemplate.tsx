@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   calculateIsaAirDensity,
+  calculateReynoldsNumber,
+  calculateSutherlandDynamicViscosity,
   ISA_MAX_ALTITUDE_METERS,
 } from "@/lib/aerospaceCalculations";
 
@@ -23,6 +25,11 @@ type FormulaDetailSection = {
   lines: string[];
 };
 
+type ResultDetail = {
+  label: string;
+  value: string;
+};
+
 type Props = {
   title: string;
   intro: string[];
@@ -34,7 +41,8 @@ type Props = {
     | "genericRatio"
     | "droneRequiredThrust"
     | "droneThrustToWeightRatio"
-    | "isaAirDensity";
+    | "isaAirDensity"
+    | "reynoldsNumber";
   resultLabel?: string;
   resultUnit?: string;
   assumptions: string[];
@@ -50,9 +58,11 @@ function getDefaultHint(label: string, unit?: string): string {
   if (lowerLabel.includes("pressure") || lowerUnit === "pa") return "e.g. 101325";
   if (lowerLabel.includes("temperature") || lowerUnit === "k") return "e.g. 288.15";
   if (lowerLabel.includes("gas constant")) return "e.g. 287.05";
+  if (lowerLabel.includes("viscosity") || lowerUnit === "pa.s") return "e.g. 1.789e-5";
   if (lowerLabel.includes("altitude")) return "e.g. 12000";
   if (lowerLabel.includes("velocity") || lowerUnit === "m/s") return "e.g. 250";
   if (lowerLabel.includes("density") || lowerUnit === "kg/m^3") return "e.g. 1.225";
+  if (lowerLabel.includes("characteristic length")) return "e.g. 1.5";
   if (lowerLabel.includes("area") || lowerUnit === "m^2") return "e.g. 16.2";
   if (lowerLabel.includes("mass") || lowerUnit === "kg") return "e.g. 1200";
   if (lowerLabel.includes("weight") || lowerUnit === "n") return "e.g. 11772";
@@ -82,11 +92,58 @@ function createInitialInputs(inputDefinitions: InputDef[]): Record<string, strin
 function formatResultValue(value: number): string {
   const absoluteValue = Math.abs(value);
 
-  if (absoluteValue > 0 && absoluteValue < 0.001) {
+  if (absoluteValue >= 1_000_000 || (absoluteValue > 0 && absoluteValue < 0.001)) {
     return value.toExponential(4);
   }
 
   return value.toFixed(4);
+}
+
+function formatResultDetailValue(value: number, unit: string, digits = 4): string {
+  const absoluteValue = Math.abs(value);
+  const formattedValue =
+    absoluteValue >= 1_000_000 || (absoluteValue > 0 && absoluteValue < 0.001)
+      ? value.toExponential(digits)
+      : value.toFixed(digits);
+
+  return `${formattedValue} ${unit}`;
+}
+
+const REYNOLDS_ADVANCED_INPUT_DEFINITIONS: InputDef[] = [
+  {
+    key: "altitude",
+    label: "Altitude (h)",
+    description: "ISA altitude above mean sea level for automatic air property estimation",
+    unit: "m",
+    hint: "e.g. 5000",
+    defaultValue: 0,
+  },
+  {
+    key: "velocity",
+    label: "Velocity (V)",
+    description: "Flow speed",
+    unit: "m/s",
+    hint: "e.g. 70",
+  },
+  {
+    key: "length",
+    label: "Characteristic Length (L)",
+    description: "Relevant physical length, such as chord, diameter, or body length",
+    unit: "m",
+    hint: "e.g. 1.5",
+  },
+];
+
+function mergeInputDefinitions(...groups: InputDef[][]): InputDef[] {
+  const merged = new Map<string, InputDef>();
+
+  groups.flat().forEach((input) => {
+    if (!merged.has(input.key)) {
+      merged.set(input.key, input);
+    }
+  });
+
+  return Array.from(merged.values());
 }
 
 export function AerospaceCalculatorTemplate(props: Props) {
@@ -106,8 +163,17 @@ export function AerospaceCalculatorTemplate(props: Props) {
     relatedCalculators,
   } = props;
 
+  const [reynoldsMode, setReynoldsMode] = useState<"manual" | "advanced">("manual");
+  const allInputDefinitions =
+    calculationType === "reynoldsNumber"
+      ? mergeInputDefinitions(inputDefinitions, REYNOLDS_ADVANCED_INPUT_DEFINITIONS)
+      : inputDefinitions;
+  const activeInputDefinitions =
+    calculationType === "reynoldsNumber" && reynoldsMode === "advanced"
+      ? REYNOLDS_ADVANCED_INPUT_DEFINITIONS
+      : inputDefinitions;
   const [inputs, setInputs] = useState<Record<string, string>>(() =>
-    createInitialInputs(inputDefinitions)
+    createInitialInputs(allInputDefinitions)
   );
   const [hasCalculated, setHasCalculated] = useState(false);
 
@@ -119,6 +185,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
 
     let raw = 0;
     let error: string | null = null;
+    let details: ResultDetail[] = [];
 
     switch (calculationType) {
       case "isaAirDensity": {
@@ -130,6 +197,95 @@ export function AerospaceCalculatorTemplate(props: Props) {
         }
 
         raw = isaResult.density;
+        break;
+      }
+      case "reynoldsNumber": {
+        const velocity = getValue("velocity");
+        const characteristicLength = getValue("length");
+
+        if (velocity < 0) {
+          error = "Velocity must be zero or greater.";
+          break;
+        }
+
+        if (characteristicLength <= 0) {
+          error = "Characteristic length must be greater than zero.";
+          break;
+        }
+
+        if (reynoldsMode === "advanced") {
+          const isaResult = calculateIsaAirDensity(getValue("altitude"));
+
+          if (!isaResult) {
+            error = `Enter an altitude between 0 and ${ISA_MAX_ALTITUDE_METERS.toLocaleString()} m for the ISA model.`;
+            break;
+          }
+
+          const dynamicViscosity = calculateSutherlandDynamicViscosity(
+            isaResult.temperature
+          );
+
+          if (!dynamicViscosity) {
+            error = "Unable to compute dynamic viscosity from the ISA temperature.";
+            break;
+          }
+
+          const reynoldsNumber = calculateReynoldsNumber({
+            density: isaResult.density,
+            velocity,
+            characteristicLength,
+            dynamicViscosity,
+          });
+
+          if (reynoldsNumber == null) {
+            error = "Check that velocity and characteristic length are valid for Reynolds number.";
+            break;
+          }
+
+          raw = reynoldsNumber;
+          details = [
+            {
+              label: "Density used (ISA)",
+              value: formatResultDetailValue(isaResult.density, "kg/m^3"),
+            },
+            {
+              label: "Dynamic viscosity used (Sutherland)",
+              value: formatResultDetailValue(dynamicViscosity, "Pa.s"),
+            },
+            {
+              label: "Temperature used (ISA)",
+              value: `${isaResult.temperature.toFixed(2)} K`,
+            },
+          ];
+          break;
+        }
+
+        const density = getValue("density");
+        const dynamicViscosity = getValue("dynamicViscosity");
+
+        if (density <= 0) {
+          error = "Density must be greater than zero.";
+          break;
+        }
+
+        if (dynamicViscosity <= 0) {
+          error = "Dynamic viscosity must be greater than zero.";
+          break;
+        }
+
+        const reynoldsNumber = calculateReynoldsNumber({
+          density,
+          velocity,
+          characteristicLength,
+          dynamicViscosity,
+        });
+
+        if (reynoldsNumber == null) {
+          error = "Check that density, velocity, characteristic length, and viscosity are valid.";
+          break;
+        }
+
+        raw = reynoldsNumber;
         break;
       }
       case "droneRequiredThrust": {
@@ -165,17 +321,22 @@ export function AerospaceCalculatorTemplate(props: Props) {
     return {
       raw: Number.isFinite(raw) ? raw : 0,
       error,
+      details,
     };
-  }, [calculationType, inputDefinitions, inputs]);
+  }, [calculationType, inputDefinitions, inputs, reynoldsMode]);
 
-  const canCalculate = inputDefinitions.every((input) => (inputs[input.key] ?? "") !== "");
-  const hasDefaultedInputs = inputDefinitions.some((input) => input.defaultValue != null);
+  const canCalculate = activeInputDefinitions.every(
+    (input) => (inputs[input.key] ?? "") !== ""
+  );
+  const hasDefaultedInputs = activeInputDefinitions.some(
+    (input) => input.defaultValue != null
+  );
   const inputGridClassName =
-    inputDefinitions.length >= 4
+    activeInputDefinitions.length >= 4
       ? "mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4"
-      : inputDefinitions.length === 3
+      : activeInputDefinitions.length === 3
         ? "mt-4 grid gap-4 md:grid-cols-3"
-        : inputDefinitions.length === 2
+        : activeInputDefinitions.length === 2
           ? "mt-4 grid gap-4 md:grid-cols-2"
           : "mt-4 grid gap-4";
 
@@ -207,6 +368,45 @@ export function AerospaceCalculatorTemplate(props: Props) {
         <p className="mt-2 text-sm text-muted-foreground">
           Enter the required values used in the formula for {title}.
         </p>
+        {calculationType === "reynoldsNumber" ? (
+          <div className="mt-4 rounded-md border border-border bg-background p-4">
+            <p className="text-sm font-medium">Calculation mode</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className={`rounded-md px-3 py-2 text-sm ${
+                  reynoldsMode === "manual"
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-foreground"
+                }`}
+                onClick={() => {
+                  setReynoldsMode("manual");
+                  setHasCalculated(false);
+                }}
+              >
+                Manual rho and mu
+              </button>
+              <button
+                type="button"
+                className={`rounded-md px-3 py-2 text-sm ${
+                  reynoldsMode === "advanced"
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-foreground"
+                }`}
+                onClick={() => {
+                  setReynoldsMode("advanced");
+                  setHasCalculated(false);
+                }}
+              >
+                Advanced altitude mode
+              </button>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Advanced mode computes density from ISA and dynamic viscosity from
+              Sutherland&apos;s law using altitude.
+            </p>
+          </div>
+        ) : null}
         <div className="mt-4 rounded-md border border-border bg-background p-4">
           <p className="text-sm font-medium">Required inputs for calculation</p>
           {hasDefaultedInputs ? (
@@ -215,7 +415,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
             </p>
           ) : null}
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-            {inputDefinitions.map((item) => (
+            {activeInputDefinitions.map((item) => (
               <li key={item.key}>
                 <span className="font-medium text-foreground">{item.label}</span>
                 {item.unit ? ` (${item.unit})` : ""} - {item.description}
@@ -224,7 +424,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
           </ul>
         </div>
         <div className={inputGridClassName}>
-          {inputDefinitions.map((input) => (
+          {activeInputDefinitions.map((input) => (
             <label className="text-sm" key={input.key}>
               <div className="mb-1 text-muted-foreground">{input.label}</div>
               <input
@@ -268,6 +468,16 @@ export function AerospaceCalculatorTemplate(props: Props) {
               {formatResultValue(result.raw)}
               {resultUnit ? ` ${resultUnit}` : ""}
             </p>
+            {result.details.length ? (
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {result.details.map((detail) => (
+                  <div key={detail.label} className="rounded-md border border-border/70 bg-card p-3">
+                    <p className="text-xs text-muted-foreground">{detail.label}</p>
+                    <p className="mt-1 text-sm font-medium">{detail.value}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         )}
       </section>
