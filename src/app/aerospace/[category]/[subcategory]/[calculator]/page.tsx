@@ -91,6 +91,8 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
   });
   const isReynoldsNumber = formulaProfile.calculationType === "reynoldsNumber";
   const isDynamicPressure = formulaProfile.calculationType === "dynamicPressure";
+  const isAirspeedConversion =
+    formulaProfile.calculationType === "airspeedConversion";
 
   const intro = isReynoldsNumber
     ? [
@@ -104,6 +106,12 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
           "Use manual mode when local density is already known, altitude mode when you want ISA density from height, and Mach + altitude mode when flight condition is defined by compressible-flow inputs.",
           "Integrated mode computes ISA temperature, local speed of sound, velocity, density, and dynamic pressure in one engineering workflow.",
         ]
+      : isAirspeedConversion
+        ? [
+            "Velocity Conversion (IAS/EAS/TAS) converts between common airspeed definitions using local ISA density at the selected altitude.",
+            "Use IAS for cockpit-style low-speed indicated airspeed inputs, EAS for dynamic-pressure-equivalent speed, or TAS for actual air-relative flight speed.",
+            "This model uses the standard EAS-TAS density-ratio relation and treats IAS as approximately equal to EAS unless a separate compressibility correction model is applied.",
+          ]
     : [
         `${calculatorConfig.title} helps estimate key ${subcategoryConfig.title.toLowerCase()} values quickly.`,
         "Use it for quick design checks, what-if analysis, and early sizing decisions.",
@@ -122,6 +130,12 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
           "Altitude-based modes assume ISA conditions up to 86 km.",
           "Mach + altitude mode assumes standard air with gamma = 1.4 and R = 287.05 J/kg.K.",
         ]
+      : isAirspeedConversion
+        ? [
+            "Altitude is interpreted using the ISA atmosphere and local density is computed from that altitude.",
+            "The EAS-TAS conversion uses the incompressible density-ratio relation with rho0 = 1.225 kg/m^3.",
+            "IAS is treated as approximately equal to EAS, so compressibility and instrument corrections are not included.",
+          ]
     : [
         "Inputs are in consistent units.",
         "The selected formula is a simplified engineering relation.",
@@ -140,6 +154,12 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
           "Use Mach + altitude mode when your flight condition is defined in terms of compressible-flow variables.",
           "For loads and performance calculations, make sure velocity is true airspeed or another air-relative speed consistent with the density used.",
         ]
+      : isAirspeedConversion
+        ? [
+            "Use IAS input only for low-speed work where IAS approximately equals EAS.",
+            "At estimated Mach above about 0.3, treat the IAS output as approximate because compressibility corrections are not included.",
+            "Use the selected altitude carefully, since all EAS-TAS conversion is tied to the ISA density at that altitude.",
+          ]
     : [
         "Validate boundary conditions before using outputs in design decisions.",
         "Compare multiple scenarios by varying one input at a time.",
@@ -178,10 +198,28 @@ export default async function AerospaceCalculatorPage({ params }: PageProps) {
           },
           {
             question: "Is this suitable for engineering use?",
-            answer:
-              "Yes for real engineering workflows such as performance checks, loads estimates, and air-data calculations, provided the ISA assumption matches the atmosphere you want to model.",
+          answer:
+            "Yes for real engineering workflows such as performance checks, loads estimates, and air-data calculations, provided the ISA assumption matches the atmosphere you want to model.",
           },
         ]
+      : isAirspeedConversion
+        ? [
+            {
+              question: "How does this calculator treat IAS?",
+              answer:
+                "IAS is treated as approximately equal to EAS, which is appropriate for low-speed incompressible work. Instrument and compressibility corrections are not included.",
+            },
+            {
+              question: "What atmosphere model is used?",
+              answer:
+                "The calculator uses ISA altitude to compute local density, then converts between EAS and TAS with the standard density-ratio relation.",
+            },
+            {
+              question: "When should I use a more advanced model?",
+              answer:
+                "If the estimated Mach number is above about 0.3 or you need calibrated or compressible airspeed corrections, use a higher-fidelity air-data model instead of the IAS approximation here.",
+            },
+          ]
     : [
         {
           question: `What does ${calculatorConfig.title} calculate?`,

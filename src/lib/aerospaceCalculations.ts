@@ -6,6 +6,7 @@ const STANDARD_AIR_HEAT_CAPACITY_RATIO = 1.4;
 const SUTHERLAND_REFERENCE_TEMPERATURE = 273.15;
 const SUTHERLAND_REFERENCE_VISCOSITY = 1.716e-5;
 const SUTHERLAND_CONSTANT = 110.4;
+const SEA_LEVEL_AIR_DENSITY = 1.225;
 
 export const ISA_MAX_ALTITUDE_METERS = 86000;
 
@@ -104,6 +105,24 @@ export type DynamicPressureResult = {
   temperature?: number;
   speedOfSound?: number;
   layer?: string;
+};
+
+export type AirspeedInputType = "ias" | "eas" | "tas";
+
+export type AirspeedConversionResult = {
+  inputType: AirspeedInputType;
+  inputVelocity: number;
+  altitude: number;
+  density: number;
+  densityRatio: number;
+  ias: number;
+  eas: number;
+  tas: number;
+  temperature: number;
+  speedOfSound: number;
+  estimatedMach: number;
+  layer: string;
+  iasIsApproximation: boolean;
 };
 
 export function calculateIsaAirDensity(
@@ -278,6 +297,74 @@ export function calculateDynamicPressureFromMachAndAltitude(
     temperature: isaResult.temperature,
     speedOfSound,
     layer: isaResult.layer,
+  };
+}
+
+export function calculateAirspeedConversion(
+  inputType: AirspeedInputType,
+  velocity: number,
+  altitudeMeters: number
+): AirspeedConversionResult | null {
+  if (!Number.isFinite(velocity) || velocity < 0) {
+    return null;
+  }
+
+  const isaResult = calculateIsaAirDensity(altitudeMeters);
+
+  if (!isaResult) {
+    return null;
+  }
+
+  const densityRatio = isaResult.density / SEA_LEVEL_AIR_DENSITY;
+
+  if (!Number.isFinite(densityRatio) || densityRatio <= 0) {
+    return null;
+  }
+
+  const densityScale = Math.sqrt(densityRatio);
+  let eas = velocity;
+  let tas = velocity;
+  let ias = velocity;
+
+  switch (inputType) {
+    case "tas":
+      tas = velocity;
+      eas = tas * densityScale;
+      ias = eas;
+      break;
+    case "eas":
+      eas = velocity;
+      tas = eas / densityScale;
+      ias = eas;
+      break;
+    case "ias":
+    default:
+      ias = velocity;
+      eas = ias;
+      tas = eas / densityScale;
+      break;
+  }
+
+  const speedOfSound = calculateSpeedOfSound(isaResult.temperature);
+
+  if (speedOfSound == null || speedOfSound <= 0) {
+    return null;
+  }
+
+  return {
+    inputType,
+    inputVelocity: velocity,
+    altitude: isaResult.altitude,
+    density: isaResult.density,
+    densityRatio,
+    ias,
+    eas,
+    tas,
+    temperature: isaResult.temperature,
+    speedOfSound,
+    estimatedMach: tas / speedOfSound,
+    layer: isaResult.layer,
+    iasIsApproximation: true,
   };
 }
 

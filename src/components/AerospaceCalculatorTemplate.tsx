@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+  calculateAirspeedConversion,
   calculateDynamicPressure,
   calculateDynamicPressureAtAltitude,
   calculateDynamicPressureFromMachAndAltitude,
@@ -10,6 +11,7 @@ import {
   calculateReynoldsNumber,
   calculateSutherlandDynamicViscosity,
   ISA_MAX_ALTITUDE_METERS,
+  type AirspeedInputType,
 } from "@/lib/aerospaceCalculations";
 
 type RelatedCalculator = { title: string; href: string };
@@ -33,6 +35,15 @@ type ResultDetail = {
   value: string;
 };
 
+type CalculationResult = {
+  raw: number;
+  error: string | null;
+  details: ResultDetail[];
+  headline?: string;
+  notes?: string[];
+  showPrimaryValue?: boolean;
+};
+
 type Props = {
   title: string;
   intro: string[];
@@ -46,7 +57,8 @@ type Props = {
     | "droneThrustToWeightRatio"
     | "isaAirDensity"
     | "reynoldsNumber"
-    | "dynamicPressure";
+    | "dynamicPressure"
+    | "airspeedConversion";
   resultLabel?: string;
   resultUnit?: string;
   assumptions: string[];
@@ -62,6 +74,7 @@ function getDefaultHint(label: string, unit?: string): string {
   if (lowerLabel.includes("pressure") || lowerUnit === "pa") return "e.g. 101325";
   if (lowerLabel.includes("temperature") || lowerUnit === "k") return "e.g. 288.15";
   if (lowerLabel.includes("gas constant")) return "e.g. 287.05";
+  if (lowerLabel === "velocity") return "e.g. 70";
   if (lowerLabel.includes("mach")) return "e.g. 0.78";
   if (lowerLabel.includes("viscosity") || lowerUnit === "pa.s") return "e.g. 1.789e-5";
   if (lowerLabel.includes("altitude")) return "e.g. 12000";
@@ -208,8 +221,12 @@ export function AerospaceCalculatorTemplate(props: Props) {
   const [dynamicPressureMode, setDynamicPressureMode] = useState<
     "manual" | "altitude" | "machAltitude"
   >("manual");
+  const [airspeedInputType, setAirspeedInputType] =
+    useState<AirspeedInputType>("ias");
   const isReynoldsCalculator = calculationType === "reynoldsNumber";
   const isDynamicPressureCalculator = calculationType === "dynamicPressure";
+  const isAirspeedConversionCalculator =
+    calculationType === "airspeedConversion";
   const allInputDefinitions =
     isReynoldsCalculator
       ? mergeInputDefinitions(inputDefinitions, REYNOLDS_ADVANCED_INPUT_DEFINITIONS)
@@ -219,7 +236,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
             DYNAMIC_PRESSURE_ALTITUDE_INPUT_DEFINITIONS,
             DYNAMIC_PRESSURE_MACH_INPUT_DEFINITIONS
           )
-      : inputDefinitions;
+        : inputDefinitions;
   const activeInputDefinitions =
     isReynoldsCalculator
       ? reynoldsMode === "advanced"
@@ -237,7 +254,7 @@ export function AerospaceCalculatorTemplate(props: Props) {
   );
   const [hasCalculated, setHasCalculated] = useState(false);
 
-  const result = useMemo(() => {
+  const result = useMemo<CalculationResult>(() => {
     const getValue = (key: string) => {
       const value = Number(inputs[key] || 0);
       return Number.isFinite(value) ? value : 0;
@@ -246,6 +263,9 @@ export function AerospaceCalculatorTemplate(props: Props) {
     let raw = 0;
     let error: string | null = null;
     let details: ResultDetail[] = [];
+    const notes: string[] = [];
+    let headline: string | undefined;
+    let showPrimaryValue = true;
 
     switch (calculationType) {
       case "isaAirDensity": {
@@ -257,6 +277,76 @@ export function AerospaceCalculatorTemplate(props: Props) {
         }
 
         raw = isaResult.density;
+        break;
+      }
+      case "airspeedConversion": {
+        const conversionResult = calculateAirspeedConversion(
+          airspeedInputType,
+          getValue("velocity"),
+          getValue("altitude")
+        );
+
+        if (!conversionResult) {
+          error = `Enter an altitude between 0 and ${ISA_MAX_ALTITUDE_METERS.toLocaleString()} m, and a velocity greater than or equal to zero.`;
+          break;
+        }
+
+        raw = conversionResult.tas;
+        headline = "Converted airspeeds";
+        showPrimaryValue = false;
+        details = [
+          {
+            label: "Selected input type",
+            value: airspeedInputType.toUpperCase(),
+          },
+          {
+            label: "Indicated Airspeed (IAS, approx)",
+            value: formatResultDetailValue(conversionResult.ias, "m/s"),
+          },
+          {
+            label: "Equivalent Airspeed (EAS)",
+            value: formatResultDetailValue(conversionResult.eas, "m/s"),
+          },
+          {
+            label: "True Airspeed (TAS)",
+            value: formatResultDetailValue(conversionResult.tas, "m/s"),
+          },
+          {
+            label: "Air density (ISA)",
+            value: formatResultDetailValue(conversionResult.density, "kg/m^3"),
+          },
+          {
+            label: "Density ratio (rho / rho0)",
+            value:
+              conversionResult.densityRatio >= 0.001
+                ? conversionResult.densityRatio.toFixed(4)
+                : conversionResult.densityRatio.toExponential(4),
+          },
+          {
+            label: "Temperature (ISA)",
+            value: `${conversionResult.temperature.toFixed(2)} K`,
+          },
+          {
+            label: "Estimated Mach from TAS",
+            value: conversionResult.estimatedMach.toFixed(4),
+          },
+          {
+            label: "ISA layer",
+            value: conversionResult.layer,
+          },
+        ];
+
+        if (conversionResult.iasIsApproximation) {
+          notes.push(
+            "IAS is treated as approximately equal to EAS in this model. Instrument and compressibility corrections are not included."
+          );
+        }
+
+        if (conversionResult.estimatedMach > 0.3) {
+          notes.push(
+            `Estimated Mach is ${conversionResult.estimatedMach.toFixed(2)}. This calculator uses the incompressible EAS/TAS relation, so higher-speed compressibility corrections are not included.`
+          );
+        }
         break;
       }
       case "dynamicPressure": {
@@ -493,8 +583,18 @@ export function AerospaceCalculatorTemplate(props: Props) {
       raw: Number.isFinite(raw) ? raw : 0,
       error,
       details,
+      headline,
+      notes,
+      showPrimaryValue,
     };
-  }, [calculationType, dynamicPressureMode, inputDefinitions, inputs, reynoldsMode]);
+  }, [
+    airspeedInputType,
+    calculationType,
+    dynamicPressureMode,
+    inputDefinitions,
+    inputs,
+    reynoldsMode,
+  ]);
 
   const canCalculate = activeInputDefinitions.every(
     (input) => (inputs[input.key] ?? "") !== ""
@@ -632,6 +732,29 @@ export function AerospaceCalculatorTemplate(props: Props) {
             </p>
           </div>
         ) : null}
+        {isAirspeedConversionCalculator ? (
+          <div className="mt-4 rounded-md border border-border bg-background p-4">
+            <label className="text-sm">
+              <div className="font-medium text-foreground">Input airspeed type</div>
+              <select
+                className="mt-3 w-full rounded-md border border-input bg-card px-3 py-2 text-sm"
+                value={airspeedInputType}
+                onChange={(e) => {
+                  setAirspeedInputType(e.target.value as AirspeedInputType);
+                  setHasCalculated(false);
+                }}
+              >
+                <option value="ias">IAS</option>
+                <option value="eas">EAS</option>
+                <option value="tas">TAS</option>
+              </select>
+            </label>
+            <p className="mt-3 text-xs text-muted-foreground">
+              IAS is treated as approximately equal to EAS in this incompressible
+              ISA-based model.
+            </p>
+          </div>
+        ) : null}
         <div className="mt-4 rounded-md border border-border bg-background p-4">
           <p className="text-sm font-medium">Required inputs for calculation</p>
           {hasDefaultedInputs ? (
@@ -688,17 +811,33 @@ export function AerospaceCalculatorTemplate(props: Props) {
           </div>
         ) : (
           <div className="mt-3 rounded-md border border-border bg-background p-4">
-            <p className="text-sm text-muted-foreground">{resultLabel} for {title}</p>
-            <p className="mt-1 text-2xl font-semibold">
-              {formatResultValue(result.raw)}
-              {resultUnit ? ` ${resultUnit}` : ""}
+            <p className="text-sm text-muted-foreground">
+              {result.headline ?? `${resultLabel} for ${title}`}
             </p>
+            {result.showPrimaryValue === false ? null : (
+              <p className="mt-1 text-2xl font-semibold">
+                {formatResultValue(result.raw)}
+                {resultUnit ? ` ${resultUnit}` : ""}
+              </p>
+            )}
             {result.details.length ? (
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 {result.details.map((detail) => (
                   <div key={detail.label} className="rounded-md border border-border/70 bg-card p-3">
                     <p className="text-xs text-muted-foreground">{detail.label}</p>
                     <p className="mt-1 text-sm font-medium">{detail.value}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            {result.notes?.length ? (
+              <div className="mt-4 space-y-2">
+                {result.notes.map((note) => (
+                  <div
+                    key={note}
+                    className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm"
+                  >
+                    {note}
                   </div>
                 ))}
               </div>

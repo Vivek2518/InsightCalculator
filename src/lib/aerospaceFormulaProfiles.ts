@@ -23,7 +23,8 @@ export type FormulaProfile = {
     | "droneThrustToWeightRatio"
     | "isaAirDensity"
     | "reynoldsNumber"
-    | "dynamicPressure";
+    | "dynamicPressure"
+    | "airspeedConversion";
   resultLabel?: string;
   resultUnit?: string;
 };
@@ -148,6 +149,56 @@ export function getAerospaceFormulaProfile(
       ],
       formulaLatex: "M = V / a",
       formulaExplanation: "Mach number is the ratio of local velocity to local speed of sound.",
+    };
+  }
+  if (t.includes("velocity conversion") && t.includes("ias/eas/tas")) {
+    return {
+      inputDefinitions: [
+        {
+          key: "velocity",
+          label: "Velocity",
+          description: "Input airspeed magnitude in the selected airspeed definition",
+          unit: "m/s",
+          hint: "e.g. 70",
+        },
+        {
+          key: "altitude",
+          label: "Altitude (h)",
+          description: "ISA altitude above mean sea level used to compute local air density",
+          unit: "m",
+          hint: "e.g. 5000",
+          defaultValue: 0,
+        },
+      ],
+      formulaLatex: "V_EAS = V_TAS * sqrt(rho / rho0)",
+      formulaDetails: [
+        {
+          title: "Inverse relation",
+          lines: [
+            "V_TAS = V_EAS / sqrt(rho / rho0)",
+            "rho0 = 1.225 kg/m^3",
+          ],
+        },
+        {
+          title: "IAS treatment in this model",
+          lines: [
+            "At low speeds, IAS is treated as approximately equal to EAS.",
+            "Compressibility and instrument corrections are not included.",
+          ],
+        },
+        {
+          title: "Atmosphere model",
+          lines: [
+            "Density rho is computed from ISA altitude.",
+            "All outputs are tied to the selected altitude and resulting local atmospheric density.",
+          ],
+        },
+      ],
+      formulaExplanation:
+        "This airspeed conversion uses ISA density at altitude together with the standard EAS-TAS density-ratio relation. It is intended for incompressible or low-Mach workflows, with IAS approximated as EAS unless a separate compressibility correction model is used.",
+      calculationType: "airspeedConversion",
+      resultLabel: "Converted airspeeds",
+      resultUnit: "m/s",
     };
   }
   if (t.includes("reynolds number")) {
